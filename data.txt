@@ -1,0 +1,123 @@
+{
+    "Objects": {
+        //AREAS
+        "Screen": {
+            "type": "screen",
+            "description": "Where the current things can be seen or viewed, i.e. switch view to control the NPC's while showing the big events of the background characters.",
+            "holder": null
+        },
+        "washroom":{
+            "type": "room",
+            "holder": null,
+            "description": "A clean and functional space designed for employee convenience, featuring modern fixtures and ample privacy. Nothing out of the ordinary except the supplies on the shelf behind the mirror..",
+            "NSEW": [null,null,"cafeteria",null]  //appends "To the EAST is the cafeteria"
+        },
+        "cafeteria": {
+            "type": "room",
+            "holder": "Screen",
+            "description": "A small comfortable environment to enjoy meals or snack during break. Variety of food options can be bought here.",
+            "NSEW": [null,null,"main_lobby","washroom"]  //append "To the WEST is the washroom, to the EAST is the main lobby"
+        },
+        "main_lobby": {
+            "type": "room",
+            "description": "The central entrance area, designed to welcome visitors and employees. Fine decor hangs around the room, creating a professional and inviting atmosphere.",
+            "NSEW": ["secretary_office",null,null,"cafeteria"]  //appends "to the WEST is the cafeteria, to the NORTH is the secretary office, to the SOUTH is the building exit, to the EAST is the office area"
+        },
+        "secretary_office": {
+            "type": "room",
+            "description": "no description yet",
+            "NSEW": [null,"main_lobby",null,null]  //appends "to the SOUTH is the main_loppy
+        },
+        
+        //ITEMS
+        "coffee": {
+            "holder": null,
+            "description": "The rich aroma and warm, comforting glow of the cup offer a brief respite from the challenges of the virtual world. The item increases player's energy and focus.",
+            "attributes": [
+                "energize", 
+                "friendliness"
+            ]
+        },
+        "laxative": {
+            "holder": "player",
+            "description": "A substance that promotes bowel movements, often used to relieve constipation. Do not misuse!",
+            "attribute": [
+                "poison"
+            ]
+        },
+        "poisoned_coffee": {  //coffee gets replaced with this when put laxative
+            "holder": null,
+            "description": "A dangerous drink that appears normal but has been secretly laced with a harmful substance. Consuming it can cause severe effects on the health.",
+            "attribute": [
+                "poison"
+            ]
+        },
+        
+        //CHARACTERS
+        "status_effects": ["healthy", "poisoned", "caffinated", "Hacked"],
+        "player": {
+            "likability": 0,
+            "holder": "cafeteria",
+            "status": ["healthy"]
+        },
+        "NPC_1": {
+            "likability": 0,
+            "friendliness": 2,  //neutral to the player
+            "holder": "washroom",
+            "status": ["poisoned","hacked"]
+        },
+        "NPC_2": {
+            "likability": 0,
+            "friendliness": 0,  //aggressive to the player
+            "holder": "washroom",
+            "status": ["energized"]
+        }
+    },
+
+    "Verbs": {
+        //parse string by removing these
+        "articles": ["of", "a", "an", "the"],
+        //movement direction i.e. in the BG change "player/NPC" holder
+        "0": ["N","north","go north","move north","NORTH"],
+        "1": ["S","south","go south","move south","SOUTH"],
+        "2": ["E","east","go east","move east","EAST"],
+        "3": ["W","west","go west","move west","WEST"],
+        //change holder of an "item" to "player/NPC"
+        "4": ["grab","get","take","pick up" ],
+        //change holder of an "item" to "room/item"
+        "5": ["drop","put down","leave X on Y"],
+        //read description of an "item/room"
+        "6": ["look at","examine","inspect"],
+        //check inventory of "player/NPC"
+        "7": ["I","inventory","inv","check bag","check self"],
+        //consume an "item" i.e. in the BG change "item" holder to null and change "player/NPC" attribute
+        "8": ["consume","eat","drink","use"],
+        //interact and change "player/NPC" attribute NEGATIVE
+        "9": ["sabotage"],
+        //interact and change "player/NPC"
+        "10": ["force","throw"], //force X on Y, throw coffee at Y
+
+    //// EXTRAS OPTIONAL ////
+        //interact and change "player/NPC attribute" POSITIVE
+        "11": ["give"], //give to X
+        "12": ["hug"],
+        "13": ["play"], //play with X
+        //players hint
+        "14": ["hint","look around","look"]
+    },
+    
+    //SUBROUTINE e.g. put laxative on coffee
+    "laxative_on_coffee": {
+        "condition": [
+            //obj[attr] = val
+            ["laxative","holder","player"], //coffee["holder"] = null,
+            ["coffee","holder","player"]
+        ],
+        "action": [
+            ["coffee","holder",null],
+            ["laxative","holder",null],
+            ["poisoned_coffee","holder","player"]
+        ],
+        "description": "You are now holding the coffee laced with laxative"
+    }
+}
