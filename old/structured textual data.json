@@ -1,0 +1,142 @@
+{
+
+"Verbs": {
+	"move": {
+		"descrition": "go to a new position in world" 
+	},
+	"inventory": {
+		"description": "A function in which the play can view the items that they have collected"
+	},
+	"look": {
+		"description": "A function in which the player can get a short description of the room if they forget the larger one, Also maybe provide clues"
+	},
+	"sabatoge": {
+		"description": "A function in which the player can sabatoge a fellow interns computer to mess up their work and decrease the bosslikeabilty attribute "
+	},
+	"grab": {
+		"description": "pick up a new item and add it to inventory"
+	}
+},
+
+
+"Areas": {
+	"main_menu": {
+		"id": 0,
+		"type": "screen",
+		"description": "Main menu to start",
+		"holder": null
+	},
+	"washroom": {
+		"id": 1,
+		"type": "room",
+		"item": "laxative", 
+		"holder": null,
+		"description": "A clean and functional space designed for employee convenience, NPC's will occasionally drop into use this facility. Nothing out of the ordinary except the supplies on the shelf behind the mirror.. but try not to get caught taking it",
+		"NSEW": [0,0,2,0] 
+	},
+	"cafeteria": {
+		"id": 2,
+		"type": "room",
+		"item": "coffe", 
+		"holder": "screen",
+		"description": "A small comfortable environment to enjoy meals or snack during break. Variety of food options can be bought here. Co workers will be present here during Lunch time",
+		"NSEW": [0,0,3,1] 
+	},
+	"main_lobby": {
+		"id": 3,
+		"item": "Keycard",
+		"type": "room",
+		"description": "The central entrance area, designed to welcome visitors and employees. Fine decor hangs around the room, creating a professional and inviting atmosphere.",
+		"NSEW": [0,0,0,2]
+	}
+},
+
+"items": {
+	"coffee": {
+		"holder": null,
+		"description": "The rich aroma and warm, comforting glow of the cup offer a brief respite from the challenges of the virtual world. The item increases player's energy and focus.",
+		"attributes": [
+			"caffeinated", 
+			"friendliness"
+		]
+	},
+	"laxative": {
+		"holder": "player",
+		"description": "A substance that promotes bowel movements, often used to relieve constipation. Do not misuse!",
+		"attribute": [
+			"poison"
+		]
+	},
+	"poisoned_coffee": {  
+		"holder": null,
+		"description": "A dangerous drink that appears normal but has been secretly laced with a harmful substance. Consuming it can cause severe effects on the health.",
+		"attribute": [
+			"poison"
+		]
+	}
+},
+
+"Characters": {
+		"player": {
+		"name chosen": null,
+		"status effect": "healthy",
+		"likability": 0,
+		"holder": "cafeteria",
+		"commands": ["move", "inventory", "look", "sabotage", "grab", "swap", "talk", "drop","drink","bribe", "use", "spill"]
+	},
+	"intern_1": {
+		"name": "Philip",
+		"status effect": "healthy",
+		"likability": 0,
+		"friendliness": 2,
+		"holder": "main_lobby",
+		"commands": ["move", "inventory", "look", "sabotage", "grab", "swap", "talk", "drop"]
+	},
+	"intern_2": {
+		"name": "Serah",
+		"Status effect": "healthy",
+		"likability": 0,
+		"friendliness": 0,
+		"holder": "main_lobby",
+		"commands": ["move", "inventory", "look", "sabotage", "grab", "swap", "talk", "drop" ]
+	},
+	"Boss": {
+		"name": "Karl II Jr ",
+		"Status effect": ["healthy", "Busy"],
+		"friendliness": 0,
+		"holder": "main_lobby"
+	}
+},
+
+"Status Effect":{
+
+	"healthy": {
+		"description": "null conditions on player or NPC"
+	},
+	"poisoned": {
+		"description": "decrease likability and movement speed. Will also hinder the the person in there work for the boss"
+	},
+	"caffinated": {
+		"description": "increase likability and movement speed"
+	},
+	"Hacked": {
+		"description": "decrease likability and hinder ability to do work for the boss"
+	},
+	"Busy":{
+		"description": "This effect will only effect the boss and determine the ability to talk/interact with boss"
+
+	}
+	
+},
+
+"Relationship rank": {
+
+	"likeability": {
+		"description": "This will measure the chances of the boss offering the player a return offer to the company. Depends on who has the highest score this may effect who the Boss chooses to hire...."
+	},
+	"friendliness": {
+		"description": "This will measure the friendliness score the player will get with his fellow interns. Maybe a happy ending if this value is high enough....."
+	}
+}
+
+}

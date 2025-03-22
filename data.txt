@@ -3,11 +3,12 @@
         //AREAS
         "Screen": {
             "type": "screen",
-            "description": "Where the current things can be seen or viewed, i.e. switch view to control the NPC's while showing the big events of the background characters.",
-            "holder": null
+            "holder": null,
+            "description": "Where the current things can be seen or viewed, i.e. switch view to control the NPC's while showing the big events of the background characters."
         },
         "washroom":{
             "type": "room",
+            // "items": ["laxative", "medicine", 'towel'],
             "holder": null,
             "description": "A clean and functional space designed for employee convenience, featuring modern fixtures and ample privacy. Nothing out of the ordinary except the supplies on the shelf behind the mirror..",
             "NSEW": [null,null,"cafeteria",null]  //appends "To the EAST is the cafeteria"
@@ -15,23 +16,54 @@
         "cafeteria": {
             "type": "room",
             "holder": "Screen",
-            "description": "A small comfortable environment to enjoy meals or snack during break. Variety of food options can be bought here.",
+            "description": "A small comfortable environment to enjoy meals or snacks during break. Variety of food options can be bought here.",
             "NSEW": [null,null,"main_lobby","washroom"]  //append "To the WEST is the washroom, to the EAST is the main lobby"
         },
         "main_lobby": {
             "type": "room",
+            "holder": null,
             "description": "The central entrance area, designed to welcome visitors and employees. Fine decor hangs around the room, creating a professional and inviting atmosphere.",
             "NSEW": ["secretary_office",null,null,"cafeteria"]  //appends "to the WEST is the cafeteria, to the NORTH is the secretary office, to the SOUTH is the building exit, to the EAST is the office area"
         },
         "secretary_office": {
             "type": "room",
+            "holder": null,
             "description": "no description yet",
-            "NSEW": [null,"main_lobby",null,null]  //appends "to the SOUTH is the main_loppy
+            "NSEW": ["boss_office","main_lobby",null,null]  //appends "to the SOUTH is the main_lobby
+        },
+        "boss_office": {
+            "type": "room",
+            "holder": null,
+            "description": "no description yet",
+            "NSEW": [null,"secretary_office",null,null],
+            "holding": ["book_shelf", "cabinet"]  //optional, the game will create for you by looking at objects "holder"
+            //need for some use cases where room has duplicate items like "shelf"
         },
         
         //ITEMS
-        "coffee": {
+        "book_shelf": {
+            "type": "item",
             "holder": null,
+            "description": "Just a plain normal cabinet.",
+            "attributes": []
+        },
+        "cabinet": {
+            "type": "item",
+            "holder": null,
+            "description": "Just a plain normal cabinet.",
+            "attributes": []
+        },
+        "flashlight": {
+            "type": "item",
+            "holder": "NPC_1",
+            "description": "A handy light for dark times. Don't cause this dark times ;)",
+            "attributes": [
+                "emits_light"
+            ]
+        },
+        "coffee": {
+            "type": "item",
+            "holder": "player",
             "description": "The rich aroma and warm, comforting glow of the cup offer a brief respite from the challenges of the virtual world. The item increases player's energy and focus.",
             "attributes": [
                 "energize", 
@@ -39,16 +71,18 @@
             ]
         },
         "laxative": {
+            "type": "item",
             "holder": "player",
             "description": "A substance that promotes bowel movements, often used to relieve constipation. Do not misuse!",
-            "attribute": [
+            "attributes": [
                 "poison"
             ]
         },
         "poisoned_coffee": {  //coffee gets replaced with this when put laxative
+            "type": "item",
             "holder": null,
             "description": "A dangerous drink that appears normal but has been secretly laced with a harmful substance. Consuming it can cause severe effects on the health.",
-            "attribute": [
+            "attributes": [
                 "poison"
             ]
         },
@@ -56,68 +90,143 @@
         //CHARACTERS
         "status_effects": ["healthy", "poisoned", "caffinated", "Hacked"],
         "player": {
-            "likability": 0,
+            "type": "character",
             "holder": "cafeteria",
-            "status": ["healthy"]
+            "description": "Forge your path ye tarnished and find yourself within the chaos of this workplace. Rise ye tarnished, define whom you'll become and achieve.",
+            "name": null,
+            "status": ["healthy"],
+            "likability": 0,
+            "friendliness": null,  //no behaviour check
+            "turn_speed": 100,  //100 is default, 120 is energized, 70 is poisoned
+            "skip_turn": 0,  //skips turn due to some event e.g. spilled coffee
+            "skip_cause": null,
+            "uses_parser": true
         },
         "NPC_1": {
+            "type": "character",
+            "holder": "washroom",
+            "description": "Philip is the type of person who's both easygoing and thoughtful. He's a bit of a dreamer, always coming up with creative ideas and plans, but he's grounded enough to make sure things get done. He's the kind of friend and colleague who'll always check in, even if it's just to share a funny meme or make sure you're doing okay.",
+            "name": "Philip",
+            "status": ["poisoned","hacked"],
             "likability": 0,
             "friendliness": 2,  //neutral to the player
-            "holder": "washroom",
-            "status": ["poisoned","hacked"]
+            "turn_speed": 70,
+            "skip_turn": 4,
+            "skip_cause": "dev testing",
+            "uses_parser": false,
+            "holding": ["laxative"] //yeahhh lets try it out
         },
         "NPC_2": {
+            "type": "character",
+            "holder": "boss_office", //"washroom",
+            "description": "Serah is independent, self-reliant, and values her personal space. She's not one to seek constant company but enjoys solitude and introspection, which allows her to think deeply and work efficiently. Serah has a quiet confidence and doesn't feel the need to seek validation from others. She's content to move at her own pace and follow her own path.",
+            "name": "Serah",
+            "status": ["energized"],
             "likability": 0,
             "friendliness": 0,  //aggressive to the player
-            "holder": "washroom",
-            "status": ["energized"]
+            "turn_speed": 120,
+            "skip_turn": 0,
+            "skip_cause": null,
+            "uses_parser": false
         }
     },
 
-    "Verbs": {
+    "Commands": {
         //parse string by removing these
         "articles": ["of", "a", "an", "the"],
-        //movement direction i.e. in the BG change "player/NPC" holder
-        "0": ["N","north","go north","move north","NORTH"],
-        "1": ["S","south","go south","move south","SOUTH"],
-        "2": ["E","east","go east","move east","EAST"],
-        "3": ["W","west","go west","move west","WEST"],
-        //change holder of an "item" to "player/NPC"
-        "4": ["grab","get","take","pick up" ],
-        //change holder of an "item" to "room/item"
-        "5": ["drop","put down","leave X on Y"],
-        //read description of an "item/room"
-        "6": ["look at","examine","inspect"],
-        //check inventory of "player/NPC"
-        "7": ["I","inventory","inv","check bag","check self"],
-        //consume an "item" i.e. in the BG change "item" holder to null and change "player/NPC" attribute
-        "8": ["consume","eat","drink","use"],
-        //interact and change "player/NPC" attribute NEGATIVE
-        "9": ["sabotage"],
-        //interact and change "player/NPC"
-        "10": ["force","throw"], //force X on Y, throw coffee at Y
 
-    //// EXTRAS OPTIONAL ////
-        //interact and change "player/NPC attribute" POSITIVE
-        "11": ["give"], //give to X
-        "12": ["hug"],
-        "13": ["play"], //play with X
-        //players hint
-        "14": ["hint","look around","look"]
+        "verbs": {
+            //movement direction i.e. in the BG change "player/NPC" holder
+            "0": ["N","north","go north","move north","NORTH"],
+            "1": ["S","south","go south","move south","SOUTH"],
+            "2": ["E","east","go east","move east","EAST"],
+            "3": ["W","west","go west","move west","WEST"],
+            //change holder of an "item" to "player/NPC"
+            "4": ["grab","get","take","pick"], //includes "pick up"
+            //change holder of an "item" to "room/item"
+            "5": ["drop", "put down"], 
+            //read description of an "item/room"
+            "6": ["examine","inspect","check"],
+            //check inventory of "player/NPC"
+            "7": ["I","inventory","inv","check bag","check self"],
+            //consume an "item" i.e. in the BG change "item" holder to null and change "player/NPC" attribute
+
+            //**************************************************************//
+
+            "8": ["consume","eat","drink"],
+            //interact and change "player/NPC" attribute NEGATIVE
+            "9": ["throw","chuck","fling"], // throw coffee at Y
+            "10": ["punch","kick","karate","beat"], //includes "beat up X"
+            "11": ["sabotage"],  //pick from random negative subroutine with requirements met or NOT
+            "12": ["look"],  //look at X, look around
+            "13": ["give"], //give X to Y
+            //interact and change "player/NPC attribute" POSITIVE
+            "14": ["hug"],
+            "15": ["play"], //play with X
+            //players hint
+            "16": ["hint","look around"],
+            "17": ["use"],  //use coffee machine
+            "18": ["force"], //force X on Y
+            "19": ["put", "leave"] //put x on Y
+        },
+
+        "prepositions": ["at","in","above","under"], //maybe add "and" too
+
+        // if obj not defined and still works with subroutine put here 
+        // e.g. "> examine room" which calls show_character_view(character)
+        // you can further map them to actual game object (see map_to_actual_obj())
+        // OR add your own behaviour using these obj name itself BUT you need to
+        // implement on your functions, see karateyd() on how I did it
+        "other_valid_obj_name": [
+            "room", //you can use "room" as is or map it to say "cafeteria" using map_to_actual_obj("room","player")
+            //*** ehh who cares, so long as you check them on your functions *** valid because you need only to know the player/npc playing, i.e. you can see who holds them and deduce the room its in thus "room" refers to object's holder
+            "around", //same here, "around" refers to the object's holder, especially what the room is holding
+            "self",  //refers to the character itself, just add a behaviour for processing
+            "yourself",  //"self" or "yourself" in your function, see karateyd() on how I did it
+            "myself",
+            "Philip",  //maps to actual obj NPC_1
+            "Serah"  //and NPC_2
+            
+            //actual_obj: synonym1, synonym2
+            // "room": ["room","around"],
+            // "character": ["self","yourself","myself"],
+            // "NPC_1": ["Philip"],
+            // "NPC_2": ["Serah"]
+        ],
+
+        "lookup_table": [
+            //[verb, direct_obj, preposition, indirect_obj, subroutine_key]
+            [0,null,null,null,"go_direction"],
+            [1,null,null,null,"go_direction"],
+            [2,null,null,null,"go_direction"],
+            [3,null,null,null,"go_direction"],
+            [4,"*",null,null,"take_obj"],
+            [5,"*",null,null,"drop_obj"],
+            [12,"around",null,null,"show_room"],  //see different commands corresponds to same action
+            [6,"room",null,null,"show_room"],   //`> examine room` same as `> look around`
+            [6,"*",null,null,"read_obj_description"],  //`> examine X` same as `look at X`
+            [12,"*",null,null,"read_obj_description"],  // the "at" is implicit
+            // [12,null,"at","*","read_obj_description"],
+            [7,null,null,null,"show_inventory"],
+            [10,"*",null,null,"karateyd"],
+            [8,"coffee",null,null,"consume_coffee"],
+            [8,"laxative",null,null,"consume_poison"],
+            [8,"poisoned_coffee",null,null,"consume_poison"],
+
+            [9,"coffee","at","*","thrown_coffee_at_x"],
+            [9,"*","at","*","thrown_obj_at_x"]
+        ]
     },
     
-    //SUBROUTINE e.g. put laxative on coffee
-    "laxative_on_coffee": {
-        "condition": [
-            //obj[attr] = val
-            ["laxative","holder","player"], //coffee["holder"] = null,
-            ["coffee","holder","player"]
-        ],
-        "action": [
-            ["coffee","holder",null],
-            ["laxative","holder",null],
-            ["poisoned_coffee","holder","player"]
-        ],
-        "description": "You are now holding the coffee laced with laxative"
+    "Events": {
+        "variables": {
+            "MAX_INVENTORY": 8
+        },
+
+        "event_dialogues": {
+            "greet_at_game_start": "Hey there, welcome to the team! We're excited to have you on board for your internship. It's a great opportunity to learn and grow, and we're looking forward to seeing the amazing contributions you'll make. ",
+            "throw_coffee_at_intern": "WTF man!!! whats wrong with you, now I have to go to the washroom...",
+            "ending_1": "You married the boss's daughter, now you get to inherit the company."
+        }
     }
 }
