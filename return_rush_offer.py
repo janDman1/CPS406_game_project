@@ -221,7 +221,7 @@ def player_action(character:objUID, P:Parser, E:Events): #unparsed_cmd:str
     valid_action = False
     while not valid_action:
         unparsed_cmd = input("> ")
-        if unparsed_cmd in ["Q", "quit"]: break  # or in dev_commands
+        if unparsed_cmd in ["Q", "quit", "skip day"]: break  # or in dev_commands
 
         cmd = P.parse_input(unparsed_cmd)  # list[int|str|None]
         subroutine_key = P.find_subroutine_call(cmd)
@@ -276,7 +276,9 @@ def character_action(character:objUID, P:Parser, E:Events, npc_type=0):
 E.greet_at_game_start("player")
 
 t = 0.1
-character = "player"
+game_day = 5
+turns_in_a_day = 45
+# character = "player"
 
 characterS = []
 for obj in O.keys():
@@ -284,31 +286,77 @@ for obj in O.keys():
     characterS.append(obj)
 
 unparsed_cmd = None  #input("> ")  # e.g. `> put A LaXaTiVe in the coffee`
-while unparsed_cmd not in ["Q", "quit"]: #while not ending():
-    for character in characterS:
-        print(f"{character.upper()} TURN")
-        print("*************************************")
-        skip_turn = E.O.get_character_data("skip_turn", character)
-        turn_speed = E.O.get_character_data("turn_speed", character)
-        # print(f"DEBUG {character} skip_turn: {skip_turn}")  # DEBUG
-        # print(f"DEBUG {character} turn_speed: {turn_speed}")  # DEBUG
-        if skip_turn > 0:
-            print("skipping turn...")
-            print(f"because {E.O.get_character_data("skip_cause", character)}")
-            skip_turn -= 1
-            E.O.set_character_data(character, "skip_turn", skip_turn)
-        else:
-            if rnd.randint(1,100) <= turn_speed:
-                character_action(character, P, E)
-            # else:
-            #     print("FALSE, you lost your turn!!!")  # DEBUG
-            if turn_speed > 100 and  rnd.randint(1,100) <= turn_speed-100:
-                print("(extra turn granted) caffinated in effect...")
-                character_action(character, P, E)  # see extra action
-        print("*************************************\n")
+# while game_day > 0 and unparsed_cmd not in ["Q", "quit"]: #while not ending():
+for x in range(1,game_day+1):
+    skip_day = False
+    print("#########")
+    print(f"# DAY {x} #")
+    print("#####################################################################")
+    for _ in range(turns_in_a_day):
+        for character in characterS:
+            print(f"{character.upper()} TURN")
+            print("*************************************")
+            skip_turn = E.O.get_character_data("skip_turn", character)
+            turn_speed = E.O.get_character_data("turn_speed", character)
+            # print(f"DEBUG {character} skip_turn: {skip_turn}")  # DEBUG
+            # print(f"DEBUG {character} turn_speed: {turn_speed}")  # DEBUG
+            if skip_turn > 0:
+                print("skipping turn...")
+                print(f"because {E.O.get_character_data("skip_cause", character)}")
+                skip_turn -= 1
+                E.O.set_character_data(character, "skip_turn", skip_turn)
+            else:
+                if rnd.randint(1,100) <= turn_speed:
+                    character_action(character, P, E)
+                # else:
+                #     print("FALSE, you lost your turn!!!")  # DEBUG
+                if turn_speed > 100 and  rnd.randint(1,100) <= turn_speed-100:
+                    print("(extra turn granted) caffinated in effect...")
+                    character_action(character, P, E)  # see extra action
+            print("*************************************\n")
 
-        sleep(t)
+            sleep(t)
+
+            if unparsed_cmd in ["Q", "quit"]: break
+            if unparsed_cmd == "skip day": 
+                skip_day = True
+                break
+        else:  # aka is nobreak
+            continue
+        break
+    else:  # aka is nobreak
+        # go_home()  # prints go home OR even another function just being home doing things at home for some turns
+        print("ITS TIME TO GO HOME")
+        print("say bye to everyone")
+        input("> ")
+        continue
+    if skip_day:
+        skip_day = False
+        print("You skipped the day! now what?")
+        continue
+    break
         
+#  ending_result()  # show the result based on all stats
+print("YOU FINISHED THE GAME!")
+print("CONGRATULATIONS!!!")
+print("""
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⣀⣀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⡠⠔⠉⠀⠀⠀⠀⠀⠈⠉⠒⠦⠄⡀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⢠⣾⣤⣤⣤⣤⡄⠀⠀⠀⠀⠀⠀⠀⠀⠈⠢⡀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⣰⡿⠉⣹⣿⣿⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠨⣆⠀⠀⠀⠀⠀
+⠀⠀⠀⢠⡗⣡⣾⣿⠋⡘⠉⢳⡄⠀⠀⠀⠀⠀⠀⠀⠀⢿⣷⡀⠑⠄⠀⠀⠀
+⠀⠀⢀⠎⠰⠁⢻⣿⣾⣄⣀⣼⣿⠀⠀⠀⠀⣠⣴⡖⠶⠒⢻⣷⣦⡈⢳⠀⠀
+⠀⢠⡾⠀⡗⡀⠀⠉⠛⠿⢿⡿⠃⠀⠀⠀⢸⠀⢿⣇⣇⢀⣸⣿⠉⠁⢸⡀⠀
+⠀⣣⠃⠀⢘⣈⣴⣶⡀⠒⠈⠀⠀⠀⠀⠀⠈⢆⠈⠛⠿⠿⠿⢻⠀⠀⠈⢷⠀
+⢰⡇⠰⡉⠢⣀⡠⢂⠉⠒⠠⣀⠀⠀⠀⠀⠀⠀⠂⠄⠠⠄⠀⡎⠀⠀⠀⢸⠀
+⢸⠀⠀⢱⠀⠀⠀⠈⠢⠠⠜⡇⠙⠢⡀⠀⠀⠀⠀⠈⠒⡒⢸⠀⠀⠀⠀⢸⡇
+⢸⠀⠀⠀⢇⠀⠀⠀⠀⠀⠀⠙⠤⠴⢆⠁⢒⠒⠒⠄⠀⠈⠁⠀⠀⠀⠀⣿⠀
+⣸⠀⠀⠀⢸⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠀⠻⠠⠞⢸⠀⠀⠀⠀⠀⠀⢠⠸⠀
+⢻⠀⠀⠀⠀⠰⢄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠠⠎⠀⠀⠀⠀⠀⢀⢆⠇⠀
+⠈⣇⠀⠀⠈⣆⠏⠁⣇⢠⠀⠀⠀⠀⠀⣀⡀⡰⠁⠀⠀⠀⠀⠀⠀⣼⠋⠀⠀
+⠀⠘⣆⠀⠀⠈⠣⣔⠁⢸⠒⣑⠠⠐⠉⠉⠉⠀⠀⠀⠀⠀⠀⡠⠚⡘⠀⠀⠀
+""")
+
 
 # # def character_action(character):
 # unparsed_cmd = None  #input("> ")  # e.g. `> put A LaXaTiVe in the coffee`

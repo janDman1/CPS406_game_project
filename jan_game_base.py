@@ -401,7 +401,8 @@ class Events:  # (ObjDict):
 
                 if dropped_item is not None:
                     self.O.change_holder(dropped_item, obj, room)
-                    self.O.set_character_data(obj, "friendliness", current_friendliness-1)
+                    if self.O.get_character_data("uses_parser", character):
+                        self.O.set_character_data(obj, "friendliness", current_friendliness-1)
 
                 return True
             else:
@@ -573,13 +574,15 @@ class Events:  # (ObjDict):
                         print("I know you are handing me a poisoned coffee")
                         self.delay()
                         print(f"Friendliness with {gifted_name} decreased")
-                    self.O.set_character_data(to_character, "friendliness", current_friendliness-1)
+                    if self.O.get_character_data("uses_parser", from_character):
+                        self.O.set_character_data(to_character, "friendliness", current_friendliness-1)
                 else:
                     if do_print:
                         print(f"{gifted_name}: Thanks for the coffee!")
                         self.delay()
                         print(f"Friendliness with {gifted_name} increased")
-                    self.O.set_character_data(to_character, "friendliness", current_friendliness+1)
+                    if self.O.get_character_data("uses_parser", from_character):
+                        self.O.set_character_data(to_character, "friendliness", current_friendliness+1)
             else:
                 if do_print: print(f"{gifted_name} isn't here go look for em")
         else:
@@ -601,7 +604,8 @@ class Events:  # (ObjDict):
                     print(f"Friendliness with {gifted_name} increased")
                 self.O.remove_holding(obj, from_character)
                 self.O.add_holding(obj, to_character)
-                self.O.set_character_data(to_character, "friendliness", current_friendliness+1)
+                if self.O.get_character_data("uses_parser", from_character):
+                    self.O.set_character_data(to_character, "friendliness", current_friendliness+1)
                 return True
             else:
                 if do_print: print(f"Go look for {gifted_name}")
@@ -618,9 +622,9 @@ class Events:  # (ObjDict):
 
     def greet_at_game_start(self, character) -> None:
         print(self["event_dialogues"]["greet_at_game_start"])
-        name = input("what is your name? ")
+        name = input("what is your name? \n> ")
         self.O.set_character_data(character, "name", name)
-        print("You were dropped of at the cafeteria.\n")
+        print("\nYou were dropped of at the cafeteria.\n")
 
     def get_dialogue(self, dialo):
         pass
