@@ -1,5 +1,5 @@
-from jan_game_base import remove_comments, ObjDict, Events, Parser
-# import jaeden_subroutines
+from jan_game_base import remove_comments, ObjDict, Parser #Events
+from jaeden_subroutines import Events_Expanded as Events
 # import jake_dialogues
 # import jonathan_testers
 
