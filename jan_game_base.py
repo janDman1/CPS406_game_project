@@ -25,6 +25,7 @@ def remove_comments(string):
             return match.group(1) # captured quoted-string
     return regex.sub(_replacer, string)
 
+type objUID = str  # just means objUID is type string
 
 class ObjDict(dict):
     """
@@ -40,8 +41,6 @@ class ObjDict(dict):
     def __setattr__(self, attr, value):
         self[attr]=value
 
-    type objUID = str  # just means objUID is type string
-
     def print_obj(self, obj:objUID) -> None:
         """For debugging :)"""
         if self.is_valid_obj(obj):
@@ -49,10 +48,9 @@ class ObjDict(dict):
             pprint(obj_str)
     
     def get_obj_type(self, obj:objUID) -> str:
-        return self[obj]["type"]
-    
-    def get_obj_description(self, obj:objUID) -> str:
-        return self[obj]["description"]
+        if self.is_valid_obj(obj):
+            return self[obj]["type"]
+        return "invalid object"
 
     def is_valid_obj(self, obj:objUID):
         if obj not in self:
@@ -64,7 +62,10 @@ class ObjDict(dict):
                 return False
         return True
     
-    def initiate_holdings(self):
+    def get_obj_description(self, obj:objUID) -> str:
+        return self[obj]["description"]
+    
+    def initiate_holdings(self) -> None:
         """
         follow the object holder and add into holding,
         adding empty holding for the object 
@@ -87,16 +88,29 @@ class ObjDict(dict):
     def get_holding(self, obj:objUID) -> list[objUID]:
         return self[obj]["holding"].copy() if "holding" in self[obj] else []
     
-    def add_holding(self, obj:objUID, src_obj:objUID, holder_update=True) -> None:
-        if self.is_valid_obj(src_obj) and self.is_valid_obj(obj) or obj is None:
-            if "holding" not in self[src_obj]:
-                self[src_obj]["holding"] = [obj] \
-                    if obj is not None else []
-            else:
-                if obj is not None:
+    def add_holding(self, obj:None|objUID, src_obj:objUID, holder_update=True) -> None:
+        if self.is_valid_obj(src_obj): # only works if source object exists/valid
+            if obj is None:
+                if "holding" not in self[src_obj]:
+                    self[src_obj]["holding"] = []
+            elif self.is_valid_obj(obj):
+                if "holding" not in self[src_obj]:
+                    self[src_obj]["holding"] = [obj]
+                else:  # already has "holding"
                     self[src_obj]["holding"].append(obj)
-            if holder_update:
-                self[obj]["holder"] = src_obj  # point obj to newest holder
+                
+                if holder_update:
+                    self[obj]["holder"] = src_obj  # point obj to newest holder
+
+        # if self.is_valid_obj(src_obj) and self.is_valid_obj(obj) or obj is None:
+        #     if "holding" not in self[src_obj]:
+        #         self[src_obj]["holding"] = [obj] \
+        #             if obj is not None else []
+        #     else:
+        #         if obj is not None:
+        #             self[src_obj]["holding"].append(obj)
+        #     if holder_update:
+        #         self[obj]["holder"] = src_obj  # point obj to newest holder
 
     def remove_holding(self, obj:objUID, src_obj:objUID, holder_update=True) -> None:
         self[src_obj]["holding"].remove(obj)
@@ -126,13 +140,13 @@ class ObjDict(dict):
     def has_item_attribute(self, attr:str, obj:objUID) -> bool:
         return attr in self[obj]["attributes"]
     
-    def get_character_data(self, data:str, char:objUID) -> str|int|None:
-        if data not in ["name", "status", "likability", "friendliness", "turn_speed", "skip_turn", "skip_cause"]:
+    def get_character_data(self, data:str, char:objUID): #-> str|int|None:
+        if data not in ["name", "status", "likability", "friendliness", "turn_speed", "skip_turn", "skip_cause", "uses_parser"]:
             raise KeyError(f"No {data} object Data in {char}")
         return self[char][data]
     
-    def set_character_data(self, char:str, data:str, value:str|int) -> None:
-        if data not in ["name", "status", "likability", "friendliness", "turn_speed", "skip_turn", "skip_cause"]:
+    def set_character_data(self, char:str, data:str, value:str|int|bool) -> None:
+        if data not in ["name", "status", "likability", "friendliness", "turn_speed", "skip_turn", "skip_cause","uses_parser"]:
             raise KeyError(f"No {data} object Data in {char}")
         self[char][data] = value
         
@@ -152,9 +166,7 @@ class Events:  # (ObjDict):
     def load_object_dictionary(self, obj_dict:ObjDict) -> None:
         self.O = obj_dict
 
-    type objUID = str  # just means objUID is type string
-
-    def go_direction(self, dir:int, character:objUID) -> bool:
+    def go_direction(self, dir:int, character:objUID, do_print=True) -> bool:
         """move to direction e.g. North, using character"""
         # override if you want to expand dialogues e.g. to say something else other than default "you cannot go there", you could say "that's the ladies room, you are not allowed there" if going north of washroom
         if self.O.is_valid_obj(character) and self.O.get_obj_type(character) == "character":
@@ -165,15 +177,17 @@ class Events:  # (ObjDict):
                 #check inventory if have keycard and enter, else say you don't have keycard to access room   
             if next_room is not None:
                 self.O.change_holder(character, room, next_room)
-                self.show_character_view(character)
+                self.show_character_view(character, do_print)
                 return True
-            print("you cannot go there")
+            if do_print: print("you cannot go there")
         return False
             
-    def show_character_view(self, character:objUID) -> bool:
+    def show_character_view(self, character:objUID, do_print=True) -> bool:
         """deduce the room the character is in and print what is there and valid directions of next rooms"""
         # override if you want to customize
-        room: str = self.O.get_holder(character)
+        if not do_print:  # no need to show anything
+            return True
+        room = self.O.get_holder(character)
         # change to send_to_console if implementing formatter class
         print(room.upper())
         print(self.O.get_obj_description(room))
@@ -185,7 +199,6 @@ class Events:  # (ObjDict):
                     room_holdings[n] = self.O.get_character_data("name", item)
             print(f"You can see ", end="")
             self.print_list(room_holdings)
-        # print(f"You can see {self.O.get_holding(room)}.")
         for i in ["N","S","E","W"]:
             next_room = self.O.find_next_room(i, room)
             if next_room is not None:
@@ -194,6 +207,8 @@ class Events:  # (ObjDict):
 
     def print_list(self, lst: list[str], add_newline=True) -> None:
         for n,item in enumerate(lst):
+            if item == "poisoned_coffee":
+                item = "coffee"  # to perceive as normal coffee
             item = item.replace("_", " ")
             print(item, end="")
             if n<len(lst)-1:
@@ -212,29 +227,39 @@ class Events:  # (ObjDict):
         if dir in [2, "E"]: return "EAST"
         if dir in [3, "W"]: return "WEST"
         if dir in [0, "N"]: return "NORTH"
-        # print(f"MISS: you entered {dir}")
+        # print(f"MISS: you entered {dir}")  # DEBUG
 
-    def drop_obj(self, obj:objUID, character:objUID) -> bool:
+    def drop_obj(self, obj:objUID, character:objUID, do_print=True) -> bool:
         """check character holder (aka the room) and drop item there"""
-        if self.O.is_valid_obj(obj) and obj in self.O.get_holding(character):
+        inventory = self.O.get_holding(character)
+        if obj == "coffee" and "poisoned_coffee" in inventory:
+            obj = "poisoned_coffee"
+        if self.O.is_valid_obj(obj) and obj in inventory:
             room = self.O.get_holder(character)
             self.O.change_holder(obj, character, room)
+            if do_print: print("Done")
             return True
         return False
     
-    def take_obj(self, obj:objUID, character:objUID) -> bool:
+    def take_obj(self, obj:objUID, character:objUID, do_print=True) -> bool:
         """put obj1 to character holdings (aka inventory). also update holder"""
         room = self.O.get_holder(character)
-        if obj in self.O.get_holding(room) and obj != character:
+        room_holdings = self.O.get_holding(room)
+        if obj == "coffee" and "poisoned_coffee" in room_holdings:
+            obj = "poisoned_coffee"
+        if obj in room_holdings and obj != character:
             if len(self.O.get_holding(character)) < self["variables"]["MAX_INVENTORY"]:
                 self.O.change_holder(obj, room, character)
+                if do_print: print("Done")
                 return True
             else: 
-                print("you have too much stuff already")
+                if do_print: print("You have too much stuff already")
         return False
     
-    def show_inventory(self, character:objUID) -> bool:
+    def show_inventory(self, character:objUID, do_print=True) -> bool:
         # override if you want to customize
+        if not do_print:  # no need to show anything
+            return True
         inventory = self.O.get_holding(character)
         if len(inventory) > 0:
             print(f"You have with you ", end="")
@@ -243,124 +268,236 @@ class Events:  # (ObjDict):
             print("You aren't carrying anything.")
         return True #False
     
-    def read_obj_description(self, obj:objUID, character:objUID) -> bool:
+    def read_obj_description(self, obj:objUID, character:objUID, do_print=True) -> bool:
         # override if you want to customize
         room = self.O.get_holder(character)
-        objs_in_view = self.O.get_holding(room) + self.O.get_holding(character)
+        room_holdings = self.O.get_holding(room)
+        char_inventory = self.O.get_holding(character)
+        # objs_in_view = room_holdings + char_inventory
         # items_in_view.append(self.O.get_holding(room)).append(self.O.get_holding(character))
+        # if obj in game_dictionary 
+        if obj == "coffee" and "poisoned_coffee" in room_holdings + char_inventory:
+            obj = "poisoned_coffee"
         if obj == "room" or obj == room:  # obj is the room the character is in
-            self.show_character_view(character)
+            self.show_character_view(character, do_print)
             return True
         obj = self.map_to_actual_obj(obj, character)
+        obj_inventory = self.O.get_holding(obj)
         # map_obj_name = self.map_to_actual_obj(obj, character)
         # if map_obj_name != "no obj found":
         #     obj = map_obj_name
         obj_type = self.O.get_obj_type(obj)
+        if not do_print and obj_type != "invalid object":  # no need to show anything  
+            # skips below "room" "character" and "item" prints
+            return True
         if obj_type == "room":
-            print("Go there and see for yourself")
+            print("Go there and find for yourself")
             return True
-        elif obj_type == "character":
-            print(self.O.get_obj_description(obj))
-            inventory = self.O.get_holding(obj)
-            if len(inventory) != 0:
-                print(f"{obj} is holding ", end="")
-                self.print_list(inventory)
+        if obj_type == "character":
+            other_char_name = self.O.get_character_data("name", obj)
+            if obj in room_holdings:
+                print(self.O.get_obj_description(obj))
+                if len(obj_inventory) != 0:
+                    print(f"{other_char_name} is holding ", end="")
+                    self.print_list(obj_inventory)
+                else:
+                    print(f"{other_char_name} isn't holding anything")
+                return True
             else:
-                print(f"{obj} isn't holding anything")
-            return True
+                print(f"{other_char_name} is in the {self.O.get_holder(obj)}")
+                return True
         elif obj_type == "item":
-            if obj in objs_in_view:
+            if obj in room_holdings or obj in char_inventory: #objs_in_view:
                 print(f"{obj}: ", end="")
                 print(self.O.get_obj_description(obj))
                 return True
-        else:
-            print("That isn't there!")
-            return False
+            else:
+                print("That isn't there!")
+                return False
+        return False
     
-    def karateyd(self, verb:str, obj:objUID, character:objUID) -> bool:
+    def karateyd(self, verb:str, obj:objUID, character:objUID, do_print=True) -> bool:
         room = self.O.get_holder(character)
-        if obj == "room" or obj == room:  # either the valid obj name "room" or specified the actual room the character is in e.g. "cafeteria"
-            print(f"you punched the wall and hurt yourself.")
-            self.dotdotdot(False)
-            print("wow")
+        room_holdings = self.O.get_holding(room)
+        char_inventory = self.O.get_holding(character)
+        if obj == "coffee" and "poisoned_coffee" in room_holdings + char_inventory:
+            obj = "poisoned_coffee"
+        if obj == "room" or obj == room:  # either the valid obj name "room" or specified the actual room the character is in e.g. "cafeteria" can both be used
+            if do_print:
+                print(f"you punched a wall in the {room}")
+                self.dotdotdot(False)
+                print("OUCH!")
+                self.delay()
+                print("That hurts.")
+                self.delay()
+                print("You came to your senses.")
+                print("Im never punching a wall again.")
             return True
         map_obj_name = self.map_to_actual_obj(obj, character)
         if map_obj_name != "no obj found":
             obj = map_obj_name
-        obj_type = None
+        # obj_type = None
         # if self.O.is_valid_obj(obj):
-        obj_type = self.O.get_obj_type(obj)
+        #     obj_type = self.O.get_obj_type(obj)
         # else:
         #     if obj == "room":
         #         obj_type = "room"
         #     if obj in ["self","yourself"]:
         #         obj_type = "character"
+        obj_type = self.O.get_obj_type(obj)
         if obj_type == "room":
-            print("you aren't even there dummy")
+            return False  # can't kick or throw tantrum in another room
         if obj_type == "item":
-            if obj == "coffee":
-                print("you broke the mug, ", end="")
-                self.delay()
-                print("hurt yourself, ", end="")
-                self.delay()
-                print("and spilled coffee", end="")
-                self.dotdotdot()
-                print("*good job*")
-                where_coffee_at = room if "coffee" in self.O.get_holding(room) \
-                    else character if "coffee" in self.O.get_holding(character) \
-                    else None
-                self.O.remove_holding("coffee", where_coffee_at)
+            if obj in room_holdings or obj in char_inventory:
+                if obj in ["coffee","poisoned_coffee"]:
+                    if do_print:
+                        print("you broke the mug, ", end="")
+                        self.delay()
+                        print("hurt yourself, ", end="")
+                        self.delay()
+                        print("and spilled coffee", end="")
+                        self.dotdotdot()
+                        print("*good job*")
+                        self.delay()
+                    where_coffee_at = room if "coffee" in room_holdings \
+                        else character if "coffee" in char_inventory \
+                        else None
+                    if where_coffee_at is not None:
+                        self.O.remove_holding("coffee", where_coffee_at)
+                else:
+                    if do_print:
+                        print("uhh", end="")
+                        self.dotdotdot()
+                        print("no thank you")
+                        self.delay()
+                return True
             else:
-                print("uhh", end="")
-                self.dotdotdot()
-                print("no thank you")
+                if do_print: print("You can't see that")
+                return False
         if obj_type == "character":
             victim_name = self.O.get_character_data("name", obj)
             inventory = self.O.get_holding(obj)
             dropped_item = rnd.choice(inventory) if len(inventory) != 0 else None
-            if obj == character:  #in ["self", "yourself"]:  #
-                print("Ughh, I hate myself!")
-                print("What is wrong with me!")
-                print(f"You {verb} yourself")
-                print(f"You stumbled on the floor {f"and dropped {dropped_item}" if dropped_item is not None else ""}")
-            else:
-                print(f"You {verb} {victim_name}", end="") #, flush=True)
-                self.dotdotdot()
-                # print(f"{obj}: Fuck you!") //okay maybe this isn't appropriate
-                print(f"{victim_name} stumbled on the floor {f"and dropped {dropped_item}" if dropped_item is not None else ""}")
-                self.delay()
-                print(f"\"shit man!\"")
-                self.delay()
-                print(f"{victim_name} gets up, and brushes you off")
+            current_friendliness = self.O.get_character_data("friendliness", obj)
 
-            if dropped_item is not None:
-                self.O.change_holder(dropped_item, obj, room)
-        return True
+            if obj in self.O.get_holding(room):
+                if do_print:
+                    if obj == character:  #in ["self", "yourself"]:  #
+                        print("Ughh, I hate myself!")
+                        print("What is wrong with me!")
+                        print(f"You {verb} yourself")
+                        print(f"You stumbled on the floor {f"and dropped {dropped_item}" if dropped_item is not None else ""}")
+                    else:
+                        print(f"You {verb} {victim_name}", end="") #, flush=True)
+                        self.dotdotdot()
+                        # print(f"{obj}: Fuck you!") //okay maybe this isn't appropriate
+                        print(f"{victim_name} stumbled on the floor {f"and dropped {dropped_item}" if dropped_item is not None else ""}")
+                        self.delay()
+                        print(f"\"shit man!\"")
+                        self.delay()
+                        print(f"{victim_name} gets up, and brushes you off")
+                        self.delay()
+                        print(f"Friendliness with {victim_name} decreased")
+
+                if dropped_item is not None:
+                    self.O.change_holder(dropped_item, obj, room)
+                    self.O.set_character_data(obj, "friendliness", current_friendliness-1)
+
+                return True
+            else:
+                print(f"{victim_name} isn't even there dummy")
+                return False
+        return False
     
-    def delay(self):
-        sleep(1)
+    def delay(self, speed_number=2) -> None:
+        sys.stdout.flush()
+        if speed_number == 0:
+            pass
+        if speed_number == 1:
+            sleep(.3)
+        if speed_number == 2:
+            sleep(1.2)
+        if speed_number == 3:
+            sleep(2.3)
+        if speed_number == 4:
+            sleep(4)
+        if speed_number == 5:
+            sleep(7)
 
     def dotdotdot(self, newline=True) -> None:
+        self.delay()
         for _ in range(3):
-            self.delay()
-            print(".", end="") #, flush=True)
+            print(".", end="") #, flush=True) #
+            self.delay(1)
         if newline:
             print()
+    
+    def map_to_actual_obj(self, obj_name:objUID, character:objUID) -> objUID: #, character=None):
+        if obj_name in self.O:
+            return obj_name
+        
+        # map local var value if it is same name as obj_name e.g. "myself" gets the key "character" which then maps to the character value and is returned
 
-    def consume_coffee(self, obj:objUID, character:objUID) -> bool:
-        if obj in self.O.get_holding(character):
-            print("You felt a boost of energy!\n"
-            "It feels like you can do much more.\n"
-            "You are now \"caffinated\"!!")
-            self.O.remove_holding(obj, character)
-            self.O.set_character_data(character, "turn_speed", 120)
+        room = self.O.get_holder(character)  # this will be mapped if given "room"
+        mapped_obj = "no obj found"
+        # valid_obj_synonyms = set()
+        for o,syn_lst in self.O["other_valid_obj_name"].items():
+            for s in syn_lst:
+                if obj_name == s:
+                    mapped_obj = o
+                    break
+            else:  # aka if nobreak
+                continue
+            break
+                # valid_obj_synonyms.add(s)
+        
+        for name, value in locals().items():
+            # print(f"name: {name}, ", end="")  # DEBUG
+            # print(f"value: {value}")  # DEBUG
+            if mapped_obj == name:
+                # print(f"mapped_obj: {mapped_obj}, name: {name}, value: {value}")  # DEBUG
+                return value
+        # print(f"mapped_obj: {mapped_obj}")  # DEBUG
+        return mapped_obj
+        
+        # room = self.O.get_holder(character) if character is not None else None
+        # if obj_name in self.O:
+        #     return obj_name
+        # if obj_name in ["room", "around"]:
+        #     # if room is None:
+        #     #     raise TypeError(f"add a second argument character to map_to_actual_obj() to find the room")
+        #     # else:
+        #         return room
+        # if obj_name in ["self", "yourself", "myself"]:
+        #     return character
+        # if obj_name == "Philip":
+        #     return "NPC_1"
+        # if obj_name == "Serah":
+        #     return "NPC_2"
+
+        # return "no obj found"
+    
+
+    def consume_coffee(self, obj:objUID, character:objUID, do_print=True) -> bool:
+        inventory = self.O.get_holding(character)
+        if obj == "coffee" and "poisoned_coffee" in inventory: #+ room_holdings
+            obj = "poisoned_coffee"
+        if obj in inventory:
+            if obj == "poisoned_coffee":
+                self.consume_poison(obj, character, do_print)
+            else:
+                if do_print: print("You felt a boost of energy!\n"
+                "It feels like you can do much more.\n"
+                "You are now \"caffinated\"!!")
+                self.O.remove_holding(obj, character)
+                self.O.set_character_data(character, "turn_speed", 120)
             return True
         return False
     
-    def consume_poison(self, obj:objUID, character:objUID) -> bool:
+    def consume_poison(self, obj:objUID, character:objUID, do_print=True) -> bool:
         room = self.O.get_holder(character)
         if obj in self.O.get_holding(character):
-            print("Ugh! You felt as if your stomach is about to explode\n"
+            if do_print: print("Ugh! You felt as if your stomach is about to explode\n"
             "You hurried to the washroom..\n"
             "You are \"poisoned\"!!")
             self.O.remove_holding(obj, character)
@@ -370,41 +507,107 @@ class Events:  # (ObjDict):
             self.O.set_character_data(character, "skip_cause", f"you consumed {obj}")
             return True
         return False
-
-    def map_to_actual_obj(self, other_valid_obj_name, character): #, character=None):
-        room = self.O.get_holder(character) if character is not None else None
-        if other_valid_obj_name in self.O:
-            return other_valid_obj_name
-        if other_valid_obj_name in ["room", "around"]:
-            # if room is None:
-            #     raise TypeError(f"add a second argument character to map_to_actual_obj() to find the room")
-            # else:
-                return room
-        if other_valid_obj_name in ["self", "yourself", "myself"]:
-            return character
-        if other_valid_obj_name == "Philip":
-            return "NPC_1"
-        if other_valid_obj_name == "Serah":
-            return "NPC_2"
     
-        # mapped_obj = "no obj found"
-        # # valid_obj_synonyms = set()
-        # for o,syn_lst in self["other_valid_obj_name"].items():
-        #     for s in syn_lst:
-        #         if obj_synonym == s:
-        #             mapped_obj = o
-        #         # valid_obj_synonyms.add(s)
-        
-        # for name, value in locals().items():
-        #     # print(f"name: {name}, ", end="")
-        #     # print(f"value: {value}")
-        #     if mapped_obj == name:
-        #         # print(f"mapped_obj: {mapped_obj}, name: {name}, value: {value}")
-        #         return value
-        # # print(f"mapped_obj: {mapped_obj}")
-        # return mapped_obj
+    def consume_inedible(self, obj:str, character:str, do_print=True) -> bool:
+        likability = self.O.get_character_data("likability", character)
+        room = self.O.get_holder(character)
+        if obj == "laxative":
+            print("I am not drinking that")
+            return False
+        if obj in self.O.get_holding(character) + self.O.get_holding(room):
+            if do_print: 
+                print(f"You tried to eat {obj}")
+                self.delay()
+                print(f"your teeth clangs to the sound of you biting the {obj}")
+                self.delay()
+                print(f"Someone spotted you accross the room!")
+                self.delay()
+                print("Your likability decreases")
+            self.O.set_character_data(character, "likability", likability-2)
+            return True
+        return False
+    
+    def wait_time(self, character:None|objUID = None, do_print=True) -> bool: #
+        # literally do nothing, not even increment turn_skip
+        # if character is not None:
+        #     pass
+        # the character var for something in the future e.g. maybe add a sereness item that boost player speed if they wait 5 times in a row
+        if do_print:
+            print("waiting", end="")
+            self.dotdotdot()
+        return True
 
-        return "no obj found"
+    def make_poisoned_coffee(self, character:objUID, do_print=True) -> bool:
+        # room = self.O.get_holder(character)
+        # maybe make it work later for coffee in the room
+        if all(x in self.O.get_holding(character) for x in ["coffee","laxative"]): # + self.O.get_holding(room):
+            if do_print:
+                print("Lacing coffee with poison muwahaha!")
+                self.delay()
+                print("Done")
+            self.O.remove_holding("coffee", character)
+            self.O.remove_holding("laxative", character)
+            self.O.add_holding("poisoned_coffee", character)
+            return True
+        if do_print: print("I need to be holding both items") #I need both the items in my inventory")
+        return False
+    
+    def give_coffee_or_poison(self, obj:objUID, to_character:objUID, from_character:objUID, do_print=True) -> bool:
+        room = self.O.get_holder(from_character)
+        to_character = self.map_to_actual_obj(to_character, from_character)  # map_to_actual_obj() ia a bit of a misnomer, the second argument is just used to identify the room and self 
+        inventory = self.O.get_holding(from_character)
+        if self.O.get_obj_type(to_character) != "character":
+            if do_print: print(f"Giving to a {to_character}, are you mad?")
+            return False
+        gifted_name = self.O.get_character_data("name", to_character)
+        current_friendliness = self.O.get_character_data("friendliness", to_character)
+        if obj == "coffee" and "poisoned_coffee" in inventory: #+ room_holdings
+            obj = "poisoned_coffee"
+        if obj in inventory:
+            if to_character in self.O.get_holding(room):
+                spotted = rnd.randint(1,100) <= 30
+                if obj == "poisoned_coffee" and spotted:  # 30% chance of getting spotted if giving poisoned coffee
+                    if do_print:
+                        print("You think I'd fall for it!")
+                        self.delay()
+                        print("I know you are handing me a poisoned coffee")
+                        self.delay()
+                        print(f"Friendliness with {gifted_name} decreased")
+                    self.O.set_character_data(to_character, "friendliness", current_friendliness-1)
+                else:
+                    if do_print:
+                        print(f"{gifted_name}: Thanks for the coffee!")
+                        self.delay()
+                        print(f"Friendliness with {gifted_name} increased")
+                    self.O.set_character_data(to_character, "friendliness", current_friendliness+1)
+            else:
+                if do_print: print(f"{gifted_name} isn't here go look for em")
+        else:
+            if do_print: print(f"I need to get more coffee before that")
+        return True
+    
+    def give_obj(self, obj:objUID, to_character:objUID, from_character:objUID, do_print=True) -> bool:
+        room = self.O.get_holder(from_character)
+        to_character = self.map_to_actual_obj(to_character, from_character)  # map_to_actual_obj() ia a bit of a misnomer, the second argument is just used to identify the room and self 
+        if self.O.get_obj_type(to_character) != "character":
+            if do_print: print(f"You cannot give to a {to_character}")
+            return False
+        gifted_name = self.O.get_character_data("name", to_character)
+        current_friendliness = self.O.get_character_data("friendliness", to_character)
+        if obj in self.O.get_holding(from_character):
+            if to_character in self.O.get_holding(room):
+                if do_print:
+                    print(f"{gifted_name}: Thanks! You're the best!")
+                    print(f"Friendliness with {gifted_name} increased")
+                self.O.remove_holding(obj, from_character)
+                self.O.add_holding(obj, to_character)
+                self.O.set_character_data(to_character, "friendliness", current_friendliness+1)
+                return True
+            else:
+                if do_print: print(f"Go look for {gifted_name}")
+        else:
+            if do_print: print(f"You don't have {obj}")
+        return False
 
     
     def load_events_data_structure(self, dict):
@@ -414,7 +617,7 @@ class Events:  # (ObjDict):
         
 
     def greet_at_game_start(self, character) -> None:
-        print(self.event_dialogues["greet_at_game_start"])
+        print(self["event_dialogues"]["greet_at_game_start"])
         name = input("what is your name? ")
         self.O.set_character_data(character, "name", name)
         print("You were dropped of at the cafeteria.\n")
@@ -451,11 +654,22 @@ class Parser(dict):
             self["verbs"][k] = set(l)
         self["articles"] = set(self["articles"])
         self["prepositions"] = set(self["prepositions"])
-        self["other_valid_obj_name"] = self["other_valid_obj_name"] #set(self["other_valid_obj_name"])
+        # self["other_valid_obj_name"] = self["other_valid_obj_name"] #set(self["other_valid_obj_name"])
 
     def load_game_dictionary(self, O:ObjDict) -> None:
         "makes a set of all the objects in game for object lookup"
-        self.game_dictionary = set(O.keys())
+
+        obj_nameS = set()
+        for k in O.keys():
+            if O.is_valid_obj(k):
+                obj_nameS.add(k)
+        
+        valid_obj_synonyms = set()
+        for _o,synonym_lst in O["other_valid_obj_name"].items():
+            for s in synonym_lst:
+                valid_obj_synonyms.add(s)
+        
+        self.game_dictionary = obj_nameS.union(valid_obj_synonyms)
 
     def parse_input(self, user_input:str) -> list[int|str|None]:
         """
@@ -502,13 +716,9 @@ class Parser(dict):
         # for match in self["lookup_table"]:
         #     for word in match:
 
-        # valid_obj_synonyms = set()
-        # for _o,synonym_lst in self["other_valid_obj_name"].items():
-        #     for s in synonym_lst:
-        #         valid_obj_synonyms.add(s)
 
         # obj1 eaten
-        for valid_obj in self["game_dictionary"].union(self["other_valid_obj_name"]): #valid_obj_synonyms): #
+        for valid_obj in self["game_dictionary"]: #.union(valid_obj_synonyms): #self["other_valid_obj_name"]): #
             try:
                 o1_idx = processed1_list.index(valid_obj)
                 break
@@ -516,7 +726,7 @@ class Parser(dict):
                 continue
 
         #obj2 eaten
-        for valid_obj in self["game_dictionary"].union(self["other_valid_obj_name"]): #valid_obj_synonyms): #
+        for valid_obj in self["game_dictionary"]: #.union(valid_obj_synonyms): #self["other_valid_obj_name"]): #
             try:
                 next_obj_idx = processed1_list.index(valid_obj)
                 if next_obj_idx != o1_idx:
@@ -579,9 +789,12 @@ class Parser(dict):
         # print(self["lookup_table"][best_match] if best_match is not None else "") # DEBUG
         return self["lookup_table"][best_match][4] if best_match is not None else "no match"
     
-    def get_back_the_verb_string(self, verb, unprocessed_cmd):
+    def get_back_the_verb_string(self, verb:int, unprocessed_cmd:str) -> str:
         for v in self["verbs"][str(verb)]:
             if v in unprocessed_cmd:
                 return v
         return "no verb found"
+    
+    def get_random_verb_string(self, verb:int) -> str:
+        return rnd.choice(list(self["verbs"][str(verb)]))
 

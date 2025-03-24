@@ -128,7 +128,32 @@
             "skip_turn": 0,
             "skip_cause": null,
             "uses_parser": false
+        },
+
+        // if obj not defined and still works with subroutine put here 
+        // e.g. "> examine room" which calls show_character_view(character)
+        // you can further map them to actual game object (see map_to_actual_obj())
+        // OR add your own behaviour using these obj name itself BUT you need to
+        // implement on your functions, see karateyd() on how I did it
+        // "other_valid_obj_name": 
+        // [
+        //     "room", //you can use "room" as is or map it to say "cafeteria" using map_to_actual_obj("room","player")
+        //     //*** ehh who cares, so long as you check them on your functions *** valid because you need only to know the player/npc playing, i.e. you can see who holds them and deduce the room its in thus "room" refers to object's holder
+        //     "around", //same here, "around" refers to the object's holder, especially what the room is holding
+        //     "self",  //refers to the character itself, just add a behaviour for processing
+        //     "yourself",  //"self" or "yourself" in your function, see karateyd() on how I did it
+        //     "myself",
+        //     "Philip",  //maps to actual obj NPC_1
+        //     "Serah"  //and NPC_2
+        // ],
+        "other_valid_obj_name": {
+            //actual_obj: synonym1, synonym2
+            "room": ["room","around"],
+            "character": ["self","yourself","myself"],
+            "NPC_1": ["Philip"],
+            "NPC_2": ["Serah"]
         }
+
     },
 
     "Commands": {
@@ -167,33 +192,14 @@
             "16": ["hint","look around"],
             "17": ["use"],  //use coffee machine
             "18": ["force"], //force X on Y
-            "19": ["put", "leave"] //put x on Y
+            "19": ["put", "leave"], //put x on Y  //put laxative on coffee
+            "20": ["wait"],
+            "21": ["combine"]  //combine coffee and laxative
         },
 
-        "prepositions": ["at","in","above","under"], //maybe add "and" too
-
-        // if obj not defined and still works with subroutine put here 
-        // e.g. "> examine room" which calls show_character_view(character)
-        // you can further map them to actual game object (see map_to_actual_obj())
-        // OR add your own behaviour using these obj name itself BUT you need to
-        // implement on your functions, see karateyd() on how I did it
-        "other_valid_obj_name": [
-            "room", //you can use "room" as is or map it to say "cafeteria" using map_to_actual_obj("room","player")
-            //*** ehh who cares, so long as you check them on your functions *** valid because you need only to know the player/npc playing, i.e. you can see who holds them and deduce the room its in thus "room" refers to object's holder
-            "around", //same here, "around" refers to the object's holder, especially what the room is holding
-            "self",  //refers to the character itself, just add a behaviour for processing
-            "yourself",  //"self" or "yourself" in your function, see karateyd() on how I did it
-            "myself",
-            "Philip",  //maps to actual obj NPC_1
-            "Serah"  //and NPC_2
-            
-            //actual_obj: synonym1, synonym2
-            // "room": ["room","around"],
-            // "character": ["self","yourself","myself"],
-            // "NPC_1": ["Philip"],
-            // "NPC_2": ["Serah"]
-        ],
-
+        "prepositions": ["at","in","above","under", 
+            "and","on","to","with"], //maybe add "and" too
+        
         "lookup_table": [
             //[verb, direct_obj, preposition, indirect_obj, subroutine_key]
             [0,null,null,null,"go_direction"],
@@ -210,8 +216,15 @@
             [7,null,null,null,"show_inventory"],
             [10,"*",null,null,"karateyd"],
             [8,"coffee",null,null,"consume_coffee"],
-            [8,"laxative",null,null,"consume_poison"],
+            // [8,"laxative",null,null,"consume_poison"],  // disabled now laxative can't be consumed by anyone
             [8,"poisoned_coffee",null,null,"consume_poison"],
+            [8,"*",null,null,"consume_inedible"], // anything other than coffee, laxative, and poisoned coffee is inedible SO add more function for other food
+            [20,null,null,null,"wait_time"],
+            [21,"laxative","and","coffee","make_poisoned_coffee"],
+            [21,"coffee","and","laxative","make_poisoned_coffee"],
+            [19,"laxative","on","coffee","make_poisoned_coffee"],
+            [13,"coffee","to","*","give_coffee_or_poison"], //has chance of detecting poison if you give poisoned coffee
+            [13,"*","to","*","give_obj"],
 
             [9,"coffee","at","*","thrown_coffee_at_x"],
             [9,"*","at","*","thrown_obj_at_x"]
