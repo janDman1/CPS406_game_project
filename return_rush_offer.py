@@ -3,6 +3,8 @@ from jaeden_subroutines import Events_Expanded as Events
 # import jake_dialogues
 # import jonathan_testers
 
+import currency
+
 import json
 import random as rnd
 import os
@@ -213,6 +215,10 @@ def do_action(subroutine_key:str, cmd: list, character:objUID, P:Parser, E:Event
         return E.talk_to(cmd[1], character, do_print)
     if subroutine_key == "drink_medicine":
         return E.drink_medicine(cmd[1], character, do_print)
+    
+    # if subroutine_key == "earn_money_command":
+    #     return currency.earn_money_command(character,)
+    
     # if subroutine_key == "thrown_coffee_at_x":
     #   coffee_allover_character(cmd[3], character)  # checks character inventory if have coffee to throw and make obj2 (e.g. NPC_1) go to the washroom to waste turns
     # if subroutine_key == "thrown_obj_at_x":  # default behaviour e.g. `> thow laptop at Philip`
@@ -295,6 +301,9 @@ def no_one_gets_rehired():
     print("\"PROFESSIONALS YOU ARE NOT\" WAS THE")
     print("BOSS'S LASTS WORDS TO ALL OF YOU!!!")
 
+def electric_shutdown(character):
+    pass
+
 likability_goal = 80
 friendliness_goal = 5
 
@@ -346,12 +355,14 @@ for obj in O.keys():
 
 unparsed_cmd = None  #input("> ")  # e.g. `> put A LaXaTiVe in the coffee`
 # while game_day > 0 and unparsed_cmd not in ["Q", "quit"]: #while not ending():
-for x in range(1,game_day+1):
+for day in range(1,game_day+1):
     skip_day = False
     print("#########")
-    print(f"# DAY {x} #")
+    print(f"# DAY {day} #")
     print("#####################################################################")
-    for _ in range(turns_in_a_day):
+    for turn in range(turns_in_a_day):
+        if day == 3 and turn == 20:
+            electric_shutdown() 
         for character in characterS:
             # print(f"{character.upper()} TURN")
             # print("*************************************")

@@ -42,14 +42,14 @@
         "secret_room": {
             "type": "room",
             "holder": null,
-            "description": "no description yet",
+            "description": "Useful for hiding secrets in the company",
             "NSEW": [null,null,"boss_office",null],
             "holding": []
         },
         "offices": {
             "type": "room",
             "holder": null,
-            "description": "no description yet",
+            "description": "",
             "NSEW": ["meeting_room","electrical_room","storage_room","main_lobby"],
             "holding": []  //optional, the game will create for you by looking at objects "holder"
             //need for some use cases where room has duplicate items like "shelf"
@@ -138,56 +138,56 @@
         },
         "key_card" : {
             "type": "item",
-            "holder": "player",
+            "holder": null,
             "description": "A raggedy white unassuming keycard with the old company logo. Perhaps someone misplaced their keycard or perhaps it holds some secrets?",
             "attributes": []
         },
         "medicine" : {
             "type": "item",
-            "holder": "player",
+            "holder": null,
             "description": "Bottle that can be used to heal after getting hit or injured",
             "attributes": []
         },
         "anti_virus_software" : {
             "type": "item",
-            "holder": "player",
+            "holder": null,
             "description": "Created by Bill Gates, the most powerful code on the planet, can obliterate your USB hacking script",
             "attributes": []
         },
         "flower" : {
             "type": "item",
-            "holder": "player",
+            "holder": null,
             "description": "Crimson red rose, that gives off alluring arouma",
             "attributes": []
         },
         "old_intern_notes" : {
             "type": "item",
-            "holder": "player",
+            "holder": null,
             "description": "Located deep in the Bosses office, can be used to pass the test and secure a job",
             "attributes": []
         },
         "intern_coin" : {
             "type": "item",
-            "holder": "player",
+            "holder": null,
             "description": "Worth 1 cent now, but Krypto King says it's going the Moon!",
             "attributes": []
         },
         "empty_wrapper" : {
             "type": "item",
-            "holder": "player",
+            "holder": null,
             "description": "Why did you pick this up?",
             "attributes": []
         },
         "stress_ball" : {
             "type": "item",
-            "holder": "player",
+            "holder": null,
             "description": "For stress relief, if given to a co-worker can improve likability!",
             "attributes": []
         },
         "fake_resume" : {
             "type": "item",
-            "holder": "player",
-            "description": "When placed on rival's desk, the boss will think employee is looking for other jobs and has no loyalty. Useful for annihilating your competition!",
+            "holder": null,
+            "description": "A masterfully crafted fake resume made to show disloyalty. Useful for annihilating your competition!",
             "attributes": []
         },
         
@@ -272,7 +272,9 @@
             "room": ["room","around"],
             "character": ["self","yourself","myself"],
             "NPC_1": ["Philip"],
-            "NPC_2": ["Serah"]
+            "NPC_2": ["Serah"],
+            "Networking_Teamlead": ["Steve", "Jobs"],
+            "usb_hacking_script": ["usb","script"]
         }
 
     },
@@ -317,8 +319,8 @@
             "20": ["wait"],
             "21": ["combine"],  //combine coffee and laxative
             "22": ["work"], // email
-            "23": ["talk"] 
-
+            "23": ["talk"],
+            "24": ["earn"]
         },
 
         "prepositions": ["at","in","above","under", 
@@ -351,7 +353,7 @@
             [13,"*","to","*","give_obj"],
             [22,null,null,null,"email_work"],
             [23,"*",null,null,"talk_to"],
-            [8,"medicine",null,null,"drink_medicine"],
+            [24,null,null,null,"earn_money_command"],
 
             [9,"coffee","at","*","thrown_coffee_at_x"],
             [9,"*","at","*","thrown_obj_at_x"]
@@ -394,7 +396,7 @@
         },
 
         "event_dialogues": {
-            "greet_at_game_start": "Hey there, welcome to the team!\nWe're excited to have you on board for your internship.\nIt's a great opportunity to learn and grow,\nand we're looking forward to seeing the amazing contributions you'll make.\n",
+            "greet_at_game_start": "Hey there, welcome to the team! We're excited to have you on board for your internship. It's a great opportunity to learn and grow, and we're looking forward to seeing the amazing contributions you'll make. ",
             "throw_coffee_at_intern": "WTF man!!! whats wrong with you, now I have to go to the washroom...",
             "ending_1": "You married the boss's daughter, now you get to inherit the company."
         }
