@@ -353,15 +353,18 @@ for x in range(1,game_day+1):
     print("#####################################################################")
     for _ in range(turns_in_a_day):
         for character in characterS:
-            print(f"{character.upper()} TURN")
-            print("*************************************")
+            # print(f"{character.upper()} TURN")
+            # print("*************************************")
             skip_turn = E.O.get_character_data("skip_turn", character)
             turn_speed = E.O.get_character_data("turn_speed", character)
-            print(f"DEBUG {character} skip_turn: {skip_turn}")  # DEBUG
-            print(f"DEBUG {character} turn_speed: {turn_speed}")  # DEBUG
+            # print(f"DEBUG {character} skip_turn: {skip_turn}")  # DEBUG
+            # print(f"DEBUG {character} turn_speed: {turn_speed}")  # DEBUG
             if skip_turn > 0:
-                print("skipping turn...")
-                print(f"because {E.O.get_character_data("skip_cause", character)}")
+                # print("skipping turn...")
+                # print(f"because {E.O.get_character_data("skip_cause", character)}")
+                if character == "player":
+                    print("skipping turn...")
+                    print(f"because {E.O.get_character_data("skip_cause", character)}")
                 skip_turn -= 1
                 E.O.set_character_data(character, "skip_turn", skip_turn)
             else:
@@ -370,9 +373,11 @@ for x in range(1,game_day+1):
                 # else:
                 #     print("FALSE, you lost your turn!!!")  # DEBUG
                 if turn_speed > 100 and  rnd.randint(1,100) <= turn_speed-100:
-                    print("(extra turn granted) caffinated in effect...")
+                    # print("(extra turn granted) caffinated in effect...")
+                    if character == "player":
+                        print("(extra turn granted) caffinated in effect...")
                     character_action(character, P, E)  # see extra action
-            print("*************************************\n")
+            # print("*************************************\n")
 
             sleep(t)
 
