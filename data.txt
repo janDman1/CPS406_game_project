@@ -10,19 +10,19 @@
             "type": "room",
             // "items": ["laxative", "medicine", 'towel'],
             "holder": null,
-            "description": "A clean and functional space designed for employee convenience, featuring modern fixtures and ample privacy. Nothing out of the ordinary except the supplies on the shelf behind the mirror..",
+            "description": "A surprisingly fancy washroom for a place that only pays interns in coffee and stress.  A long mirror spans the wall above a row of sinks, each with a dispenser of antibacterial soap. The mirrors shine so cleanly that they would make a germaphobe cry out of happiness. A small shelf behind the mirror holds an assortment of suspicious supplies perhaps they have some use.",
             "NSEW": [null,null,"cafeteria",null]  //appends "To the EAST is the cafeteria"
         },
         "cafeteria": {
             "type": "room",
             "holder": "Screen",
-            "description": "A small comfortable environment to enjoy meals or snacks during break. Variety of food options can be bought here.",
+            "description": "A corporate culinary wonderland where dreams go to die. The aroma of burnt coffee mingles with the scent of questionable vegan salmon salad fills the room. The screen on the wall plays a never-ending loop of motivational videos featuring disturbingly happy people. Well, posters are plastered around highlighting the importance of a 120 percent vegan workplace.",
             "NSEW": [null,null,"main_lobby","washroom"]  //append "To the WEST is the washroom, to the EAST is the main lobby"
         },
         "main_lobby": {
             "type": "room",
             "holder": null,
-            "description": "The central entrance area, designed to welcome visitors and employees. Fine decor hangs around the room, creating a professional and inviting atmosphere.",
+            "description": "The grand , designed to welcome visitors and employees. Fine decor hangs around the room, creating a professional and inviting atmosphere.",
             "NSEW": ["secretary_office",null,"offices","cafeteria"]  //appends "to the WEST is the cafeteria, to the NORTH is the secretary office, to the SOUTH is the building exit, to the EAST is the office area"
         },
         "secretary_office": {
@@ -36,13 +36,12 @@
             "holder": null,
             "description": "no description yet",
             "NSEW": [null,"secretary_office",null,"secret_room"],
-            "holding": ["book_shelf", "cabinet"]  //optional, the game will create for you by looking at objects "holder"
-            //need for some use cases where room has duplicate items like "shelf"
+            "holding": ["book_shelf", "cabinet"]
         },
         "secret_room": {
             "type": "room",
             "holder": null,
-            "description": "Useful for hiding secrets in the company",
+            "description": "Dust lingers in the air, while the only illumination comes from a single flickering bulb. Old documents labelled 'Totally Legal Stuff' are scattered haphazardly across the floor and in the corner a makeshift sacrificial altar to the stock market gods.  It is pretty obvious this room was never meant to see the light of day, a hidden stash for abandoned files and questionable choices than anything else..",
             "NSEW": [null,null,"boss_office",null],
             "holding": []
         },
@@ -51,34 +50,33 @@
             "holder": null,
             "description": "",
             "NSEW": ["meeting_room","electrical_room","storage_room","main_lobby"],
-            "holding": []  //optional, the game will create for you by looking at objects "holder"
-            //need for some use cases where room has duplicate items like "shelf"
+            "holding": []  
         },
         "meeting_room": {
             "type": "room",
             "holder": null,
-            "description": "We're relationships are made and gossip is free like the wind",
+            "description": "A room where optimism comes to get murdered by PowerPoint. The long table is surrounded by chairs that are inexplicably uncomfortable despite looking ergonomic. A whiteboard is covered in half-erased ideas that probably made sense to someone at 2 a.m. There is a stack of snacks in the corner that have been untouched since the last anniversary party.",
             "NSEW": [null,"offices",null,null],
             "holding": []  
         },
         "storage_room": {
             "type": "room",
             "holder": null,
-            "description": "Info dealer lives here or maybe hes just a homeless person",
+            "description": "A dark, musty room where broken office equipment and forgotten projects go to die. Shelves are piled with random and mysterious unlabeled boxes. Occasionally something useful can be found here.",
             "NSEW": [null,null,"offices",null],
             "holding": [] 
         },
         "electrical_room": {
             "type": "room",
             "holder": null,
-            "description": "no description yet",
+            "description": "A claustrophobic tangle of wires and cables that looks more like a techno-ritual than actual wiring. In the back wall the main breaker can be found with a 'No liquids Allowed' sign beside it is covered in passive-aggressive sticky notes, one of which reads, 'If you disobey, I WILL FIND YOU.'",
             "NSEW": ["offices",null,"networking_room",null],
             "holding": []  
         },
         "networking_room": {
             "type": "room",
             "holder": null,
-            "description": "The backbone of the company",
+            "description": "Racks of humming machinery are packed in tight, like robot soldiers awaiting orders. Occasionally, a monitor flickers with obscure error codes that no ones bothered to fix since 2001. In the corner, there is a simple desk and computer where our sole IT employee Steve slaves away. ",
             "NSEW": [null,null,null,"electrical_room"],
             "holding": []  
         },
