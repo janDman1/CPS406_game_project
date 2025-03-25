@@ -255,8 +255,8 @@ def random_action(npc_character:objUID, P:Parser, E:Events):
         if cmd[3] == "*":
             cmd[3] == rand_obj2
 
-        print(f"cmd: {cmd}")
-        print(f"subroutine_key: {subroutine_key}")
+        # print(f"cmd: {cmd}")
+        # print(f"subroutine_key: {subroutine_key}")
         
         valid_action = do_action(subroutine_key, cmd, npc_character, P, E)
 
@@ -357,8 +357,8 @@ for x in range(1,game_day+1):
             print("*************************************")
             skip_turn = E.O.get_character_data("skip_turn", character)
             turn_speed = E.O.get_character_data("turn_speed", character)
-            # print(f"DEBUG {character} skip_turn: {skip_turn}")  # DEBUG
-            # print(f"DEBUG {character} turn_speed: {turn_speed}")  # DEBUG
+            print(f"DEBUG {character} skip_turn: {skip_turn}")  # DEBUG
+            print(f"DEBUG {character} turn_speed: {turn_speed}")  # DEBUG
             if skip_turn > 0:
                 print("skipping turn...")
                 print(f"because {E.O.get_character_data("skip_cause", character)}")
