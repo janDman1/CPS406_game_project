@@ -203,7 +203,8 @@
             "19": ["put", "leave"], //put x on Y  //put laxative on coffee
             "20": ["wait"],
             "21": ["combine"],  //combine coffee and laxative
-            "22": ["work"] // email 
+            "22": ["work"], // email
+            "23": ["talk"] 
         },
 
         "prepositions": ["at","in","above","under", 
@@ -235,6 +236,8 @@
             [13,"coffee","to","*","give_coffee_or_poison"], //has chance of detecting poison if you give poisoned coffee
             [13,"*","to","*","give_obj"],
             [22,null,null,null,"email_work"],
+            [23,"*",null,null,"talk_to"],
+            [8,"medicine",null,null,"drink_medicine"],
 
             [9,"coffee","at","*","thrown_coffee_at_x"],
             [9,"*","at","*","thrown_obj_at_x"]
@@ -253,7 +256,7 @@
         },
 
         "event_dialogues": {
-            "greet_at_game_start": "Hey there, welcome to the team! We're excited to have you on board for your internship. It's a great opportunity to learn and grow, and we're looking forward to seeing the amazing contributions you'll make. ",
+            "greet_at_game_start": "Hey there, welcome to the team!\nWe're excited to have you on board for your internship.\nIt's a great opportunity to learn and grow,\nand we're looking forward to seeing the amazing contributions you'll make.\n",
             "throw_coffee_at_intern": "WTF man!!! whats wrong with you, now I have to go to the washroom...",
             "ending_1": "You married the boss's daughter, now you get to inherit the company."
         }

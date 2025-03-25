@@ -623,8 +623,9 @@ class Events:  # (ObjDict):
     def greet_at_game_start(self, character) -> None:
         print(self["event_dialogues"]["greet_at_game_start"])
         name = input("what is your name? \n> ")
+        room = self.O.get_holder(character)
         self.O.set_character_data(character, "name", name)
-        print("\nYou were dropped of at the cafeteria.\n")
+        print(f"\nYou were dropped of at the {room}.\n")
 
     def get_dialogue(self, dialo):
         pass

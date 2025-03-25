@@ -209,6 +209,10 @@ def do_action(subroutine_key:str, cmd: list, character:objUID, P:Parser, E:Event
         return E.give_obj(cmd[1], cmd[3], character, do_print)
     if subroutine_key == "email_work":
         return E.email_work(character, do_print)
+    if subroutine_key == "talk_to":
+        return E.talk_to(cmd[1], character, do_print)
+    if subroutine_key == "drink_medicine":
+        return E.drink_medicine(cmd[1], character, do_print)
     # if subroutine_key == "thrown_coffee_at_x":
     #   coffee_allover_character(cmd[3], character)  # checks character inventory if have coffee to throw and make obj2 (e.g. NPC_1) go to the washroom to waste turns
     # if subroutine_key == "thrown_obj_at_x":  # default behaviour e.g. `> thow laptop at Philip`
@@ -274,6 +278,59 @@ def character_action(character:objUID, P:Parser, E:Events, npc_type=0):
     # elif npc_type == 1:
     # npc_ai_action(character)
 
+def job_offer_with_coworker(pitcher):
+    print("YOU ALL GOT JOB OFFER WITH YOUR COWORKERS")
+    print("EVEN THOUGHT SOME OF YOU DID'T GET THE BOSS'S")
+    print(f"FAVOUR, {pitcher.upper()} PITCHED IN FOR Y'ALL!")
+
+def exclusive_job_offer(highest_likability):
+    print("COMPETITIVENESS RAN IN THE ENTIRE")
+    print("PERIOD OF THE INTERSHIP, BUT ONE")
+    print("ONLY ONE STOOD ON TOP! THAT IS")
+    print(f"{highest_likability.upper()} BEAT EVERYONE IN CAPABILITIES")
+
+def no_one_gets_rehired():
+    print("NO ONE OF YOU GOT THE BOSS'S FAVOUR")
+    print("YOU ALL DID A BAD JOB IN THE INTERNSHIP")
+    print("\"PROFESSIONALS YOU ARE NOT\" WAS THE")
+    print("BOSS'S LASTS WORDS TO ALL OF YOU!!!")
+
+likability_goal = 80
+friendliness_goal = 5
+
+def ending_result():
+    global likability_goal, friendliness_goal, characterS
+    friendliness_reached = True
+    likability_reached = [True]*len(characterS)
+    likability_reached_idxS = []
+    pitcher = None
+    for i,character in enumerate(characterS):
+        current_friendliness = E.O.get_character_data("friendliness", character)
+        if current_friendliness is not None and current_friendliness < friendliness_goal:
+            friendliness_reached = False
+        if E.O.get_character_data("likability", character) < likability_goal:
+            likability_reached[i] = False
+    for i,b in enumerate(likability_reached):
+        if b:  # if b is True
+            likability_reached_idxS.append(i)
+    if len(likability_reached_idxS) > 0:
+        pitcher = characterS[likability_reached_idxS[0]]
+        highest_likability = characterS[likability_reached_idxS[0]]
+        for i in likability_reached_idxS[1:]:
+            if characterS[i] == "player":
+                pitcher = "player"
+            current_likability = E.O.get_character_data("likability", characterS[i])
+            if current_likability > E.O.get_character_data("likability", highest_likability):
+                highest_likability = characterS[i]
+            
+    
+    if friendliness_reached and any(likability_reached):
+        return job_offer_with_coworker(E.O.get_character_data("name", pitcher))  # ending 1
+    if any(likability_reached):
+        return exclusive_job_offer(E.O.get_character_data("name",highest_likability))  # ending 2
+    if not any(likability_reached):
+        return no_one_gets_rehired()  # ending 3
+
 
 E.greet_at_game_start("player")
 
@@ -334,11 +391,12 @@ for x in range(1,game_day+1):
         continue
     if skip_day:
         skip_day = False
-        print("You skipped the day! now what?")
+        print("You skipped the day! now what?\n")
         continue
     break
         
-#  ending_result()  # show the result based on all stats
+ending_result()  # show the result based on all stats
+print()
 print("YOU FINISHED THE GAME!")
 print("CONGRATULATIONS!!!")
 print("""
