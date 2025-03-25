@@ -173,9 +173,15 @@ class Events:  # (ObjDict):
             room = self.O.get_holder(character)
             dir_converted = self.direction(dir)[0]
             next_room = self.O.find_next_room(dir_converted, room)
-            # if next_room == "secret_room":
-                #check inventory if have keycard and enter, else say you don't have keycard to access room   
             if next_room is not None:
+                if next_room == "secret_room":
+                    if "key_card" not in self.O.get_holding(character):
+                        if do_print: print("you don't have keycard to access room")  
+                        return False
+                    else:
+                        if do_print: 
+                            print("FINALY", end="")
+                            self.symsymsym("!")
                 self.O.change_holder(character, room, next_room)
                 self.show_character_view(character, do_print)
                 return True
@@ -195,7 +201,7 @@ class Events:  # (ObjDict):
         room_holdings.remove(character)
         if len(room_holdings) > 0:
             for n,item in enumerate(room_holdings):
-                if self.O.get_obj_type(item) == "character":
+                if self.O.get_obj_type(item) in ["character", "static_character"]:
                     room_holdings[n] = self.O.get_character_data("name", item)
             print(f"You can see ", end="")
             self.print_list(room_holdings)
@@ -293,15 +299,16 @@ class Events:  # (ObjDict):
         if obj_type == "room":
             print("Go there and find for yourself")
             return True
-        if obj_type == "character":
+        if obj_type in ["character","static_character"]:
             other_char_name = self.O.get_character_data("name", obj)
             if obj in room_holdings:
                 print(self.O.get_obj_description(obj))
-                if len(obj_inventory) != 0:
-                    print(f"{other_char_name} is holding ", end="")
-                    self.print_list(obj_inventory)
-                else:
-                    print(f"{other_char_name} isn't holding anything")
+                if obj_type == "character":
+                    if len(obj_inventory) != 0:
+                        print(f"{other_char_name} is holding ", end="")
+                        self.print_list(obj_inventory)
+                    else:
+                        print(f"{other_char_name} isn't holding anything")
                 return True
             else:
                 print(f"{other_char_name} is in the {self.O.get_holder(obj)}")
@@ -425,21 +432,28 @@ class Events:  # (ObjDict):
         if speed_number == 5:
             sleep(7)
 
-    def dotdotdot(self, newline=True) -> None:
+    def symsymsym(self, symbol:str, newline=True) -> None: 
         self.delay()
         for _ in range(3):
-            print(".", end="") #, flush=True) #
+            print(f"{symbol}", end="") #, flush=True) #
             self.delay(1)
         if newline:
             print()
+
+    def dotdotdot(self, newline=True) -> None:
+        self.symsymsym(".", newline)
     
     def map_to_actual_obj(self, obj_name:objUID, character:objUID) -> objUID: #, character=None):
-        if obj_name in self.O:
-            return obj_name
+        for obj,attrS in self.O.items():
+            if obj == obj_name:
+                return obj
+            if "name" in attrS and self.O.get_character_data("name", obj) == obj_name:
+                return obj
         
         # map local var value if it is same name as obj_name e.g. "myself" gets the key "character" which then maps to the character value and is returned
 
         room = self.O.get_holder(character)  # this will be mapped if given "room"
+        inventory = self.O.get_holding(character)  # this will be mapped if given "inventory"
         mapped_obj = "no obj found"
         # valid_obj_synonyms = set()
         for o,syn_lst in self.O["other_valid_obj_name"].items():
@@ -602,7 +616,7 @@ class Events:  # (ObjDict):
         
         
         
-        if self.O.get_obj_type(to_character) not in ["character", "static"]:
+        if self.O.get_obj_type(to_character) not in ["character", "static_character"]:
             if do_print: print(f"You cannot give to a {to_character}")
             return False
         gifted_name = self.O.get_character_data("name", to_character)
@@ -682,6 +696,8 @@ class Parser(dict):
         for k in O.keys():
             if O.is_valid_obj(k):
                 obj_nameS.add(k)
+            if "name" in O[k]:
+                obj_nameS.add(O[k]["name"])
         
         valid_obj_synonyms = set()
         for _o,synonym_lst in O["other_valid_obj_name"].items():

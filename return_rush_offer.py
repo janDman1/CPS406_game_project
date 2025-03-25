@@ -362,7 +362,7 @@ for day in range(1,game_day+1):
     print("#####################################################################")
     for turn in range(turns_in_a_day):
         if day == 3 and turn == 20:
-            electric_shutdown() 
+            electric_shutdown("player") 
         for character in characterS:
             # print(f"{character.upper()} TURN")
             # print("*************************************")

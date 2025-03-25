@@ -42,7 +42,7 @@ class Events_Expanded(Events):
     def talk_to(self, to_character:objUID, from_character:objUID, do_print=True) -> bool:
         to_character = self.map_to_actual_obj(to_character, from_character)  # e.g. maps Philip to NPC_1
         room = self.O.get_holder(from_character)
-        if self.O.get_obj_type(to_character) not in ["character", "static"]:
+        if self.O.get_obj_type(to_character) not in ["character", "static_character"]:
             if do_print: print(f"You cannot talk to a {to_character}, this is an object, you can say something else")
             return False
         to_char_name = self.O.get_character_data("name", to_character)
@@ -52,9 +52,9 @@ class Events_Expanded(Events):
             if to_character == "boss":
                 # say something and the boss scootches over
                 if do_print: print("I don't want to talk to you, I'm busy! or other dialogues")
-                adjacent_room = self.O.find_next_room(random.choice(["N","S","E","W"]))
+                adjacent_room = self.O.find_next_room(random.choice(["N","S","E","W"]), room)
                 while adjacent_room == None:
-                    adjacent_room = self.O.find_next_room(random.choice(["N","S","E","W"]))
+                    adjacent_room = self.O.find_next_room(random.choice(["N","S","E","W"]), room)
                 self.O.change_holder(to_character, room, adjacent_room)
             if self.O.get_character_data("name", to_character) == "Steve Jobs":
                 friendliness = self.O.get_character_data("friendliness", to_character)

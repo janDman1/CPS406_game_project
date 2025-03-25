@@ -138,7 +138,7 @@
         },
         "key_card" : {
             "type": "item",
-            "holder": null,
+            "holder": "player",
             "description": "A raggedy white unassuming keycard with the old company logo. Perhaps someone misplaced their keycard or perhaps it holds some secrets?",
             "attributes": []
         },
@@ -233,19 +233,27 @@
             "skip_cause": null,
             "uses_parser": false
         },
-        "Secretary": {
-            "type": "static",
+        "secretary": {
+            "type": "static_character",
             "holder": "secretary_office", 
             "description": "",
             "name": "Morgana",
             "status": [""],
             "friendliness": 0
         },
-        "Networking_Teamlead": {
-            "type": "static",
+        "networking_teamlead": {
+            "type": "static_character",
             "holder": "networking_room", 
             "description": "",
             "name": "Steve Jobs",
+            "status": [""],
+            "friendliness": 0
+        },
+        "boss": {
+            "type": "static_character",  // does not move.. unless you talk to him
+            "holder": "boss_office", 
+            "description": "",
+            "name": "SOME_NAME",
             "status": [""],
             "friendliness": 0
         },
@@ -268,13 +276,16 @@
         //     "Serah"  //and NPC_2
         // ],
         "other_valid_obj_name": {
-            //actual_obj: synonym1, synonym2
+            //actual_obj: [synonym1, synonym2]
+            "networking_teamlead": ["Steve", "Jobs"],
+            "usb_hacking_script": ["usb","script"],
+            // No need, names can be mapped just by map_to_actual_obj() function
+            // "NPC_1": ["Philip"], 
+            // "NPC_2": ["Serah"],
+            //these first three are are mapped to the local variable of map_to_actual_obj()
             "room": ["room","around"],
             "character": ["self","yourself","myself"],
-            "NPC_1": ["Philip"],
-            "NPC_2": ["Serah"],
-            "Networking_Teamlead": ["Steve", "Jobs"],
-            "usb_hacking_script": ["usb","script"]
+            "inventory": ["inventory"]
         }
 
     },
@@ -285,46 +296,50 @@
 
         "verbs": {
             //movement direction i.e. in the BG change "player/NPC" holder
-            "0": ["N","north","go north","move north","NORTH"],
-            "1": ["S","south","go south","move south","SOUTH"],
-            "2": ["E","east","go east","move east","EAST"],
-            "3": ["W","west","go west","move west","WEST"],
+            // "> go north" or "> move north" the move and go is implicit
+            "0": ["N","north","NORTH"],
+            "1": ["S","south","SOUTH"],
+            "2": ["E","east","EAST"],
+            "3": ["W","west","WEST"],
             //change holder of an "item" to "player/NPC"
-            "4": ["grab","get","take","pick"], //includes "pick up"
+            //includes "pick up" the up is implicit
+            "4": ["grab","get","take","pick"],
             //change holder of an "item" to "room/item"
-            "5": ["drop", "put down"], 
-            //read description of an "item/room"
+              //~~not sure how to implement "put down"~~
+            "5": ["drop", "leave"],
+            //read description of an "item/room/character"
             "6": ["examine","inspect","check"],
             //check inventory of "player/NPC"
-            "7": ["I","inventory","inv","check bag","check self"],
+            // also shows inventry when doing "> check yourself"
+            "7": ["I","inventory","inv"], 
             //consume an "item" i.e. in the BG change "item" holder to null and change "player/NPC" attribute
-
-            //**************************************************************//
-
             "8": ["consume","eat","drink"],
-            //interact and change "player/NPC" attribute NEGATIVE
-            "9": ["throw","chuck","fling"], // throw coffee at Y
-            "10": ["punch","kick","karate","beat"], //includes "beat up X"
-            "11": ["sabotage"],  //pick from random negative subroutine with requirements met or NOT
+            "10": ["punch","kick","karate","beat","hit"], //includes "beat up X"
             "12": ["look"],  //look at X, look around
             "13": ["give"], //give X to Y
-            //interact and change "player/NPC attribute" POSITIVE
-            "14": ["hug"],
-            "15": ["play"], //play with X
-            //players hint
-            "16": ["hint","look around"],
-            "17": ["use"],  //use coffee machine
-            "18": ["force"], //force X on Y
-            "19": ["put", "leave"], //put x on Y  //put laxative on coffee
+            "19": ["put"], //put x on Y  //put laxative on coffee
             "20": ["wait"],
             "21": ["combine"],  //combine coffee and laxative
             "22": ["work"], // email
             "23": ["talk"],
-            "24": ["earn"]
+            "24": ["earn"],
+
+            //************************ NOT IMPLEMETED ************************//
+
+            //interact and change "player/NPC" attribute NEGATIVE
+            "9": ["throw","chuck","fling"], // throw coffee at Y
+            "11": ["sabotage"],  //pick from random negative subroutine with requirements met or NOT
+            //interact and change "player/NPC attribute" POSITIVE
+            "14": ["hug"],
+            "15": ["play"], //play with X
+            //players hint
+            "16": ["hint"],  //I don't think this is needed
+            "17": ["use"],  //use coffee machine
+            "18": ["force"] //force X on Y
         },
 
         "prepositions": ["at","in","above","under", 
-            "and","on","to","with"], //maybe add "and" too
+            "and","on","to","with"],
         
         "lookup_table": [
             //[verb, direct_obj, preposition, indirect_obj, subroutine_key]
@@ -339,7 +354,8 @@
             [6,"*",null,null,"read_obj_description"],  //`> examine X` same as `look at X`
             [12,"*",null,null,"read_obj_description"],  // the "at" is implicit
             // [12,null,"at","*","read_obj_description"],
-            [7,null,null,null,"show_inventory"],
+            [7,null,null,null,"show_inventory"],  // just "> inv" or "> I"
+            [6,"inventory",null,null,"show_inventory"],  // or "> check inventory"
             [10,"*",null,null,"karateyd"],
             [8,"coffee",null,null,"consume_coffee"],
             // [8,"laxative",null,null,"consume_poison"],  // disabled now laxative can't be consumed by anyone
@@ -353,6 +369,8 @@
             [13,"*","to","*","give_obj"],
             [22,null,null,null,"email_work"],
             [23,"*",null,null,"talk_to"],
+            [23,"*",null,"*","talk_to"], // because reads [talk,Steve,null,Jobs]
+            [8,"medicine",null,null,"drink_medicine"],
             [24,null,null,null,"earn_money_command"],
 
             [9,"coffee","at","*","thrown_coffee_at_x"],
@@ -362,7 +380,8 @@
     
     "Events": {
         "variables": {
-            "MAX_INVENTORY": 8
+            "MAX_INVENTORY": 8,
+            "is_lights_out": false
         },
 
         "email_minigame": {
@@ -396,7 +415,7 @@
         },
 
         "event_dialogues": {
-            "greet_at_game_start": "Hey there, welcome to the team! We're excited to have you on board for your internship. It's a great opportunity to learn and grow, and we're looking forward to seeing the amazing contributions you'll make. ",
+            "greet_at_game_start": "Hey there, welcome to the team!\nWe're excited to have you on board for your internship.\nIt's a great opportunity to learn and grow,\nand we're looking forward to seeing the amazing contributions you'll make.\n",
             "throw_coffee_at_intern": "WTF man!!! whats wrong with you, now I have to go to the washroom...",
             "ending_1": "You married the boss's daughter, now you get to inherit the company."
         }
