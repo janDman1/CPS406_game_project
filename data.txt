@@ -35,17 +35,52 @@
             "type": "room",
             "holder": null,
             "description": "no description yet",
-            "NSEW": [null,"secretary_office",null,null],
+            "NSEW": [null,"secretary_office",null,"secret_room"],
             "holding": ["book_shelf", "cabinet"]  //optional, the game will create for you by looking at objects "holder"
             //need for some use cases where room has duplicate items like "shelf"
+        },
+        "secret_room": {
+            "type": "room",
+            "holder": null,
+            "description": "no description yet",
+            "NSEW": [null,null,"boss_office",null],
+            "holding": []
         },
         "offices": {
             "type": "room",
             "holder": null,
             "description": "no description yet",
-            "NSEW": [null,null,null,"main_lobby"],
+            "NSEW": ["meeting_room","electrical_room","storage_room","main_lobby"],
             "holding": []  //optional, the game will create for you by looking at objects "holder"
             //need for some use cases where room has duplicate items like "shelf"
+        },
+        "meeting_room": {
+            "type": "room",
+            "holder": null,
+            "description": "no description yet",
+            "NSEW": [null,"offices",null,null],
+            "holding": []  
+        },
+        "storage_room": {
+            "type": "room",
+            "holder": null,
+            "description": "no description yet",
+            "NSEW": [null,null,"offices",null],
+            "holding": [] 
+        },
+        "electrical_room": {
+            "type": "room",
+            "holder": null,
+            "description": "no description yet",
+            "NSEW": ["offices",null,"networking_room",null],
+            "holding": []  
+        },
+        "networking_room": {
+            "type": "room",
+            "holder": null,
+            "description": "no description yet",
+            "NSEW": [null,null,null,"electrical_room"],
+            "holding": []  
         },
         
         //ITEMS
@@ -93,6 +128,67 @@
             "attributes": [
                 "poison"
             ]
+        
+        },
+        "usb_hacking_script": {
+            "type": "item",
+            "holder": "player",
+            "description": "A tiny flash drive loaded with some suspicious software. Use it to infiltrate systems, plant evidence, or delete incriminating files just do not get caught with it.",
+            "attributes": []
+        },
+        "key_card" : {
+            "type": "item",
+            "holder": "player",
+            "description": "A raggedy white unassuming keycard with the old company logo. Perhaps someone misplaced their keycard or perhaps it holds some secrets?",
+            "attributes": []
+        },
+        "medicine" : {
+            "type": "item",
+            "holder": "player",
+            "description": "",
+            "attributes": []
+        },
+        "anti_virus" : {
+            "type": "item",
+            "holder": "player",
+            "description": "",
+            "attributes": []
+        },
+        "flower" : {
+            "type": "item",
+            "holder": "player",
+            "description": "",
+            "attributes": []
+        },
+        "old_intern_notes" : {
+            "type": "item",
+            "holder": "player",
+            "description": "",
+            "attributes": []
+        },
+        "intern_coin" : {
+            "type": "item",
+            "holder": "player",
+            "description": "",
+            "attributes": []
+        },
+        "empty_wrapper" : {
+            "type": "item",
+            "holder": "player",
+            "description": "",
+            "attributes": []
+        },
+        "stress_ball" : {
+            "type": "item",
+            "holder": "player",
+            "description": "",
+            "attributes": []
+        },
+        "fake_resume" : {
+            "type": "item",
+            "holder": "player",
+            "description": "",
+            "attributes": []
         },
         
         //CHARACTERS
@@ -250,8 +346,32 @@
         },
 
         "email_minigame": {
-            "Subject: Invest Now for Big Profits! \nFrom: CryptoKing@internet.com\nTo: Intern@corporate.com\n         Good morning,\n \n      Here is the weekly marketing metrics summary. Social media engagement is up \n      by 5%, but email open rates have dropped by 3%. If you have any suggestions on \n      improving outreach, let us know.\n      Thanks, \n      Marketing Team" : -3,
-            "Subject: I Think I Like You... \nFrom: Secretary@corporate.com\nTo: Intern@corporate.com\n \n    I know this might sound weird, but I have been meaning to tell you that I think you are really cool. \n    Maybe we could grab a coffee sometime?\n    Just do not tell the boss. He will lose it.\n \n    Secretary" : -5
+            "Subject: Invest Now for Big Profits! \nFrom: CryptoKing@internet.ca\nTo: Intern@corporate.ca\n         Good morning,\n \n      Here is the weekly marketing metrics summary. Social media engagement is up \n      by 5%, but email open rates have dropped by 3%. If you have any suggestions on \n      improving outreach, let us know.\n      Thanks, \n      Marketing Team" : 3,
+            "Subject: I Think I Like You... \nFrom: Secretary@corporate.ca\nTo: Intern@corporate.ca\n \n    I know this might sound weird, but I have been meaning to tell you that I think you are really cool. \n    Maybe we could grab a coffee sometime?\n    Just do not tell the boss. He will lose it.\n \n    Secretary" : -5, 
+            "Subject: Can Someone Check the Air Conditioning? \nFrom: Maintenance@corporate.ca\nTo: AllStaff@corporate.ca\n \n    Hey everyone,\n    We have been getting complaints about strange noises coming from the vents. \n    If anyone notices anything unusual, please let us know. Might just be a raccoon again.\n    Maintenance Team" : -4, 
+            "Subject: Scheduled Server Maintenance \nFrom: IT@corporate.ca\nTo: AllStaff@corporate.ca\n \n    Dear Staff,\n    We will be performing routine server maintenance on Friday from 3 PM to 5 PM. \n    During this time, access to the internal network will be limited. Please save your work and log off before 3 PM. \n    Let us know if you experience issues outside of the maintenance window.\n    IT Team" : 4, 
+            "Subject: Upcoming Investor Meeting \nFrom: ChiefFinancialOfficer@corporate.ca\nTo: Intern@corporate.ca\n \n    Just a heads-up Boss, the Investor meeting has been rescheduled for next Wednesday at 12 PM at Maple Dragon Golf Club. \n    This is a big opportunity as Microsoft says they want to invest $1,000,000 into our new product. \n    Also, let me know if you want any specific data pulled for the meeting.\n    Alex" : 4,
+            "Subject: Dress Code Reminder \nFrom: HR@corporate.ca\nTo: AllStaff@corporate.ca\n \n    Hi Team,\n    We have noticed some employees are not adhering to the business casual dress code. \n    Please ensure that your attire remains professional at all times. \n    Let us keep the office looking sharp!\n    HR Team" : -2, 
+            "Subject: Someone Keeps Stealing Pens! \nFrom: OfficeAdmin@corporate.ca\nTo: AllStaff@corporate.ca\n      Dear All,\n    We have noticed that office supplies, especially pens and notepads, are disappearing faster than usual. \n    Please be mindful and take only what you need. If you see anyone hoarding supplies, kindly remind them to be considerate.\n    Office Admin" : -1, 
+            "Subject: Surpise Free Pizza Day - Friday! \nFrom: HR@corporate.ca\nTo: AllStaff@corporate.ca\n \n    Good news, everyone!\n    Next Friday, we at HR have decided to celebrate Employee Appreciation Day with free pizza in the cafeteria from 12 PM to 2 PM. \n    Stop by and grab a slice on us!\n    Lets show our hardworking employees some love!\n    HR Team" : 3, 
+            "Subject: Suspicious Attachment Detected \nFrom: IT@corporate.ca\nTo: Intern@corporate.ca\n \n    Hi,\n    We detected a suspicious file attachment in your inbox titled 'PerformanceReview.docx.' \n    It appears to be from an external email address. Please avoid opening it and report any suspicious activity immediately.\n    IT Department" : -4, 
+            "Subject: Weird Expenses from Last Quarter \nFrom: Finance@corporate.ca\nTo: Intern@corporate.ca\n \n    Hey,\n    I was reviewing the expense reports from Q4, and I noticed a few weird entries. \n    Someone charged $500 for 'client entertainment' at a karaoke bar three times in one week. \n    Also, there is an invoice for 'motivational posters' that never arrived. \n    Should we be worried about misuse of company funds? Let me know if you think this is worth escalating.\n    Kevin (Finance)" : 5, 
+            "Subject: Noise Complaint - Floor 5 \nFrom: BuildingMaintenance@corporate.ca\nTo: AllStaff@corporate.ca\n \n    Good morning,\n    We have received several reports of loud banging noises coming from Floor 5 after hours. \n    We suspect it could be construction, but there should not be any scheduled work. \n    Let us know if you hear anything unusual.\n    Building Maintenance" : -3, 
+            "Subject: Weird Legal Query \nFrom: Legal@corporate.ca\nTo: AllStaff@corporate.ca\n \n    Hi everyone,\n    We have received a notice about a potential trademark infringement concerning one of our recent marketing campaigns. \n    Please let us know if anyone has used unlicensed images or copyrighted phrases. \n    This could escalate, so please be honest and transparent.\n    Corporate Legal Team" : 4, 
+            "Subject: Re: Frustration with Management \nFrom: Anonymous@leakmail.ca\nTo: Intern@leakmail.ca\n \n    Just between us, I am getting really tired of how the boss micromanages every little thing. \n    A lot of people in the office feel the same way but are too scared to say anything. \n    Someone should really address this before morale tanks completely.\n    Do not mention my name.\n    Concerned Employee" : -5
+
+
+
+
+
+            
+
+
+
+
+
+
+
 
         },
 
