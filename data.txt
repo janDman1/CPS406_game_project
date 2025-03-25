@@ -57,14 +57,14 @@
         "meeting_room": {
             "type": "room",
             "holder": null,
-            "description": "no description yet",
+            "description": "We're relationships are made and gossip is free like the wind",
             "NSEW": [null,"offices",null,null],
             "holding": []  
         },
         "storage_room": {
             "type": "room",
             "holder": null,
-            "description": "no description yet",
+            "description": "Info dealer lives here or maybe hes just a homeless person",
             "NSEW": [null,null,"offices",null],
             "holding": [] 
         },
@@ -78,7 +78,7 @@
         "networking_room": {
             "type": "room",
             "holder": null,
-            "description": "no description yet",
+            "description": "The backbone of the company",
             "NSEW": [null,null,null,"electrical_room"],
             "holding": []  
         },
@@ -145,49 +145,49 @@
         "medicine" : {
             "type": "item",
             "holder": "player",
-            "description": "",
+            "description": "Bottle that can be used to heal after getting hit or injured",
             "attributes": []
         },
-        "anti_virus" : {
+        "anti_virus_software" : {
             "type": "item",
             "holder": "player",
-            "description": "",
+            "description": "Created by Bill Gates, the most powerful code on the planet, can obliterate your USB hacking script",
             "attributes": []
         },
         "flower" : {
             "type": "item",
             "holder": "player",
-            "description": "",
+            "description": "Crimson red rose, that gives off alluring arouma",
             "attributes": []
         },
         "old_intern_notes" : {
             "type": "item",
             "holder": "player",
-            "description": "",
+            "description": "Located deep in the Bosses office, can be used to pass the test and secure a job",
             "attributes": []
         },
         "intern_coin" : {
             "type": "item",
             "holder": "player",
-            "description": "",
+            "description": "Worth 1 cent now, but Krypto King says it's going the Moon!",
             "attributes": []
         },
         "empty_wrapper" : {
             "type": "item",
             "holder": "player",
-            "description": "",
+            "description": "Why did you pick this up?",
             "attributes": []
         },
         "stress_ball" : {
             "type": "item",
             "holder": "player",
-            "description": "",
+            "description": "For stress relief, if given to a co-worker can improve likability!",
             "attributes": []
         },
         "fake_resume" : {
             "type": "item",
             "holder": "player",
-            "description": "",
+            "description": "When placed on rival's desk, the boss will think employee is looking for other jobs and has no loyalty. Useful for annihilating your competition!",
             "attributes": []
         },
         
@@ -233,6 +233,23 @@
             "skip_cause": null,
             "uses_parser": false
         },
+        "Secretary": {
+            "type": "static",
+            "holder": "secretary_office", 
+            "description": "",
+            "name": "Morgana",
+            "status": [""],
+            "friendliness": 0
+        },
+        "Networking_Teamlead": {
+            "type": "static",
+            "holder": "networking_room", 
+            "description": "",
+            "name": "Steve Jobs",
+            "status": [""],
+            "friendliness": 0
+        },
+
 
         // if obj not defined and still works with subroutine put here 
         // e.g. "> examine room" which calls show_character_view(character)
@@ -299,8 +316,7 @@
             "19": ["put", "leave"], //put x on Y  //put laxative on coffee
             "20": ["wait"],
             "21": ["combine"],  //combine coffee and laxative
-            "22": ["work"], // email
-            "23": ["talk"] 
+            "22": ["work"] // email 
         },
 
         "prepositions": ["at","in","above","under", 
@@ -332,8 +348,6 @@
             [13,"coffee","to","*","give_coffee_or_poison"], //has chance of detecting poison if you give poisoned coffee
             [13,"*","to","*","give_obj"],
             [22,null,null,null,"email_work"],
-            [23,"*",null,null,"talk_to"],
-            [8,"medicine",null,null,"drink_medicine"],
 
             [9,"coffee","at","*","thrown_coffee_at_x"],
             [9,"*","at","*","thrown_obj_at_x"]
@@ -346,7 +360,7 @@
         },
 
         "email_minigame": {
-            "Subject: Invest Now for Big Profits! \nFrom: CryptoKing@internet.ca\nTo: Intern@corporate.ca\n         Good morning,\n \n      Here is the weekly marketing metrics summary. Social media engagement is up \n      by 5%, but email open rates have dropped by 3%. If you have any suggestions on \n      improving outreach, let us know.\n      Thanks, \n      Marketing Team" : 3,
+            "Subject: Invest Now for Big Profits! \nFrom: KryptoKing@internet.ca\nTo: Intern@corporate.ca\n         Good morning,\n \n      Here is the weekly marketing metrics summary. Social media engagement is up \n      by 5%, but email open rates have dropped by 3%. If you have any suggestions on \n      improving outreach, let us know.\n      Thanks, \n      Marketing Team" : 3,
             "Subject: I Think I Like You... \nFrom: Secretary@corporate.ca\nTo: Intern@corporate.ca\n \n    I know this might sound weird, but I have been meaning to tell you that I think you are really cool. \n    Maybe we could grab a coffee sometime?\n    Just do not tell the boss. He will lose it.\n \n    Secretary" : -5, 
             "Subject: Can Someone Check the Air Conditioning? \nFrom: Maintenance@corporate.ca\nTo: AllStaff@corporate.ca\n \n    Hey everyone,\n    We have been getting complaints about strange noises coming from the vents. \n    If anyone notices anything unusual, please let us know. Might just be a raccoon again.\n    Maintenance Team" : -4, 
             "Subject: Scheduled Server Maintenance \nFrom: IT@corporate.ca\nTo: AllStaff@corporate.ca\n \n    Dear Staff,\n    We will be performing routine server maintenance on Friday from 3 PM to 5 PM. \n    During this time, access to the internal network will be limited. Please save your work and log off before 3 PM. \n    Let us know if you experience issues outside of the maintenance window.\n    IT Team" : 4, 
@@ -376,7 +390,7 @@
         },
 
         "event_dialogues": {
-            "greet_at_game_start": "Hey there, welcome to the team!\nWe're excited to have you on board for your internship.\nIt's a great opportunity to learn and grow,\nand we're looking forward to seeing the amazing contributions you'll make.\n",
+            "greet_at_game_start": "Hey there, welcome to the team! We're excited to have you on board for your internship. It's a great opportunity to learn and grow, and we're looking forward to seeing the amazing contributions you'll make. ",
             "throw_coffee_at_intern": "WTF man!!! whats wrong with you, now I have to go to the washroom...",
             "ending_1": "You married the boss's daughter, now you get to inherit the company."
         }
