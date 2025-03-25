@@ -406,7 +406,7 @@ class Events:  # (ObjDict):
 
                 return True
             else:
-                print(f"{victim_name} isn't even there dummy")
+                if do_print: print(f"{victim_name} isn't even there dummy")
                 return False
         return False
     

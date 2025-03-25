@@ -38,10 +38,10 @@ class Events_Expanded(Events):
     def talk_to(self, to_character:objUID, from_character:objUID, do_print=True) -> bool:
         to_character = self.map_to_actual_obj(to_character, from_character)  # e.g. maps Philip to NPC_1
         room = self.O.get_holder(from_character)
-        to_char_name = self.O.get_character_data("name", to_character)
         if self.O.get_obj_type(to_character) != "character":
             if do_print: print(f"You cannot talk to a {to_character}, this is an object, you can say something else")
             return False
+        to_char_name = self.O.get_character_data("name", to_character)
         if to_character in self.O.get_holding(room): # the character same room as you
             if to_character == "secretary":
                 pass  # say something, maybe randomized
@@ -52,17 +52,21 @@ class Events_Expanded(Events):
                 while adjacent_room == None:
                     adjacent_room = self.O.find_next_room(random.choice(["N","S","E","W"]))
                 self.O.change_holder(to_character, room, adjacent_room)
-        else:  # character not in the room
+        else:  # character not in the ROOM
             if do_print: print(f"go find {to_char_name} or say something else")
         return True
     
     def drink_medicine(self, obj, character:objUID, do_print=True) -> bool:
         inventory = self.O.get_holding(character)
         if obj in inventory:
-            if do_print: print("I drink medicine now say something")
-            self.O.remove_holding(obj)
-            self.O.set_character_data(character, "turn_speed", 100)  # make healthy
-            return True
+            if self.O.get_character_data("turn_speed", character) < 100:
+                if do_print: print("I drink medicine now say something")
+                self.O.remove_holding(obj, character)
+                self.O.set_character_data(character, "turn_speed", 100)  # make healthy
+                return True
+            else:
+                if do_print: print("Why? You are perfectly healthy")
+                return False            
         if do_print: print("You don't have item! or maybe say something else")
         return False
 
