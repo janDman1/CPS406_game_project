@@ -23,7 +23,7 @@
             "type": "room",
             "holder": null,
             "description": "The central entrance area, designed to welcome visitors and employees. Fine decor hangs around the room, creating a professional and inviting atmosphere.",
-            "NSEW": ["secretary_office",null,null,"cafeteria"]  //appends "to the WEST is the cafeteria, to the NORTH is the secretary office, to the SOUTH is the building exit, to the EAST is the office area"
+            "NSEW": ["secretary_office",null,"offices","cafeteria"]  //appends "to the WEST is the cafeteria, to the NORTH is the secretary office, to the SOUTH is the building exit, to the EAST is the office area"
         },
         "secretary_office": {
             "type": "room",
@@ -37,6 +37,14 @@
             "description": "no description yet",
             "NSEW": [null,"secretary_office",null,null],
             "holding": ["book_shelf", "cabinet"]  //optional, the game will create for you by looking at objects "holder"
+            //need for some use cases where room has duplicate items like "shelf"
+        },
+        "offices": {
+            "type": "room",
+            "holder": null,
+            "description": "no description yet",
+            "NSEW": [null,null,null,"main_lobby"],
+            "holding": []  //optional, the game will create for you by looking at objects "holder"
             //need for some use cases where room has duplicate items like "shelf"
         },
         
@@ -194,7 +202,8 @@
             "18": ["force"], //force X on Y
             "19": ["put", "leave"], //put x on Y  //put laxative on coffee
             "20": ["wait"],
-            "21": ["combine"]  //combine coffee and laxative
+            "21": ["combine"],  //combine coffee and laxative
+            "22": ["work"] // email 
         },
 
         "prepositions": ["at","in","above","under", 
@@ -225,6 +234,7 @@
             [19,"laxative","on","coffee","make_poisoned_coffee"],
             [13,"coffee","to","*","give_coffee_or_poison"], //has chance of detecting poison if you give poisoned coffee
             [13,"*","to","*","give_obj"],
+            [22,null,null,null,"email_work"],
 
             [9,"coffee","at","*","thrown_coffee_at_x"],
             [9,"*","at","*","thrown_obj_at_x"]
@@ -234,6 +244,12 @@
     "Events": {
         "variables": {
             "MAX_INVENTORY": 8
+        },
+
+        "email_minigame": {
+            "Subject: Invest Now for Big Profits! \nFrom: CryptoKing@internet.com\nTo: Intern@corporate.com\n         Good morning,\n \n      Here is the weekly marketing metrics summary. Social media engagement is up \n      by 5%, but email open rates have dropped by 3%. If you have any suggestions on \n      improving outreach, let us know.\n      Thanks, \n      Marketing Team" : -3,
+            "Subject: I Think I Like You... \nFrom: Secretary@corporate.com\nTo: Intern@corporate.com\n \n    I know this might sound weird, but I have been meaning to tell you that I think you are really cool. \n    Maybe we could grab a coffee sometime?\n    Just do not tell the boss. He will lose it.\n \n    Secretary" : -5
+
         },
 
         "event_dialogues": {

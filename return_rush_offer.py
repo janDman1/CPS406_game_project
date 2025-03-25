@@ -207,6 +207,8 @@ def do_action(subroutine_key:str, cmd: list, character:objUID, P:Parser, E:Event
         return E.give_coffee_or_poison(cmd[1], cmd[3], character, do_print)
     if subroutine_key == "give_obj":
         return E.give_obj(cmd[1], cmd[3], character, do_print)
+    if subroutine_key == "email_work":
+        return E.email_work(character, do_print)
     # if subroutine_key == "thrown_coffee_at_x":
     #   coffee_allover_character(cmd[3], character)  # checks character inventory if have coffee to throw and make obj2 (e.g. NPC_1) go to the washroom to waste turns
     # if subroutine_key == "thrown_obj_at_x":  # default behaviour e.g. `> thow laptop at Philip`
