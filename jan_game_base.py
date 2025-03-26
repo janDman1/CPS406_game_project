@@ -141,12 +141,12 @@ class ObjDict(dict):
         return attr in self[obj]["attributes"]
     
     def get_character_data(self, data:str, char:objUID): #-> str|int|None:
-        if data not in ["name", "status", "likability", "friendliness", "turn_speed", "skip_turn", "skip_cause", "uses_parser"]:
+        if data not in ["name", "status", "likability","dialogue", "friendliness", "turn_speed", "skip_turn", "skip_cause", "uses_parser"]:
             raise KeyError(f"No {data} object Data in {char}")
         return self[char][data]
     
     def set_character_data(self, char:str, data:str, value:str|int|bool) -> None:
-        if data not in ["name", "status", "likability", "friendliness", "turn_speed", "skip_turn", "skip_cause","uses_parser"]:
+        if data not in ["name", "status", "likability","dialogue", "friendliness", "turn_speed", "skip_turn", "skip_cause","uses_parser"]:
             raise KeyError(f"No {data} object Data in {char}")
         self[char][data] = value
     

@@ -210,6 +210,7 @@
             "description": "Philip is the type of person who's both easygoing and thoughtful. He's a bit of a dreamer, always coming up with creative ideas and plans, but he's grounded enough to make sure things get done. He's the kind of friend and colleague who'll always check in, even if it's just to share a funny meme or make sure you're doing okay.",
             "name": "Philip",
             "status": ["poisoned","hacked"],
+            "dialogue": ["Hey! You ever just stare at the ceiling and wonder if corporate life is secretly some kind of social experiment", "I tried to use my charm to get out of extra tasks. Turns out charm does not work when your charisma stat is negative", "I will imbue you with some wisdom if someone catches you napping at your desk, just say you are meditating. Boom! Instant productivity points.", "If I get fired, I am starting a podcast where I just complain about office life. Working title 'Imprisoned Intern.'"],
             "likability": 0,
             "friendliness": 2,  //neutral to the player
             "turn_speed": 70,
@@ -224,6 +225,7 @@
             "description": "Serah is independent, self-reliant, and values her personal space. She's not one to seek constant company but enjoys solitude and introspection, which allows her to think deeply and work efficiently. Serah has a quiet confidence and doesn't feel the need to seek validation from others. She's content to move at her own pace and follow her own path.",
             "name": "Serah",
             "status": ["energized"],
+            "dialogue": ["If you are here to waste my time, at least bring coffee next time.", "If I had a dollar for every time you all asked me a stupid question, I would buy this company just to fire everyone.", "Someone in the break room just tried to motivate me. I almost threw my coffee at them. Almost .........", "Why do I have to put my coffee away every time I visit IT? It is not like I will spill my coffee in the electrical room. But even if I did it would be the architect's fault for designing such a bad floor plan. "],
             "likability": 0,
             "friendliness": 0,  //aggressive to the player
             "turn_speed": 120,
@@ -234,9 +236,10 @@
         "secretary": {
             "type": "static_character",
             "holder": "secretary_office", 
-            "description": "",
+            "description": "Morgana's got a keen eye for detail and a knack for staying in the loop whether she owns up to it or not. She is the queen of gossip wrapped in a package of 'concerned professionalism' always carrying herself with a calm, composed demeanour. If something is going down in the office you can bet she knows about it. She expertly handles the Boss's mood swings like some kind of art form. Her sense of humour's sharp but she never misses the chance to toss out a sly, well timed jab when the moment's right.",
             "name": "Morgana",
             "status": [""],
+            "dialogue": ["You agree with me, right? That old cabinet in the Boss's office looks so out of place. It is so flimsy I would not be surprised if it broke with a simple touch.", "How is the Boss? Busy as always. Though he seems a bit on edge lately. Maybe it is the quarterly report... or maybe it is that ridiculous motivational speaker he agreed to last week. Either way, best not to disturb him unless you have got something worth his time", "Spring would have to be my favourite season for all the blooming roses.  I guess I have always liked them. They just... have a way of brightening up the room. Not that anyone ever brings them around here","Oh, just splendid. You know, managing everyone's crises while still keeping the boss from losing his mind. It is an art form at this point"],
             "friendliness": 0
         },
         "networking_teamlead": {
@@ -245,6 +248,7 @@
             "description": "",
             "name": "Steve Jobs",
             "status": [""],
+            "dialogue": ["Oh great, another intern. You here to ask me to fix your WiFi again? Or maybe you just need help turning your computer on? Let me guess you forgot your password. Typical","Want to know a secert? I found a way directly into bathroom through the vents. I know i know its a little weird but I had to 'they' will not let me leave this room.", "Whoa, whoa, whoa. Just because I am a network genius does not mean I am gonna help you take down the entire company. Besides, I have got my own little network of favours going. Maybe if you sweeten the deal... I might accidentally make a script to bypass security protocols on someone's laptop.","Help they have kept me in this room since 2011, I have not seen the outside world in so long"],
             "friendliness": 0
         },
         "boss": {
@@ -253,6 +257,7 @@
             "description": "",
             "name": "SOME_NAME",
             "status": [""],
+            "dialogue": [""],
             "friendliness": 0
         },
 

@@ -57,6 +57,25 @@ class Events_Expanded(Events):
                     adjacent_room = self.O.find_next_room(random.choice(["N","S","E","W"]), room)
                 self.O.change_holder(to_character, room, adjacent_room)
             
+            if to_character != "player":
+            # Retrieve dialogues and initialize a pointer for the character if not already set
+                dialogues = self.O.get_character_data("dialogue", to_character)
+                if not hasattr(self, "dialogue_pointers"):
+                    self.dialogue_pointers = {}
+                if to_character not in self.dialogue_pointers:
+                    self.dialogue_pointers[to_character] = 0
+
+                if dialogues and len(dialogues) > 0:
+                    # Get the current dialogue based on the pointer
+                    current_index = self.dialogue_pointers[to_character]
+                    if do_print: print(dialogues[current_index])
+
+                    # Update the pointer to the next dialogue, looping back to the start if necessary
+                    self.dialogue_pointers[to_character] = (current_index + 1) % len(dialogues)
+                    return True
+                else:
+                    if do_print: print("Silence..... they have nothing else to say to you")
+                    return False
             
             '''
             if self.O.get_character_data("name", to_character) == "Steve Jobs":
