@@ -603,43 +603,7 @@ class Events:  # (ObjDict):
             if do_print: print(f"I need to get more coffee before that")
         return True
     
-    def give_obj(self, obj:objUID, to_character:objUID, from_character:objUID, do_print=True) -> bool:
-        room = self.O.get_holder(from_character)
-        to_character = self.map_to_actual_obj(to_character, from_character)  # map_to_actual_obj() ia a bit of a misnomer, the second argument is just used to identify the room and self 
-        obj = self.map_to_actual_obj(obj, from_character)
-        
-        # if self.O.get_obj_type(to_character) == "static" and self.O.get_static_data("name", to_character) == "Steve Jobs" and obj == "usb_hacking_script": # and give item hacking script
-        #     current_friendliness = self.O.get_static_data("friendliness", to_character)
-        #     self.O.remove_holding(obj, from_character)
-        #     self.O.set_static_data(to_character, "friendliness", current_friendliness+5)
-        #     return True
-        
-        
-        
-        if self.O.get_obj_type(to_character) not in ["character", "static_character"]:
-            if do_print: print(f"You cannot give to a {to_character}")
-            return False
-        gifted_name = self.O.get_character_data("name", to_character)
-        current_friendliness = self.O.get_character_data("friendliness", to_character)
-        if obj in self.O.get_holding(from_character):
-            if to_character in self.O.get_holding(room):
-                if gifted_name == "Steve Jobs" and obj == "usb_hacking_script": # and give item hacking script
-                    self.O.remove_holding(obj, from_character)
-                    self.O.set_character_data(to_character, "friendliness", current_friendliness+5)
-                    return True
-                if do_print:
-                    print(f"{gifted_name}: Thanks! You're the best!")
-                    print(f"Friendliness with {gifted_name} increased")
-                self.O.remove_holding(obj, from_character)
-                self.O.add_holding(obj, to_character)
-                if self.O.get_character_data("uses_parser", from_character):
-                    self.O.set_character_data(to_character, "friendliness", current_friendliness+1)
-                return True
-            else:
-                if do_print: print(f"Go look for {gifted_name}")
-        else:
-            if do_print: print(f"You don't have {obj}")
-        return False
+    
 
     
     def load_events_data_structure(self, dict):

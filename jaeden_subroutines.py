@@ -56,6 +56,9 @@ class Events_Expanded(Events):
                 while adjacent_room == None:
                     adjacent_room = self.O.find_next_room(random.choice(["N","S","E","W"]), room)
                 self.O.change_holder(to_character, room, adjacent_room)
+            
+            
+            '''
             if self.O.get_character_data("name", to_character) == "Steve Jobs":
                 friendliness = self.O.get_character_data("friendliness", to_character)
                 if friendliness > 4:
@@ -63,7 +66,8 @@ class Events_Expanded(Events):
                     if len(self.O.get_holding(from_character)) < self["variables"]["MAX_INVENTORY"]:
                         self.O.add_holding("intern_coin", from_character)
                 else:
-                    if do_print: print("Watch out for fishing emails")
+                    if do_print: print("Watch out for fishing emails")'
+            ''' # will soft lock the NPC into giving intern coins
 
 
         else:  # character not in the ROOM
@@ -82,6 +86,70 @@ class Events_Expanded(Events):
                 if do_print: print("Why? You are perfectly healthy")
                 return False            
         if do_print: print("You don't have item! or maybe say something else")
+        return False
+    
+    def give_obj(self, obj:objUID, to_character:objUID, from_character:objUID, do_print=True) -> bool:
+        room = self.O.get_holder(from_character)
+        to_character = self.map_to_actual_obj(to_character, from_character)  # map_to_actual_obj() ia a bit of a misnomer, the second argument is just used to identify the room and self 
+        obj = self.map_to_actual_obj(obj, from_character)
+        
+        # if self.O.get_obj_type(to_character) == "static" and self.O.get_static_data("name", to_character) == "Steve Jobs" and obj == "usb_hacking_script": # and give item hacking script
+        #     current_friendliness = self.O.get_static_data("friendliness", to_character)
+        #     self.O.remove_holding(obj, from_character)
+        #     self.O.set_static_data(to_character, "friendliness", current_friendliness+5)
+        #     return True
+        
+        
+        
+        if self.O.get_obj_type(to_character) not in ["character", "static_character"]:
+            if do_print: print(f"You cannot give to a {to_character}")
+            return False
+        gifted_name = self.O.get_character_data("name", to_character)
+        current_friendliness = self.O.get_character_data("friendliness", to_character)
+        if obj in self.O.get_holding(from_character):
+            if to_character in self.O.get_holding(room):
+
+                #static chacarter Steve
+                if gifted_name == "Steve Jobs": # and give item hacking script
+                    if obj == "usb_hacking_script":
+                        if len(self.O.get_holding(from_character)) < self["variables"]["MAX_INVENTORY"]:
+                            self.O.remove_holding(obj, from_character)
+                            self.O.set_character_data(to_character, "friendliness", current_friendliness+5)
+                            if do_print: print("heres a intern coin")
+                            self.O.add_holding("intern_coin", from_character)
+                            return True 
+                        else:
+                            if do_print: print("Classic Intern holding more stuff then you can use, try dropping some stuff if you really want this device")
+                            return False
+                    else:
+                        if do_print: print("What is this? Worldy goods are useless to me the only thing I treasure crypto currency.")
+                        return False 
+                     
+                #Static chacarter Morgana
+                if gifted_name == "Morgana": # and give item flower
+                    if obj == "flower":
+                        self.O.remove_holding(obj, from_character)
+                        self.O.set_character_data(to_character, "friendliness", current_friendliness+5)
+                        if do_print: print("Thank you so much!! This is perfect for my desk. In exchange I will give you a suggestion for dealing with the Boss. When ever he is anrgy he fratincally spells his dogs name L-U-C-Y outloud in his office for some reason. At that time best not to be to close.")#INPUT HINT here 
+                        return True
+                    else:
+                        if do_print: print("Sorry my desk is over flowing as is, I do not need more stuff. But I would like something to liven the place up.")
+                        return False
+
+
+                #Everyone else
+                if do_print:
+                    print(f"{gifted_name}: Thanks! You're the best!")
+                    print(f"Friendliness with {gifted_name} increased")
+                self.O.remove_holding(obj, from_character)
+                self.O.add_holding(obj, to_character)
+                if self.O.get_character_data("uses_parser", from_character):
+                    self.O.set_character_data(to_character, "friendliness", current_friendliness+1)
+                return True
+            else:
+                if do_print: print(f"Go look for {gifted_name}")
+        else:
+            if do_print: print(f"You don't have {obj}")
         return False
 
 

@@ -154,7 +154,7 @@
         },
         "flower" : {
             "type": "item",
-            "holder": null,
+            "holder": "player",
             "description": "Crimson red rose, that gives off alluring arouma",
             "attributes": []
         },
