@@ -1,12 +1,12 @@
-from jan_game_base import Events
+from game_base import Events
 import random
 
-type objUID = str  # just means objUID is type string
+type objUID = str
 
 class Events_Expanded(Events):
     def __init__(self):
         super().__init__()
-        self.email_gen = None  # Initialize the email generator
+        self.email_gen = None
 
     def email_work(self, character: objUID, do_print=True) -> bool:
         room = self.O.get_holder(character)
@@ -19,7 +19,6 @@ class Events_Expanded(Events):
                 self.email_gen = self.email_generator()
 
             try:
-                # Get the next email from the generator
                 email_message, email_score = next(self.email_gen)
                 if do_print: 
                     print(email_message)
@@ -27,7 +26,7 @@ class Events_Expanded(Events):
             except StopIteration:
                 if do_print: 
                     print("No more emails to read.")
-                self.email_gen = None  # Reset the generator once all emails are read
+                self.email_gen = None
             
             return True
         if do_print: 
@@ -77,16 +76,7 @@ class Events_Expanded(Events):
                     if do_print: print("Silence..... they have nothing else to say to you")
                     return False
             
-            '''
-            if self.O.get_character_data("name", to_character) == "Steve Jobs":
-                friendliness = self.O.get_character_data("friendliness", to_character)
-                if friendliness > 4:
-                    if do_print: print("heres a intern coin")
-                    if len(self.O.get_holding(from_character)) < self["variables"]["MAX_INVENTORY"]:
-                        self.O.add_holding("intern_coin", from_character)
-                else:
-                    if do_print: print("Watch out for fishing emails")'
-            ''' # will soft lock the NPC into giving intern coins
+            
 
 
         else:  # character not in the ROOM
@@ -109,17 +99,9 @@ class Events_Expanded(Events):
     
     def give_obj(self, obj:objUID, to_character:objUID, from_character:objUID, do_print=True) -> bool:
         room = self.O.get_holder(from_character)
-        to_character = self.map_to_actual_obj(to_character, from_character)  # map_to_actual_obj() ia a bit of a misnomer, the second argument is just used to identify the room and self 
+        to_character = self.map_to_actual_obj(to_character, from_character)
         obj = self.map_to_actual_obj(obj, from_character)
         speaker_inventory = self.O.get_holding(from_character)
-        
-        # if self.O.get_obj_type(to_character) == "static" and self.O.get_static_data("name", to_character) == "Steve Jobs" and obj == "usb_hacking_script": # and give item hacking script
-        #     current_friendliness = self.O.get_static_data("friendliness", to_character)
-        #     self.O.remove_holding(obj, from_character)
-        #     self.O.set_static_data(to_character, "friendliness", current_friendliness+5)
-        #     return True
-        
-        
         
         if self.O.get_obj_type(to_character) not in ["character", "static_character"]:
             if do_print: print(f"You cannot give to a {to_character}")
@@ -134,9 +116,7 @@ class Events_Expanded(Events):
                 return False
 
             if to_character in self.O.get_holding(room):
-
-                #static chacarter Steve
-                if gifted_name == "Steve Jobs": # and give item hacking script
+                if gifted_name == "Steve Jobs":
                     if obj == "usb_hacking_script":
                         if len(speaker_inventory) < self["variables"]["MAX_INVENTORY"]:
                             self.O.remove_holding(obj, from_character)
@@ -151,8 +131,7 @@ class Events_Expanded(Events):
                         if do_print: print("What is this? Worldy goods are useless to me the only thing I treasure crypto currency.")
                         return False 
                      
-                #Static chacarter Morgana
-                if gifted_name == "Morgana": # and give item flower
+                if gifted_name == "Morgana":
                     if obj == "flower":
                         self.O.remove_holding(obj, from_character)
                         self.O.set_character_data(to_character, "friendliness", current_friendliness+5)
@@ -177,8 +156,3 @@ class Events_Expanded(Events):
         else:
             if do_print: print(f"You don't have {obj}")
         return False
-
-
-    # Here try to override inventory
-    # def show_inventory(self, character: objUID, do_print=True) -> bool:
-    #     pass
