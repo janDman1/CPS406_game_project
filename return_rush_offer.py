@@ -11,6 +11,7 @@ import os
 # import re
 from time import sleep
 # from pprint import pprint
+import sys, msvcrt  #keyboard
 
 #**************************************** 13
 
@@ -111,6 +112,7 @@ print("###### Events CLASS #########")
 
 E = Events()
 E.load_object_dictionary(O)  # uses ObjDict
+E.load_events_data_structure(All_Data["Events"])
 
 E.show_character_view(obj)
 
@@ -229,6 +231,10 @@ def do_action(subroutine_key:str, cmd: list, character:objUID, P:Parser, E:Event
 # user/npc_input to action, how the character will interact with the world
 def player_action(character:objUID, P:Parser, E:Events): #unparsed_cmd:str
     global unparsed_cmd
+
+    # DEBUG #
+    # cmd = [None,None,None,None]
+    # do_action("wait_time", cmd, character, P, E)  # player just waits every turn
     
     valid_action = False
     while not valid_action:
@@ -261,10 +267,15 @@ def random_action(npc_character:objUID, P:Parser, E:Events):
         if cmd[3] == "*":
             cmd[3] == rand_obj2
 
+        # DEBUG #
+        # print(f"holder: {E.O.get_holder(npc_character)}")
+        # print(f"holding: {E.O.get_holding(npc_character)}")
         # print(f"cmd: {cmd}")
         # print(f"subroutine_key: {subroutine_key}")
-        
+
         valid_action = do_action(subroutine_key, cmd, npc_character, P, E)
+
+    print(f"I do: {list(P["verbs"][str(cmd[0])])[0]} {cmd[1] if cmd[1] is not None else ""} {cmd[2] if cmd[2] is not None else ""} {cmd[3] if cmd[3] is not None else ""}")
 
         # cmd = [None,None,None,None]
         # # cmd[0] = rnd.choice([0,1,2,3])  #dir
@@ -296,13 +307,54 @@ def exclusive_job_offer(highest_likability):
     print(f"{highest_likability.upper()} BEAT EVERYONE IN CAPABILITIES")
 
 def no_one_gets_rehired():
-    print("NO ONE OF YOU GOT THE BOSS'S FAVOUR")
+    print("NONE OF YOU GOT THE BOSS'S FAVOUR")
     print("YOU ALL DID A BAD JOB IN THE INTERNSHIP")
     print("\"PROFESSIONALS YOU ARE NOT\" WAS THE")
     print("BOSS'S LASTS WORDS TO ALL OF YOU!!!")
 
-def electric_shutdown(character):
+# INSIDE Events aka E.power_down()
+# can be called from spill_coffee
+def power_down(turns=10):
+    E["variables"]["is_lights_out"] = True
+    E["variables"]["remaining_lights_out"] = turns
+    for obj,attr in O.items():
+        if O.is_valid_obj(obj):
+            room = O.get_holder(obj)
+            if O.get_obj_type(obj) == "character":
+                O.change_holder(obj, room, "electrical_room")
+
+def electric_shutdown():
+    print("###########")
+    print("#  EVENT  #")
+    print("###########")
+    print()
+    print("THE LIGHTS SUDDENLY WENT DOWN")
+    msvcrt.getch()
+    print("BOSS: \"GO FIX THE BREAKER YOU")
+    print("         USELESS INTERNS!!!\"")
+    msvcrt.getch()
+    print()
+    print("Everyone is now at the electric room")
+    msvcrt.getch()
+    print("as per the boss's orders. Fix the")
+    msvcrt.getch()
+    print("lights or take opportunity of the")
+    msvcrt.getch()
+    print("situation...")
+    msvcrt.getch()
+    print()
+    power_down(5)
+    msvcrt.getch()
     pass
+
+def check_power():
+    print(f"remaining_lights_out: {E["variables"]["remaining_lights_out"]}")
+    if E["variables"]["remaining_lights_out"] > 0:
+        E["variables"]["remaining_lights_out"] = E["variables"]["remaining_lights_out"] - 1
+        if E["variables"]["remaining_lights_out"] == 0: #<= 0
+            print("THE LIGHTS ARE BACK ON!")
+            print()
+            E["variables"]["is_lights_out"] = False
 
 likability_goal = 80
 friendliness_goal = 5
@@ -361,42 +413,46 @@ for day in range(1,game_day+1):
     print(f"# DAY {day} #")
     print("#####################################################################")
     for turn in range(turns_in_a_day):
-        if day == 3 and turn == 20:
-            electric_shutdown("player") 
+        if day == 3 and turn == 2:
+            electric_shutdown() 
         for character in characterS:
-            # print(f"{character.upper()} TURN")
-            # print("*************************************")
+            print(f"{character.upper()} TURN")
+            print("*************************************")
             skip_turn = E.O.get_character_data("skip_turn", character)
             turn_speed = E.O.get_character_data("turn_speed", character)
             # print(f"DEBUG {character} skip_turn: {skip_turn}")  # DEBUG
             # print(f"DEBUG {character} turn_speed: {turn_speed}")  # DEBUG
             if skip_turn > 0:
-                # print("skipping turn...")
-                # print(f"because {E.O.get_character_data("skip_cause", character)}")
-                if character == "player":
-                    print("skipping turn...")
-                    print(f"because {E.O.get_character_data("skip_cause", character)}")
+                print("skipping turn...")
+                print(f"because {E.O.get_character_data("skip_cause", character)}")
+                # if character == "player":
+                #     print("skipping turn...")
+                #     print(f"because {E.O.get_character_data("skip_cause", character)}")
                 skip_turn -= 1
                 E.O.set_character_data(character, "skip_turn", skip_turn)
             else:
                 if rnd.randint(1,100) <= turn_speed:
                     character_action(character, P, E)
-                # else:
-                #     print("FALSE, you lost your turn!!!")  # DEBUG
+                else:
+                    print("FALSE, you lost your turn!!!")  # DEBUG
                 if turn_speed > 100 and  rnd.randint(1,100) <= turn_speed-100:
-                    # print("(extra turn granted) caffinated in effect...")
-                    if character == "player":
-                        print("(extra turn granted) caffinated in effect...")
+                    print("(extra turn granted) caffinated in effect...")
+                    # if character == "player":
+                    #     print("(extra turn granted) caffinated in effect...")
                     character_action(character, P, E)  # see extra action
-            # print("*************************************\n")
+            print("*************************************\n")
 
-            sleep(t)
+            if character == "player":
+                msvcrt.getch()
+
+            # sleep(t)
 
             if unparsed_cmd in ["Q", "quit"]: break
             if unparsed_cmd == "skip day": 
                 skip_day = True
                 break
         else:  # aka is nobreak
+            check_power()
             continue
         break
     else:  # aka is nobreak
@@ -404,6 +460,7 @@ for day in range(1,game_day+1):
         print("ITS TIME TO GO HOME")
         print("say bye to everyone")
         input("> ")
+        print()
         continue
     if skip_day:
         skip_day = False
@@ -412,6 +469,8 @@ for day in range(1,game_day+1):
     break
         
 ending_result()  # show the result based on all stats
+if unparsed_cmd in ["Q",'quit']: 
+    os.abort()
 print()
 print("YOU FINISHED THE GAME!")
 print("CONGRATULATIONS!!!")

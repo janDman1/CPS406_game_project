@@ -36,7 +36,8 @@
             "holder": null,
             "description": "no description yet",
             "NSEW": [null,"secretary_office",null,"secret_room"],
-            "holding": ["book_shelf", "cabinet"]
+            "holding": ["book_shelf", "cabinet"]  //optional, the game will create for you by looking at objects "holder"
+            //need for some use cases where room has duplicate items like "shelf"
         },
         "secret_room": {
             "type": "room",
@@ -82,6 +83,12 @@
         },
         
         //ITEMS
+        "breaker": {
+            "type": "item",
+            "holder": "electrical_room",
+            "description": "Make it or break it, its what connects the power to the building.",
+            "attributes": []
+        },
         "book_shelf": {
             "type": "item",
             "holder": null,
@@ -92,11 +99,13 @@
             "type": "item",
             "holder": null,
             "description": "Just a plain normal cabinet.",
-            "attributes": []
+            "attributes": [
+                "container"
+            ]
         },
         "flashlight": {
             "type": "item",
-            "holder": "NPC_1",
+            "holder": "player",
             "description": "A handy light for dark times. Don't cause this dark times ;)",
             "attributes": [
                 "emits_light"
@@ -220,7 +229,7 @@
         },
         "NPC_2": {
             "type": "character",
-            "holder": "boss_office", //"washroom",
+            "holder": "washroom", //"washroom",
             "description": "Serah is independent, self-reliant, and values her personal space. She's not one to seek constant company but enjoys solitude and introspection, which allows her to think deeply and work efficiently. Serah has a quiet confidence and doesn't feel the need to seek validation from others. She's content to move at her own pace and follow her own path.",
             "name": "Serah",
             "status": ["energized"],
@@ -379,7 +388,8 @@
     "Events": {
         "variables": {
             "MAX_INVENTORY": 8,
-            "is_lights_out": false
+            "is_lights_out": false,
+            "remaining_lights_out": 0
         },
 
         "email_minigame": {

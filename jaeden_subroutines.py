@@ -92,6 +92,7 @@ class Events_Expanded(Events):
         room = self.O.get_holder(from_character)
         to_character = self.map_to_actual_obj(to_character, from_character)  # map_to_actual_obj() ia a bit of a misnomer, the second argument is just used to identify the room and self 
         obj = self.map_to_actual_obj(obj, from_character)
+        speaker_inventory = self.O.get_holding(from_character)
         
         # if self.O.get_obj_type(to_character) == "static" and self.O.get_static_data("name", to_character) == "Steve Jobs" and obj == "usb_hacking_script": # and give item hacking script
         #     current_friendliness = self.O.get_static_data("friendliness", to_character)
@@ -106,13 +107,19 @@ class Events_Expanded(Events):
             return False
         gifted_name = self.O.get_character_data("name", to_character)
         current_friendliness = self.O.get_character_data("friendliness", to_character)
-        if obj in self.O.get_holding(from_character):
+        if obj in speaker_inventory:
+            
+            if self["variables"]["is_lights_out"] and "flashlight" not in speaker_inventory:
+                if do_print: 
+                    print("you cannot see anything let alone give an item to anyone")
+                return False
+
             if to_character in self.O.get_holding(room):
 
                 #static chacarter Steve
                 if gifted_name == "Steve Jobs": # and give item hacking script
                     if obj == "usb_hacking_script":
-                        if len(self.O.get_holding(from_character)) < self["variables"]["MAX_INVENTORY"]:
+                        if len(speaker_inventory) < self["variables"]["MAX_INVENTORY"]:
                             self.O.remove_holding(obj, from_character)
                             self.O.set_character_data(to_character, "friendliness", current_friendliness+5)
                             if do_print: print("heres a intern coin")
