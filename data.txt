@@ -36,7 +36,7 @@
             "holder": null,
             "description": "no description yet",
             "NSEW": [null,"secretary_office",null,"secret_room"],
-            "holding": ["book_shelf", "cabinet"]
+            "holding": ["book_shelf", "cabinet","safe"]
         },
         "secret_room": {
             "type": "room",
@@ -152,16 +152,22 @@
             "description": "Created by Bill Gates, the most powerful code on the planet, can obliterate your USB hacking script",
             "attributes": []
         },
-        "flower" : {
+        "blue_flower" : {
             "type": "item",
             "holder": "player",
-            "description": "Crimson red rose, that gives off alluring arouma",
+            "description": "Frosted blue rose, that gives off alluring arouma",
+            "attributes": []
+        },
+        "yellow_flower" : {
+            "type": "item",
+            "holder": "player",
+            "description": "Yellow peonies, they appear to be wilting but may hold on for a few more days",
             "attributes": []
         },
         "old_intern_notes" : {
             "type": "item",
             "holder": null,
-            "description": "Located deep in the Bosses office, can be used to pass the test and secure a job",
+            "description": " A stack of old intern notes, some of them are written in a language you can't understand, others are just doodles of cats.",
             "attributes": []
         },
         "intern_coin" : {
@@ -188,12 +194,20 @@
             "description": "A masterfully crafted fake resume made to show disloyalty. Useful for annihilating your competition!",
             "attributes": []
         },
+        "safe" : {
+            "type": "item",
+            "holder": null,
+            "description": "A heavy jet black steel safe, built to withstand both curiosity and questionable actions of interns. The keypad blinks ominously, waiting for a numeric 4 digit code to open the secerts its hiding.",
+            "attributes": [
+                "heavy"
+            ]
+        },
         
         //CHARACTERS
         "status_effects": ["healthy", "poisoned", "caffinated", "Hacked"],
         "player": {
             "type": "character",
-            "holder": "cafeteria",
+            "holder": "boss_office",
             "description": "Forge your path ye tarnished and find yourself within the chaos of this workplace. Rise ye tarnished, define whom you'll become and achieve.",
             "name": null,
             "status": ["healthy"],

@@ -292,6 +292,51 @@ class Events:  # (ObjDict):
         # map_obj_name = self.map_to_actual_obj(obj, character)
         # if map_obj_name != "no obj found":
         #     obj = map_obj_name
+
+        #For the safe
+        if room == "boss_office" and obj == "safe":
+            if do_print:
+                print(f"{obj}: ", end="")
+                print(self.O.get_obj_description(obj))
+                self.delay()
+                print("It requires a 4 digit code to open. Do you wish to try? (y/n)")
+                 
+                while True:
+                    user_input = input("> ").strip().lower()
+                    if user_input == 'y':
+                        print("You decided to try opening the safe.")
+                        # Add logic for attempting to open the safe here
+                        correct_code = "1234" # placeholder for the correct code
+                        attempts = 3
+
+                        while attempts > 0:
+                            code = input("Enter the 4 digit code: ")
+                            if code == correct_code:
+                                print("The safe opens and you find a keycard inside.")
+                                #self.O.add_holding("key_card", "boss_office")
+                                self.O.add_holding("key_card", character)
+                                return True
+                            else:
+                                attempts -= 1
+                                if attempts > 0:
+                                    print("Incorrect code. You have", attempts-1, "attempts left.")
+                                else:
+                                    print("You have run out of attempts. The safe is now locked.")
+                                    return False
+                                
+
+                        return True
+                    elif user_input == 'n':
+                        print("You decided not to try opening the safe.")
+                        return True
+                    else:
+                        print("You stare at the safe. Perhaps you should make a decision.")
+                
+            return True
+
+
+
+
         obj_type = self.O.get_obj_type(obj)
         if not do_print and obj_type != "invalid object":  # no need to show anything  
             # skips below "room" "character" and "item" prints
@@ -299,6 +344,8 @@ class Events:  # (ObjDict):
         if obj_type == "room":
             print("Go there and find for yourself")
             return True
+        
+        #Get a description of the NPC Intern or Static Character
         if obj_type in ["character","static_character"]:
             other_char_name = self.O.get_character_data("name", obj)
             if obj in room_holdings:
@@ -313,6 +360,8 @@ class Events:  # (ObjDict):
             else:
                 print(f"{other_char_name} is in the {self.O.get_holder(obj)}")
                 return True
+            
+        # item
         elif obj_type == "item":
             if obj in room_holdings or obj in char_inventory: #objs_in_view:
                 print(f"{obj}: ", end="")
