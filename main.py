@@ -19,6 +19,7 @@ RETURN OFFER RUSH GAME
 # LOAD DATA FILE AS YOUR DATABASE TO USE
 parsed_data_file = remove_comments(open("data.txt").read())
 All_Data = json.loads(parsed_data_file)
+
 O = ObjDict(All_Data["Objects"])
 # adds to Objects data while game is running
 O["snacks"] = {
@@ -92,6 +93,8 @@ def do_action(
             return E.talk_to(cmd[1], character, do_print)
         case "drink_medicine":
             return E.drink_medicine(cmd[1], character, do_print)
+        case "help_command":
+            return P.help_command()
         case _:
             return False
 

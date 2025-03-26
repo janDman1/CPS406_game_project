@@ -1002,3 +1002,15 @@ class Parser(dict):
 
     def get_random_verb_string(self, verb: int) -> str:
         return rnd.choice(list(self["verbs"][str(verb)]))
+
+    def help_command(self) -> dict:
+        print("Commands: ")
+        pprint(self["verbs"])
+
+        """
+        loop through lookup_table, get the first row, get the first element of the row, verb[number], get second element,  f"verb[number]: second element"
+        verbs[list(P["lookup_table"])]
+        
+        
+        """
+        return True

@@ -1,450 +1,442 @@
 {
-    "Objects": {
-        //AREAS
-        "Screen": {
-            "type": "screen",
-            "holder": null,
-            "description": "Where the current things can be seen or viewed, i.e. switch view to control the NPC's while showing the big events of the background characters."
-        },
-        "washroom":{
-            "type": "room",
-            // "items": ["laxative", "medicine", 'towel'],
-            "holder": null,
-            "description": "A surprisingly fancy washroom for a place that only pays interns in coffee and stress.  A long mirror spans the wall above a row of sinks, each with a dispenser of antibacterial soap. The mirrors shine so cleanly that they would make a germaphobe cry out of happiness. A small shelf behind the mirror holds an assortment of suspicious supplies perhaps they have some use.",
-            "NSEW": [null,null,"cafeteria",null]  //appends "To the EAST is the cafeteria"
-        },
-        "cafeteria": {
-            "type": "room",
-            "holder": "Screen",
-            "description": "A corporate culinary wonderland where dreams go to die. The aroma of burnt coffee mingles with the scent of questionable vegan salmon salad fills the room. The screen on the wall plays a never-ending loop of motivational videos featuring disturbingly happy people. Well, posters are plastered around highlighting the importance of a 120 percent vegan workplace.",
-            "NSEW": [null,null,"main_lobby","washroom"]  //append "To the WEST is the washroom, to the EAST is the main lobby"
-        },
-        "main_lobby": {
-            "type": "room",
-            "holder": null,
-            "description": "The grand , designed to welcome visitors and employees. Fine decor hangs around the room, creating a professional and inviting atmosphere.",
-            "NSEW": ["secretary_office",null,"offices","cafeteria"]  //appends "to the WEST is the cafeteria, to the NORTH is the secretary office, to the SOUTH is the building exit, to the EAST is the office area"
-        },
-        "secretary_office": {
-            "type": "room",
-            "holder": null,
-            "description": "no description yet",
-            "NSEW": ["boss_office","main_lobby",null,null]  //appends "to the SOUTH is the main_lobby
-        },
-        "boss_office": {
-            "type": "room",
-            "holder": null,
-            "description": "no description yet",
-            "NSEW": [null,"secretary_office",null,"secret_room"],
-            "holding": ["book_shelf", "cabinet"]  //optional, the game will create for you by looking at objects "holder"
-            //need for some use cases where room has duplicate items like "shelf"
-        },
-        "secret_room": {
-            "type": "room",
-            "holder": null,
-            "description": "Dust lingers in the air, while the only illumination comes from a single flickering bulb. Old documents labelled 'Totally Legal Stuff' are scattered haphazardly across the floor and in the corner a makeshift sacrificial altar to the stock market gods.  It is pretty obvious this room was never meant to see the light of day, a hidden stash for abandoned files and questionable choices than anything else..",
-            "NSEW": [null,null,"boss_office",null],
-            "holding": []
-        },
-        "offices": {
-            "type": "room",
-            "holder": null,
-            "description": "",
-            "NSEW": ["meeting_room","electrical_room","storage_room","main_lobby"],
-            "holding": []  
-        },
-        "meeting_room": {
-            "type": "room",
-            "holder": null,
-            "description": "A room where optimism comes to get murdered by PowerPoint. The long table is surrounded by chairs that are inexplicably uncomfortable despite looking ergonomic. A whiteboard is covered in half-erased ideas that probably made sense to someone at 2 a.m. There is a stack of snacks in the corner that have been untouched since the last anniversary party.",
-            "NSEW": [null,"offices",null,null],
-            "holding": []  
-        },
-        "storage_room": {
-            "type": "room",
-            "holder": null,
-            "description": "A dark, musty room where broken office equipment and forgotten projects go to die. Shelves are piled with random and mysterious unlabeled boxes. Occasionally something useful can be found here.",
-            "NSEW": [null,null,"offices",null],
-            "holding": [] 
-        },
-        "electrical_room": {
-            "type": "room",
-            "holder": null,
-            "description": "A claustrophobic tangle of wires and cables that looks more like a techno-ritual than actual wiring. In the back wall the main breaker can be found with a 'No liquids Allowed' sign beside it is covered in passive-aggressive sticky notes, one of which reads, 'If you disobey, I WILL FIND YOU.'",
-            "NSEW": ["offices",null,"networking_room",null],
-            "holding": []  
-        },
-        "networking_room": {
-            "type": "room",
-            "holder": null,
-            "description": "Racks of humming machinery are packed in tight, like robot soldiers awaiting orders. Occasionally, a monitor flickers with obscure error codes that no ones bothered to fix since 2001. In the corner, there is a simple desk and computer where our sole IT employee Steve slaves away. ",
-            "NSEW": [null,null,null,"electrical_room"],
-            "holding": []  
-        },
-        
-        //ITEMS
-        "breaker": {
-            "type": "item",
-            "holder": "electrical_room",
-            "description": "Make it or break it, its what connects the power to the building.",
-            "attributes": []
-        },
-        "book_shelf": {
-            "type": "item",
-            "holder": null,
-            "description": "Just a plain normal cabinet.",
-            "attributes": []
-        },
-        "cabinet": {
-            "type": "item",
-            "holder": null,
-            "description": "Just a plain normal cabinet.",
-            "attributes": [
-                "container"
-            ]
-        },
-        "flashlight": {
-            "type": "item",
-            "holder": "player",
-            "description": "A handy light for dark times. Don't cause this dark times ;)",
-            "attributes": [
-                "emits_light"
-            ]
-        },
-        "coffee": {
-            "type": "item",
-            "holder": "player",
-            "description": "The rich aroma and warm, comforting glow of the cup offer a brief respite from the challenges of the virtual world. The item increases player's energy and focus.",
-            "attributes": [
-                "energize", 
-                "friendliness"
-            ]
-        },
-        "laxative": {
-            "type": "item",
-            "holder": "player",
-            "description": "A substance that promotes bowel movements, often used to relieve constipation. Do not misuse!",
-            "attributes": [
-                "poison"
-            ]
-        },
-        "poisoned_coffee": {  //coffee gets replaced with this when put laxative
-            "type": "item",
-            "holder": null,
-            "description": "A dangerous drink that appears normal but has been secretly laced with a harmful substance. Consuming it can cause severe effects on the health.",
-            "attributes": [
-                "poison"
-            ]
-        
-        },
-        "usb_hacking_script": {
-            "type": "item",
-            "holder": "player",
-            "description": "A tiny flash drive loaded with some suspicious software. Use it to infiltrate systems, plant evidence, or delete incriminating files just do not get caught with it.",
-            "attributes": []
-        },
-        "key_card" : {
-            "type": "item",
-            "holder": "player",
-            "description": "A raggedy white unassuming keycard with the old company logo. Perhaps someone misplaced their keycard or perhaps it holds some secrets?",
-            "attributes": []
-        },
-        "medicine" : {
-            "type": "item",
-            "holder": null,
-            "description": "Bottle that can be used to heal after getting hit or injured",
-            "attributes": []
-        },
-        "anti_virus_software" : {
-            "type": "item",
-            "holder": null,
-            "description": "Created by Bill Gates, the most powerful code on the planet, can obliterate your USB hacking script",
-            "attributes": []
-        },
-        "blue_flower" : {
-            "type": "item",
-            "holder": "player",
-            "description": "Frosted blue rose, that gives off alluring arouma",
-            "attributes": []
-        },
-        "yellow_flower" : {
-            "type": "item",
-            "holder": "player",
-            "description": "Yellow peonies, they appear to be wilting but may hold on for a few more days",
-            "attributes": []
-        },
-        "old_intern_notes" : {
-            "type": "item",
-            "holder": null,
-            "description": " A stack of old intern notes, some of them are written in a language you can't understand, others are just doodles of cats.",
-            "attributes": []
-        },
-        "intern_coin" : {
-            "type": "item",
-            "holder": null,
-            "description": "Worth 1 cent now, but Krypto King says it's going the Moon!",
-            "attributes": []
-        },
-        "empty_wrapper" : {
-            "type": "item",
-            "holder": null,
-            "description": "Why did you pick this up?",
-            "attributes": []
-        },
-        "stress_ball" : {
-            "type": "item",
-            "holder": null,
-            "description": "For stress relief, if given to a co-worker can improve likability!",
-            "attributes": []
-        },
-        "fake_resume" : {
-            "type": "item",
-            "holder": null,
-            "description": "A masterfully crafted fake resume made to show disloyalty. Useful for annihilating your competition!",
-            "attributes": []
-        },
-        "safe" : {
-            "type": "item",
-            "holder": null,
-            "description": "A heavy jet black steel safe, built to withstand both curiosity and questionable actions of interns. The keypad blinks ominously, waiting for a numeric 4 digit code to open the secerts its hiding.",
-            "attributes": [
-                "heavy"
-            ]
-        },
-        
-        //CHARACTERS
-        "status_effects": ["healthy", "poisoned", "caffinated", "Hacked"],
-        "player": {
-            "type": "character",
-            "holder": "boss_office",
-            "description": "Forge your path ye tarnished and find yourself within the chaos of this workplace. Rise ye tarnished, define whom you'll become and achieve.",
-            "name": null,
-            "status": ["healthy"],
-            "likability": 0,
-            "friendliness": null,  //no behaviour check
-            "turn_speed": 100,  //100 is default, 120 is energized, 70 is poisoned
-            "skip_turn": 0,  //skips turn due to some event e.g. spilled coffee
-            "skip_cause": null,
-            "uses_parser": true
-        },
-        "NPC_1": {
-            "type": "character",
-            "holder": "washroom",
-            "description": "Philip is the type of person who's both easygoing and thoughtful. He's a bit of a dreamer, always coming up with creative ideas and plans, but he's grounded enough to make sure things get done. He's the kind of friend and colleague who'll always check in, even if it's just to share a funny meme or make sure you're doing okay.",
-            "name": "Philip",
-            "status": ["poisoned","hacked"],
-            "dialogue": ["Hey! You ever just stare at the ceiling and wonder if corporate life is secretly some kind of social experiment", "I tried to use my charm to get out of extra tasks. Turns out charm does not work when your charisma stat is negative", "I will imbue you with some wisdom if someone catches you napping at your desk, just say you are meditating. Boom! Instant productivity points.", "If I get fired, I am starting a podcast where I just complain about office life. Working title 'Imprisoned Intern.'"],
-            "likability": 0,
-            "friendliness": 2,  //neutral to the player
-            "turn_speed": 70,
-            "skip_turn": 4,
-            "skip_cause": "dev testing",
-            "uses_parser": false,
-            "holding": ["laxative"] //yeahhh lets try it out
-        },
-        "NPC_2": {
-            "type": "character",
-            "holder": "washroom", //"washroom",
-            "description": "Serah is independent, self-reliant, and values her personal space. She's not one to seek constant company but enjoys solitude and introspection, which allows her to think deeply and work efficiently. Serah has a quiet confidence and doesn't feel the need to seek validation from others. She's content to move at her own pace and follow her own path.",
-            "name": "Serah",
-            "status": ["energized"],
-            "dialogue": ["If you are here to waste my time, at least bring coffee next time.", "If I had a dollar for every time you all asked me a stupid question, I would buy this company just to fire everyone.", "Someone in the break room just tried to motivate me. I almost threw my coffee at them. Almost .........", "Why do I have to put my coffee away every time I visit IT? It is not like I will spill my coffee in the electrical room. But even if I did it would be the architect's fault for designing such a bad floor plan. "],
-            "likability": 0,
-            "friendliness": 0,  //aggressive to the player
-            "turn_speed": 120,
-            "skip_turn": 0,
-            "skip_cause": null,
-            "uses_parser": false
-        },
-        "secretary": {
-            "type": "static_character",
-            "holder": "secretary_office", 
-            "description": "Morgana's got a keen eye for detail and a knack for staying in the loop whether she owns up to it or not. She is the queen of gossip wrapped in a package of 'concerned professionalism' always carrying herself with a calm, composed demeanour. If something is going down in the office you can bet she knows about it. She expertly handles the Boss's mood swings like some kind of art form. Her sense of humour's sharp but she never misses the chance to toss out a sly, well timed jab when the moment's right.",
-            "name": "Morgana",
-            "status": [""],
-            "dialogue": ["You agree with me, right? That old cabinet in the Boss's office looks so out of place. It is so flimsy I would not be surprised if it broke with a simple touch.", "How is the Boss? Busy as always. Though he seems a bit on edge lately. Maybe it is the quarterly report... or maybe it is that ridiculous motivational speaker he agreed to last week. Either way, best not to disturb him unless you have got something worth his time", "Spring would have to be my favourite season for all the blooming roses.  I guess I have always liked them. They just... have a way of brightening up the room. Not that anyone ever brings them around here","Oh, just splendid. You know, managing everyone's crises while still keeping the boss from losing his mind. It is an art form at this point"],
-            "friendliness": 0
-        },
-        "networking_teamlead": {
-            "type": "static_character",
-            "holder": "networking_room", 
-            "description": "",
-            "name": "Steve Jobs",
-            "status": [""],
-            "dialogue": ["Oh great, another intern. You here to ask me to fix your WiFi again? Or maybe you just need help turning your computer on? Let me guess you forgot your password. Typical","Want to know a secert? I found a way directly into bathroom through the vents. I know i know its a little weird but I had to 'they' will not let me leave this room.", "Whoa, whoa, whoa. Just because I am a network genius does not mean I am gonna help you take down the entire company. Besides, I have got my own little network of favours going. Maybe if you sweeten the deal... I might accidentally make a script to bypass security protocols on someone's laptop.","Help they have kept me in this room since 2011, I have not seen the outside world in so long"],
-            "friendliness": 0
-        },
-        "boss": {
-            "type": "static_character",  // does not move.. unless you talk to him
-            "holder": "boss_office", 
-            "description": "",
-            "name": "SOME_NAME",
-            "status": [""],
-            "dialogue": [""],
-            "friendliness": 0
-        },
-
-
-        // if obj not defined and still works with subroutine put here 
-        // e.g. "> examine room" which calls show_character_view(character)
-        // you can further map them to actual game object (see map_to_actual_obj())
-        // OR add your own behaviour using these obj name itself BUT you need to
-        // implement on your functions, see karateyd() on how I did it
-        // "other_valid_obj_name": 
-        // [
-        //     "room", //you can use "room" as is or map it to say "cafeteria" using map_to_actual_obj("room","player")
-        //     //*** ehh who cares, so long as you check them on your functions *** valid because you need only to know the player/npc playing, i.e. you can see who holds them and deduce the room its in thus "room" refers to object's holder
-        //     "around", //same here, "around" refers to the object's holder, especially what the room is holding
-        //     "self",  //refers to the character itself, just add a behaviour for processing
-        //     "yourself",  //"self" or "yourself" in your function, see karateyd() on how I did it
-        //     "myself",
-        //     "Philip",  //maps to actual obj NPC_1
-        //     "Serah"  //and NPC_2
-        // ],
-        "other_valid_obj_name": {
-            //actual_obj: [synonym1, synonym2]
-            "networking_teamlead": ["Steve", "Jobs"],
-            "usb_hacking_script": ["usb","script"],
-            // No need, names can be mapped just by map_to_actual_obj() function
-            // "NPC_1": ["Philip"], 
-            // "NPC_2": ["Serah"],
-            //these first three are are mapped to the local variable of map_to_actual_obj()
-            "room": ["room","around"],
-            "character": ["self","yourself","myself"],
-            "inventory": ["inventory"]
-        }
-
+  "Objects": {
+    //AREAS
+    "Screen": {
+      "type": "screen",
+      "holder": null,
+      "description": "Where the current things can be seen or viewed, i.e. switch view to control the NPC's while showing the big events of the background characters."
+    },
+    "washroom": {
+      "type": "room",
+      // "items": ["laxative", "medicine", 'towel'],
+      "holder": null,
+      "description": "A surprisingly fancy washroom for a place that only pays interns in coffee and stress.  A long mirror spans the wall above a row of sinks, each with a dispenser of antibacterial soap. The mirrors shine so cleanly that they would make a germaphobe cry out of happiness. A small shelf behind the mirror holds an assortment of suspicious supplies perhaps they have some use.",
+      "NSEW": [null, null, "cafeteria", null] //appends "To the EAST is the cafeteria"
+    },
+    "cafeteria": {
+      "type": "room",
+      "holder": "Screen",
+      "description": "A corporate culinary wonderland where dreams go to die. The aroma of burnt coffee mingles with the scent of questionable vegan salmon salad fills the room. The screen on the wall plays a never-ending loop of motivational videos featuring disturbingly happy people. Well, posters are plastered around highlighting the importance of a 120 percent vegan workplace.",
+      "NSEW": [null, null, "main_lobby", "washroom"] //append "To the WEST is the washroom, to the EAST is the main lobby"
+    },
+    "main_lobby": {
+      "type": "room",
+      "holder": null,
+      "description": "The grand , designed to welcome visitors and employees. Fine decor hangs around the room, creating a professional and inviting atmosphere.",
+      "NSEW": ["secretary_office", null, "offices", "cafeteria"]  //appends "to the WEST is the cafeteria, to the NORTH is the secretary office, to the SOUTH is the building exit, to the EAST is the office area"
+    },
+    "secretary_office": {
+      "type": "room",
+      "holder": null,
+      "description": "no description yet",
+      "NSEW": ["boss_office", "main_lobby", null, null] //appends "to the SOUTH is the main_lobby
+    },
+    "boss_office": {
+      "type": "room",
+      "holder": null,
+      "description": "no description yet",
+      "NSEW": [null, "secretary_office", null, "secret_room"],
+      "holding": ["book_shelf", "cabinet"] //optional, the game will create for you by looking at objects "holder"
+      //need for some use cases where room has duplicate items like "shelf"
+    },
+    "secret_room": {
+      "type": "room",
+      "holder": null,
+      "description": "Dust lingers in the air, while the only illumination comes from a single flickering bulb. Old documents labelled 'Totally Legal Stuff' are scattered haphazardly across the floor and in the corner a makeshift sacrificial altar to the stock market gods.  It is pretty obvious this room was never meant to see the light of day, a hidden stash for abandoned files and questionable choices than anything else..",
+      "NSEW": [null, null, "boss_office", null],
+      "holding": []
+    },
+    "offices": {
+      "type": "room",
+      "holder": null,
+      "description": "",
+      "NSEW": ["meeting_room", "electrical_room", "storage_room", "main_lobby"],
+      "holding": []
+    },
+    "meeting_room": {
+      "type": "room",
+      "holder": null,
+      "description": "A room where optimism comes to get murdered by PowerPoint. The long table is surrounded by chairs that are inexplicably uncomfortable despite looking ergonomic. A whiteboard is covered in half-erased ideas that probably made sense to someone at 2 a.m. There is a stack of snacks in the corner that have been untouched since the last anniversary party.",
+      "NSEW": [null, "offices", null, null],
+      "holding": []
+    },
+    "storage_room": {
+      "type": "room",
+      "holder": null,
+      "description": "A dark, musty room where broken office equipment and forgotten projects go to die. Shelves are piled with random and mysterious unlabeled boxes. Occasionally something useful can be found here.",
+      "NSEW": [null, null, "offices", null],
+      "holding": []
+    },
+    "electrical_room": {
+      "type": "room",
+      "holder": null,
+      "description": "A claustrophobic tangle of wires and cables that looks more like a techno-ritual than actual wiring. In the back wall the main breaker can be found with a 'No liquids Allowed' sign beside it is covered in passive-aggressive sticky notes, one of which reads, 'If you disobey, I WILL FIND YOU.'",
+      "NSEW": ["offices", null, "networking_room", null],
+      "holding": []
+    },
+    "networking_room": {
+      "type": "room",
+      "holder": null,
+      "description": "Racks of humming machinery are packed in tight, like robot soldiers awaiting orders. Occasionally, a monitor flickers with obscure error codes that no ones bothered to fix since 2001. In the corner, there is a simple desk and computer where our sole IT employee Steve slaves away. ",
+      "NSEW": [null, null, null, "electrical_room"],
+      "holding": []
     },
 
-    "Commands": {
-        //parse string by removing these
-        "articles": ["of", "a", "an", "the"],
-
-        "verbs": {
-            //movement direction i.e. in the BG change "player/NPC" holder
-            // "> go north" or "> move north" the move and go is implicit
-            "0": ["N","north","NORTH"],
-            "1": ["S","south","SOUTH"],
-            "2": ["E","east","EAST"],
-            "3": ["W","west","WEST"],
-            //change holder of an "item" to "player/NPC"
-            //includes "pick up" the up is implicit
-            "4": ["grab","get","take","pick"],
-            //change holder of an "item" to "room/item"
-              //~~not sure how to implement "put down"~~
-            "5": ["drop", "leave"],
-            //read description of an "item/room/character"
-            "6": ["examine","inspect","check"],
-            //check inventory of "player/NPC"
-            // also shows inventry when doing "> check yourself"
-            "7": ["I","inventory","inv"], 
-            //consume an "item" i.e. in the BG change "item" holder to null and change "player/NPC" attribute
-            "8": ["consume","eat","drink"],
-            "10": ["punch","kick","karate","beat","hit"], //includes "beat up X"
-            "12": ["look"],  //look at X, look around
-            "13": ["give"], //give X to Y
-            "19": ["put"], //put x on Y  //put laxative on coffee
-            "20": ["wait"],
-            "21": ["combine"],  //combine coffee and laxative
-            "22": ["work"], // email
-            "23": ["talk"],
-            "24": ["earn"],
-
-            //************************ NOT IMPLEMETED ************************//
-
-            //interact and change "player/NPC" attribute NEGATIVE
-            "9": ["throw","chuck","fling"], // throw coffee at Y
-            "11": ["sabotage"],  //pick from random negative subroutine with requirements met or NOT
-            //interact and change "player/NPC attribute" POSITIVE
-            "14": ["hug"],
-            "15": ["play"], //play with X
-            //players hint
-            "16": ["hint"],  //I don't think this is needed
-            "17": ["use"],  //use coffee machine
-            "18": ["force"] //force X on Y
-        },
-
-        "prepositions": ["at","in","above","under", 
-            "and","on","to","with"],
-        
-        "lookup_table": [
-            //[verb, direct_obj, preposition, indirect_obj, subroutine_key]
-            [0,null,null,null,"go_direction"],
-            [1,null,null,null,"go_direction"],
-            [2,null,null,null,"go_direction"],
-            [3,null,null,null,"go_direction"],
-            [4,"*",null,null,"take_obj"],
-            [5,"*",null,null,"drop_obj"],
-            [12,"around",null,null,"show_room"],  //see different commands corresponds to same action
-            [6,"room",null,null,"show_room"],   //`> examine room` same as `> look around`
-            [6,"*",null,null,"read_obj_description"],  //`> examine X` same as `look at X`
-            [12,"*",null,null,"read_obj_description"],  // the "at" is implicit
-            // [12,null,"at","*","read_obj_description"],
-            [7,null,null,null,"show_inventory"],  // just "> inv" or "> I"
-            [6,"inventory",null,null,"show_inventory"],  // or "> check inventory"
-            [10,"*",null,null,"karateyd"],
-            [8,"coffee",null,null,"consume_coffee"],
-            // [8,"laxative",null,null,"consume_poison"],  // disabled now laxative can't be consumed by anyone
-            [8,"poisoned_coffee",null,null,"consume_poison"],
-            [8,"*",null,null,"consume_inedible"], // anything other than coffee, laxative, and poisoned coffee is inedible SO add more function for other food
-            [20,null,null,null,"wait_time"],
-            [21,"laxative","and","coffee","make_poisoned_coffee"],
-            [21,"coffee","and","laxative","make_poisoned_coffee"],
-            [19,"laxative","on","coffee","make_poisoned_coffee"],
-            [13,"coffee","to","*","give_coffee_or_poison"], //has chance of detecting poison if you give poisoned coffee
-            [13,"*","to","*","give_obj"],
-            [22,null,null,null,"email_work"],
-            [23,"*",null,null,"talk_to"],
-            [23,"*",null,"*","talk_to"], // because reads [talk,Steve,null,Jobs]
-            [8,"medicine",null,null,"drink_medicine"],
-            [24,null,null,null,"earn_money_command"],
-
-            [9,"coffee","at","*","thrown_coffee_at_x"],
-            [9,"*","at","*","thrown_obj_at_x"]
-        ]
+    //ITEMS
+    "breaker": {
+      "type": "item",
+      "holder": "electrical_room",
+      "description": "Make it or break it, its what connects the power to the building.",
+      "attributes": []
     },
-    
-    "Events": {
-        "variables": {
-            "MAX_INVENTORY": 8,
-            "is_lights_out": false,
-            "remaining_lights_out": 0
-        },
+    "book_shelf": {
+      "type": "item",
+      "holder": null,
+      "description": "Just a plain normal cabinet.",
+      "attributes": []
+    },
+    "cabinet": {
+      "type": "item",
+      "holder": null,
+      "description": "Just a plain normal cabinet.",
+      "attributes": ["container"]
+    },
+    "flashlight": {
+      "type": "item",
+      "holder": "player",
+      "description": "A handy light for dark times. Don't cause this dark times ;)",
+      "attributes": ["emits_light"]
+    },
+    "coffee": {
+      "type": "item",
+      "holder": "player",
+      "description": "The rich aroma and warm, comforting glow of the cup offer a brief respite from the challenges of the virtual world. The item increases player's energy and focus.",
+      "attributes": ["energize", "friendliness"]
+    },
+    "laxative": {
+      "type": "item",
+      "holder": "player",
+      "description": "A substance that promotes bowel movements, often used to relieve constipation. Do not misuse!",
+      "attributes": ["poison"]
+    },
+    "poisoned_coffee": {
+      //coffee gets replaced with this when put laxative
+      "type": "item",
+      "holder": null,
+      "description": "A dangerous drink that appears normal but has been secretly laced with a harmful substance. Consuming it can cause severe effects on the health.",
+      "attributes": ["poison"]
+    },
+    "usb_hacking_script": {
+      "type": "item",
+      "holder": "player",
+      "description": "A tiny flash drive loaded with some suspicious software. Use it to infiltrate systems, plant evidence, or delete incriminating files just do not get caught with it.",
+      "attributes": []
+    },
+    "key_card": {
+      "type": "item",
+      "holder": "player",
+      "description": "A raggedy white unassuming keycard with the old company logo. Perhaps someone misplaced their keycard or perhaps it holds some secrets?",
+      "attributes": []
+    },
+    "medicine": {
+      "type": "item",
+      "holder": null,
+      "description": "Bottle that can be used to heal after getting hit or injured",
+      "attributes": []
+    },
+    "anti_virus_software": {
+      "type": "item",
+      "holder": null,
+      "description": "Created by Bill Gates, the most powerful code on the planet, can obliterate your USB hacking script",
+      "attributes": []
+    },
+    "blue_flower": {
+      "type": "item",
+      "holder": "player",
+      "description": "Frosted blue rose, that gives off alluring arouma",
+      "attributes": []
+    },
+    "yellow_flower": {
+      "type": "item",
+      "holder": "player",
+      "description": "Yellow peonies, they appear to be wilting but may hold on for a few more days",
+      "attributes": []
+    },
+    "old_intern_notes": {
+      "type": "item",
+      "holder": null,
+      "description": " A stack of old intern notes, some of them are written in a language you can't understand, others are just doodles of cats.",
+      "attributes": []
+    },
+    "intern_coin": {
+      "type": "item",
+      "holder": null,
+      "description": "Worth 1 cent now, but Krypto King says it's going the Moon!",
+      "attributes": []
+    },
+    "empty_wrapper": {
+      "type": "item",
+      "holder": null,
+      "description": "Why did you pick this up?",
+      "attributes": []
+    },
+    "stress_ball": {
+      "type": "item",
+      "holder": null,
+      "description": "For stress relief, if given to a co-worker can improve likability!",
+      "attributes": []
+    },
+    "fake_resume": {
+      "type": "item",
+      "holder": null,
+      "description": "A masterfully crafted fake resume made to show disloyalty. Useful for annihilating your competition!",
+      "attributes": []
+    },
+    "safe": {
+      "type": "item",
+      "holder": null,
+      "description": "A heavy jet black steel safe, built to withstand both curiosity and questionable actions of interns. The keypad blinks ominously, waiting for a numeric 4 digit code to open the secerts its hiding.",
+      "attributes": ["heavy"]
+    },
 
-        "email_minigame": {
-            "Subject: Invest Now for Big Profits! \nFrom: KryptoKing@internet.ca\nTo: Intern@corporate.ca\n         Good morning,\n \n      Here is the weekly marketing metrics summary. Social media engagement is up \n      by 5%, but email open rates have dropped by 3%. If you have any suggestions on \n      improving outreach, let us know.\n      Thanks, \n      Marketing Team" : 3,
-            "Subject: I Think I Like You... \nFrom: Secretary@corporate.ca\nTo: Intern@corporate.ca\n \n    I know this might sound weird, but I have been meaning to tell you that I think you are really cool. \n    Maybe we could grab a coffee sometime?\n    Just do not tell the boss. He will lose it.\n \n    Secretary" : -5, 
-            "Subject: Can Someone Check the Air Conditioning? \nFrom: Maintenance@corporate.ca\nTo: AllStaff@corporate.ca\n \n    Hey everyone,\n    We have been getting complaints about strange noises coming from the vents. \n    If anyone notices anything unusual, please let us know. Might just be a raccoon again.\n    Maintenance Team" : -4, 
-            "Subject: Scheduled Server Maintenance \nFrom: IT@corporate.ca\nTo: AllStaff@corporate.ca\n \n    Dear Staff,\n    We will be performing routine server maintenance on Friday from 3 PM to 5 PM. \n    During this time, access to the internal network will be limited. Please save your work and log off before 3 PM. \n    Let us know if you experience issues outside of the maintenance window.\n    IT Team" : 4, 
-            "Subject: Upcoming Investor Meeting \nFrom: ChiefFinancialOfficer@corporate.ca\nTo: Intern@corporate.ca\n \n    Just a heads-up Boss, the Investor meeting has been rescheduled for next Wednesday at 12 PM at Maple Dragon Golf Club. \n    This is a big opportunity as Microsoft says they want to invest $1,000,000 into our new product. \n    Also, let me know if you want any specific data pulled for the meeting.\n    Alex" : 4,
-            "Subject: Dress Code Reminder \nFrom: HR@corporate.ca\nTo: AllStaff@corporate.ca\n \n    Hi Team,\n    We have noticed some employees are not adhering to the business casual dress code. \n    Please ensure that your attire remains professional at all times. \n    Let us keep the office looking sharp!\n    HR Team" : -2, 
-            "Subject: Someone Keeps Stealing Pens! \nFrom: OfficeAdmin@corporate.ca\nTo: AllStaff@corporate.ca\n      Dear All,\n    We have noticed that office supplies, especially pens and notepads, are disappearing faster than usual. \n    Please be mindful and take only what you need. If you see anyone hoarding supplies, kindly remind them to be considerate.\n    Office Admin" : -1, 
-            "Subject: Surpise Free Pizza Day - Friday! \nFrom: HR@corporate.ca\nTo: AllStaff@corporate.ca\n \n    Good news, everyone!\n    Next Friday, we at HR have decided to celebrate Employee Appreciation Day with free pizza in the cafeteria from 12 PM to 2 PM. \n    Stop by and grab a slice on us!\n    Lets show our hardworking employees some love!\n    HR Team" : 3, 
-            "Subject: Suspicious Attachment Detected \nFrom: IT@corporate.ca\nTo: Intern@corporate.ca\n \n    Hi,\n    We detected a suspicious file attachment in your inbox titled 'PerformanceReview.docx.' \n    It appears to be from an external email address. Please avoid opening it and report any suspicious activity immediately.\n    IT Department" : -4, 
-            "Subject: Weird Expenses from Last Quarter \nFrom: Finance@corporate.ca\nTo: Intern@corporate.ca\n \n    Hey,\n    I was reviewing the expense reports from Q4, and I noticed a few weird entries. \n    Someone charged $500 for 'client entertainment' at a karaoke bar three times in one week. \n    Also, there is an invoice for 'motivational posters' that never arrived. \n    Should we be worried about misuse of company funds? Let me know if you think this is worth escalating.\n    Kevin (Finance)" : 5, 
-            "Subject: Noise Complaint - Floor 5 \nFrom: BuildingMaintenance@corporate.ca\nTo: AllStaff@corporate.ca\n \n    Good morning,\n    We have received several reports of loud banging noises coming from Floor 5 after hours. \n    We suspect it could be construction, but there should not be any scheduled work. \n    Let us know if you hear anything unusual.\n    Building Maintenance" : -3, 
-            "Subject: Weird Legal Query \nFrom: Legal@corporate.ca\nTo: AllStaff@corporate.ca\n \n    Hi everyone,\n    We have received a notice about a potential trademark infringement concerning one of our recent marketing campaigns. \n    Please let us know if anyone has used unlicensed images or copyrighted phrases. \n    This could escalate, so please be honest and transparent.\n    Corporate Legal Team" : 4, 
-            "Subject: Re: Frustration with Management \nFrom: Anonymous@leakmail.ca\nTo: Intern@leakmail.ca\n \n    Just between us, I am getting really tired of how the boss micromanages every little thing. \n    A lot of people in the office feel the same way but are too scared to say anything. \n    Someone should really address this before morale tanks completely.\n    Do not mention my name.\n    Concerned Employee" : -5
+    //CHARACTERS
+    "status_effects": ["healthy", "poisoned", "caffinated", "Hacked"],
+    "player": {
+      "type": "character",
+      "holder": "boss_office",
+      "description": "Forge your path ye tarnished and find yourself within the chaos of this workplace. Rise ye tarnished, define whom you'll become and achieve.",
+      "name": null,
+      "status": ["healthy"],
+      "likability": 0,
+      "friendliness": null, //no behaviour check
+      "turn_speed": 100, //100 is default, 120 is energized, 70 is poisoned
+      "skip_turn": 0, //skips turn due to some event e.g. spilled coffee
+      "skip_cause": null,
+      "uses_parser": true
+    },
+    "NPC_1": {
+      "type": "character",
+      "holder": "washroom",
+      "description": "Philip is the type of person who's both easygoing and thoughtful. He's a bit of a dreamer, always coming up with creative ideas and plans, but he's grounded enough to make sure things get done. He's the kind of friend and colleague who'll always check in, even if it's just to share a funny meme or make sure you're doing okay.",
+      "name": "Philip",
+      "status": ["poisoned", "hacked"],
+      "dialogue": [
+        "Hey! You ever just stare at the ceiling and wonder if corporate life is secretly some kind of social experiment",
+        "I tried to use my charm to get out of extra tasks. Turns out charm does not work when your charisma stat is negative",
+        "I will imbue you with some wisdom if someone catches you napping at your desk, just say you are meditating. Boom! Instant productivity points.",
+        "If I get fired, I am starting a podcast where I just complain about office life. Working title 'Imprisoned Intern.'"
+      ],
+      "likability": 0,
+      "friendliness": 2, //neutral to the player
+      "turn_speed": 70,
+      "skip_turn": 4,
+      "skip_cause": "dev testing",
+      "uses_parser": false,
+      "holding": ["laxative"] //yeahhh lets try it out
+    },
+    "NPC_2": {
+      "type": "character",
+      "holder": "washroom", //"washroom",
+      "description": "Serah is independent, self-reliant, and values her personal space. She's not one to seek constant company but enjoys solitude and introspection, which allows her to think deeply and work efficiently. Serah has a quiet confidence and doesn't feel the need to seek validation from others. She's content to move at her own pace and follow her own path.",
+      "name": "Serah",
+      "status": ["energized"],
+      "dialogue": [
+        "If you are here to waste my time, at least bring coffee next time.",
+        "If I had a dollar for every time you all asked me a stupid question, I would buy this company just to fire everyone.",
+        "Someone in the break room just tried to motivate me. I almost threw my coffee at them. Almost .........",
+        "Why do I have to put my coffee away every time I visit IT? It is not like I will spill my coffee in the electrical room. But even if I did it would be the architect's fault for designing such a bad floor plan. "
+      ],
+      "likability": 0,
+      "friendliness": 0, //aggressive to the player
+      "turn_speed": 120,
+      "skip_turn": 0,
+      "skip_cause": null,
+      "uses_parser": false
+    },
+    "secretary": {
+      "type": "static_character",
+      "holder": "secretary_office",
+      "description": "Morgana's got a keen eye for detail and a knack for staying in the loop whether she owns up to it or not. She is the queen of gossip wrapped in a package of 'concerned professionalism' always carrying herself with a calm, composed demeanour. If something is going down in the office you can bet she knows about it. She expertly handles the Boss's mood swings like some kind of art form. Her sense of humour's sharp but she never misses the chance to toss out a sly, well timed jab when the moment's right.",
+      "name": "Morgana",
+      "status": [""],
+      "dialogue": [
+        "You agree with me, right? That old cabinet in the Boss's office looks so out of place. It is so flimsy I would not be surprised if it broke with a simple touch.",
+        "How is the Boss? Busy as always. Though he seems a bit on edge lately. Maybe it is the quarterly report... or maybe it is that ridiculous motivational speaker he agreed to last week. Either way, best not to disturb him unless you have got something worth his time",
+        "Spring would have to be my favourite season for all the blooming roses.  I guess I have always liked them. They just... have a way of brightening up the room. Not that anyone ever brings them around here",
+        "Oh, just splendid. You know, managing everyone's crises while still keeping the boss from losing his mind. It is an art form at this point"
+      ],
+      "friendliness": 0
+    },
+    "networking_teamlead": {
+      "type": "static_character",
+      "holder": "networking_room",
+      "description": "",
+      "name": "Steve Jobs",
+      "status": [""],
+      "dialogue": [
+        "Oh great, another intern. You here to ask me to fix your WiFi again? Or maybe you just need help turning your computer on? Let me guess you forgot your password. Typical",
+        "Want to know a secert? I found a way directly into bathroom through the vents. I know i know its a little weird but I had to 'they' will not let me leave this room.",
+        "Whoa, whoa, whoa. Just because I am a network genius does not mean I am gonna help you take down the entire company. Besides, I have got my own little network of favours going. Maybe if you sweeten the deal... I might accidentally make a script to bypass security protocols on someone's laptop.",
+        "Help they have kept me in this room since 2011, I have not seen the outside world in so long"
+      ],
+      "friendliness": 0
+    },
+    "boss": {
+      "type": "static_character", // does not move.. unless you talk to him
+      "holder": "boss_office",
+      "description": "",
+      "name": "SOME_NAME",
+      "status": [""],
+      "dialogue": [""],
+      "friendliness": 0
+    },
 
-
-
-
-
-            
-
-
-
-
-
-
-
-
-        },
-
-        "event_dialogues": {
-            "greet_at_game_start": "Hey there, welcome to the team!\nWe're excited to have you on board for your internship.\nIt's a great opportunity to learn and grow,\nand we're looking forward to seeing the amazing contributions you'll make.\n",
-            "throw_coffee_at_intern": "WTF man!!! whats wrong with you, now I have to go to the washroom...",
-            "ending_1": "You married the boss's daughter, now you get to inherit the company."
-        }
+    // if obj not defined and still works with subroutine put here
+    // e.g. "> examine room" which calls show_character_view(character)
+    // you can further map them to actual game object (see map_to_actual_obj())
+    // OR add your own behaviour using these obj name itself BUT you need to
+    // implement on your functions, see karateyd() on how I did it
+    // "other_valid_obj_name":
+    // [
+    //     "room", //you can use "room" as is or map it to say "cafeteria" using map_to_actual_obj("room","player")
+    //     //*** ehh who cares, so long as you check them on your functions *** valid because you need only to know the player/npc playing, i.e. you can see who holds them and deduce the room its in thus "room" refers to object's holder
+    //     "around", //same here, "around" refers to the object's holder, especially what the room is holding
+    //     "self",  //refers to the character itself, just add a behaviour for processing
+    //     "yourself",  //"self" or "yourself" in your function, see karateyd() on how I did it
+    //     "myself",
+    //     "Philip",  //maps to actual obj NPC_1
+    //     "Serah"  //and NPC_2
+    // ],
+    "other_valid_obj_name": {
+      //actual_obj: [synonym1, synonym2]
+      "networking_teamlead": ["Steve", "Jobs"],
+      "usb_hacking_script": ["usb", "script"],
+      // No need, names can be mapped just by map_to_actual_obj() function
+      // "NPC_1": ["Philip"],
+      // "NPC_2": ["Serah"],
+      //these first three are are mapped to the local variable of map_to_actual_obj()
+      "room": ["room", "around"],
+      "character": ["self", "yourself", "myself"],
+      "inventory": ["inventory"]
     }
+  },
+
+  "Commands": {
+    //parse string by removing these
+    "articles": ["of", "a", "an", "the"],
+
+    "verbs": {
+      //movement direction i.e. in the BG change "player/NPC" holder
+      // "> go north" or "> move north" the move and go is implicit
+      "0": ["N", "north", "NORTH"],
+      "1": ["S", "south", "SOUTH"],
+      "2": ["E", "east", "EAST"],
+      "3": ["W", "west", "WEST"],
+      //change holder of an "item" to "player/NPC"
+      //includes "pick up" the up is implicit
+      "4": ["grab", "get", "take", "pick"],
+      //change holder of an "item" to "room/item"
+      //~~not sure how to implement "put down"~~
+      "5": ["drop", "leave"],
+      //read description of an "item/room/character"
+      "6": ["examine", "inspect", "check"],
+      //check inventory of "player/NPC"
+      // also shows inventry when doing "> check yourself"
+      "7": ["I", "inventory", "inv"],
+      //consume an "item" i.e. in the BG change "item" holder to null and change "player/NPC" attribute
+      "8": ["consume", "eat", "drink"],
+      "10": ["punch", "kick", "karate", "beat", "hit"], //includes "beat up X"
+      "12": ["look"], //look at X, look around
+      "13": ["give"], //give X to Y
+      "19": ["put"], //put x on Y  //put laxative on coffee
+      "20": ["wait"],
+      "21": ["combine"], //combine coffee and laxative
+      "22": ["work"], // email
+      "23": ["talk"],
+      "24": ["earn"],
+      "25": ["help"],
+
+      //************************ NOT IMPLEMETED ************************//
+
+      //interact and change "player/NPC" attribute NEGATIVE
+      "9": ["throw", "chuck", "fling"], // throw coffee at Y
+      "11": ["sabotage"], //pick from random negative subroutine with requirements met or NOT
+      //interact and change "player/NPC attribute" POSITIVE
+      "14": ["hug"],
+      "15": ["play"], //play with X
+      //players hint
+      "16": ["hint"], //I don't think this is needed
+      "17": ["use"], //use coffee machine
+      "18": ["force"] //force X on Y
+    },
+
+    "prepositions": ["at", "in", "above", "under", "and", "on", "to", "with"],
+
+    "lookup_table": [
+      //[verb, direct_obj, preposition, indirect_obj, subroutine_key]
+      [0, null, null, null, "go_direction"],
+      [1, null, null, null, "go_direction"],
+      [2, null, null, null, "go_direction"],
+      [3, null, null, null, "go_direction"],
+      [4, "*", null, null, "take_obj"],
+      [5, "*", null, null, "drop_obj"],
+      [12, "around", null, null, "show_room"], //see different commands corresponds to same action
+      [6, "room", null, null, "show_room"], //`> examine room` same as `> look around`
+      [6, "*", null, null, "read_obj_description"], //`> examine X` same as `look at X`
+      [12, "*", null, null, "read_obj_description"], // the "at" is implicit
+      // [12,null,"at","*","read_obj_description"],
+      [7, null, null, null, "show_inventory"], // just "> inv" or "> I"
+      [6, "inventory", null, null, "show_inventory"], // or "> check inventory"
+      [10, "*", null, null, "karateyd"],
+      [8, "coffee", null, null, "consume_coffee"],
+      // [8,"laxative",null,null,"consume_poison"],  // disabled now laxative can't be consumed by anyone
+      [8, "poisoned_coffee", null, null, "consume_poison"],
+      [8, "*", null, null, "consume_inedible"], // anything other than coffee, laxative, and poisoned coffee is inedible SO add more function for other food
+      [20, null, null, null, "wait_time"],
+      [21, "laxative", "and", "coffee", "make_poisoned_coffee"],
+      [21, "coffee", "and", "laxative", "make_poisoned_coffee"],
+      [19, "laxative", "on", "coffee", "make_poisoned_coffee"],
+      [13, "coffee", "to", "*", "give_coffee_or_poison"], //has chance of detecting poison if you give poisoned coffee
+      [13, "*", "to", "*", "give_obj"],
+      [22, null, null, null, "email_work"],
+      [23, "*", null, null, "talk_to"],
+      [23, "*", null, "*", "talk_to"], // because reads [talk,Steve,null,Jobs]
+      [8, "medicine", null, null, "drink_medicine"],
+      [24, null, null, null, "earn_money_command"],
+      [25, null, null, null, "help_command"],
+
+      [9, "coffee", "at", "*", "thrown_coffee_at_x"],
+      [9, "*", "at", "*", "thrown_obj_at_x"]
+    ]
+  },
+
+  "Events": {
+    "variables": {
+      "MAX_INVENTORY": 8,
+      "is_lights_out": false,
+      "remaining_lights_out": 0
+    },
+
+    "email_minigame": {
+      "Subject: Invest Now for Big Profits! \nFrom: KryptoKing@internet.ca\nTo: Intern@corporate.ca\n         Good morning,\n \n      Here is the weekly marketing metrics summary. Social media engagement is up \n      by 5%, but email open rates have dropped by 3%. If you have any suggestions on \n      improving outreach, let us know.\n      Thanks, \n      Marketing Team": 3,
+      "Subject: I Think I Like You... \nFrom: Secretary@corporate.ca\nTo: Intern@corporate.ca\n \n    I know this might sound weird, but I have been meaning to tell you that I think you are really cool. \n    Maybe we could grab a coffee sometime?\n    Just do not tell the boss. He will lose it.\n \n    Secretary": -5,
+      "Subject: Can Someone Check the Air Conditioning? \nFrom: Maintenance@corporate.ca\nTo: AllStaff@corporate.ca\n \n    Hey everyone,\n    We have been getting complaints about strange noises coming from the vents. \n    If anyone notices anything unusual, please let us know. Might just be a raccoon again.\n    Maintenance Team": -4,
+      "Subject: Scheduled Server Maintenance \nFrom: IT@corporate.ca\nTo: AllStaff@corporate.ca\n \n    Dear Staff,\n    We will be performing routine server maintenance on Friday from 3 PM to 5 PM. \n    During this time, access to the internal network will be limited. Please save your work and log off before 3 PM. \n    Let us know if you experience issues outside of the maintenance window.\n    IT Team": 4,
+      "Subject: Upcoming Investor Meeting \nFrom: ChiefFinancialOfficer@corporate.ca\nTo: Intern@corporate.ca\n \n    Just a heads-up Boss, the Investor meeting has been rescheduled for next Wednesday at 12 PM at Maple Dragon Golf Club. \n    This is a big opportunity as Microsoft says they want to invest $1,000,000 into our new product. \n    Also, let me know if you want any specific data pulled for the meeting.\n    Alex": 4,
+      "Subject: Dress Code Reminder \nFrom: HR@corporate.ca\nTo: AllStaff@corporate.ca\n \n    Hi Team,\n    We have noticed some employees are not adhering to the business casual dress code. \n    Please ensure that your attire remains professional at all times. \n    Let us keep the office looking sharp!\n    HR Team": -2,
+      "Subject: Someone Keeps Stealing Pens! \nFrom: OfficeAdmin@corporate.ca\nTo: AllStaff@corporate.ca\n      Dear All,\n    We have noticed that office supplies, especially pens and notepads, are disappearing faster than usual. \n    Please be mindful and take only what you need. If you see anyone hoarding supplies, kindly remind them to be considerate.\n    Office Admin": -1,
+      "Subject: Surpise Free Pizza Day - Friday! \nFrom: HR@corporate.ca\nTo: AllStaff@corporate.ca\n \n    Good news, everyone!\n    Next Friday, we at HR have decided to celebrate Employee Appreciation Day with free pizza in the cafeteria from 12 PM to 2 PM. \n    Stop by and grab a slice on us!\n    Lets show our hardworking employees some love!\n    HR Team": 3,
+      "Subject: Suspicious Attachment Detected \nFrom: IT@corporate.ca\nTo: Intern@corporate.ca\n \n    Hi,\n    We detected a suspicious file attachment in your inbox titled 'PerformanceReview.docx.' \n    It appears to be from an external email address. Please avoid opening it and report any suspicious activity immediately.\n    IT Department": -4,
+      "Subject: Weird Expenses from Last Quarter \nFrom: Finance@corporate.ca\nTo: Intern@corporate.ca\n \n    Hey,\n    I was reviewing the expense reports from Q4, and I noticed a few weird entries. \n    Someone charged $500 for 'client entertainment' at a karaoke bar three times in one week. \n    Also, there is an invoice for 'motivational posters' that never arrived. \n    Should we be worried about misuse of company funds? Let me know if you think this is worth escalating.\n    Kevin (Finance)": 5,
+      "Subject: Noise Complaint - Floor 5 \nFrom: BuildingMaintenance@corporate.ca\nTo: AllStaff@corporate.ca\n \n    Good morning,\n    We have received several reports of loud banging noises coming from Floor 5 after hours. \n    We suspect it could be construction, but there should not be any scheduled work. \n    Let us know if you hear anything unusual.\n    Building Maintenance": -3,
+      "Subject: Weird Legal Query \nFrom: Legal@corporate.ca\nTo: AllStaff@corporate.ca\n \n    Hi everyone,\n    We have received a notice about a potential trademark infringement concerning one of our recent marketing campaigns. \n    Please let us know if anyone has used unlicensed images or copyrighted phrases. \n    This could escalate, so please be honest and transparent.\n    Corporate Legal Team": 4,
+      "Subject: Re: Frustration with Management \nFrom: Anonymous@leakmail.ca\nTo: Intern@leakmail.ca\n \n    Just between us, I am getting really tired of how the boss micromanages every little thing. \n    A lot of people in the office feel the same way but are too scared to say anything. \n    Someone should really address this before morale tanks completely.\n    Do not mention my name.\n    Concerned Employee": -5
+    },
+
+    "event_dialogues": {
+      "greet_at_game_start": "Hey there, welcome to the team!\nWe're excited to have you on board for your internship.\nIt's a great opportunity to learn and grow,\nand we're looking forward to seeing the amazing contributions you'll make.\n",
+      "throw_coffee_at_intern": "WTF man!!! whats wrong with you, now I have to go to the washroom...",
+      "ending_1": "You married the boss's daughter, now you get to inherit the company."
+    }
+  }
 }
