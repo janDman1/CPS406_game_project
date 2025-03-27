@@ -36,7 +36,11 @@ class Events:
             next_room = self.O.find_next_room(dir_converted, room)
             if next_room is not None:
                 if next_room == "secret_room":
-                    if "key_card" not in self.O.get_holding(character):
+                    if "cabinet" in self.O.get_holding("boss_office"):
+                        if do_print:
+                            print("That way leads to nowhere")
+                        return False
+                    elif "key_card" not in self.O.get_holding(character):
                         if do_print:
                             print("you don't have keycard to access room")
                         return False
@@ -79,7 +83,10 @@ class Events:
         for i in ["N", "S", "E", "W"]:
             next_room = self.O.find_next_room(i, room)
             if next_room is not None:
-                print(f"to the {self.direction(i)} is {next_room}")
+                if next_room == "secret_room" and "cabinet" in self.O.get_holding("boss_office"):
+                    return True
+                else:
+                    print(f"to the {self.direction(i)} is {next_room}")
         return True
 
     def print_list(self, lst: list[str], add_newline=True) -> None:
@@ -221,18 +228,18 @@ class Events:
                 print(f"{obj}: ", end="")
                 print(self.O.get_obj_description(obj))
                 self.delay()
-                print("It requires a 4 digit code to open. Do you wish to try? (y/n)")
+                print("It requires a 4 letter code to open. Do you wish to try? (y/n)")
 
                 while True:
                     user_input = input("> ").strip().lower()
                     if user_input == "y":
                         print("You decided to try opening the safe.")
                         # Add logic for attempting to open the safe here
-                        correct_code = "1234"
+                        correct_code = "lucy"
                         attempts = 3
 
                         while attempts > 0:
-                            code = input("Enter the 4 digit code: ")
+                            code = input("Enter the 4 letter code: ").strip().lower()
                             if code == correct_code:
                                 print("The safe opens and you find a keycard inside.")
                                 self.O.add_holding("key_card", character)
@@ -247,7 +254,7 @@ class Events:
                                     )
                                 else:
                                     print(
-                                        "You have run out of attempts. The safe is now locked."
+                                        "You have run out of attempts. The safe is now locked. Try again later."
                                     )
                                     return False
 
@@ -419,6 +426,19 @@ class Events:
                     )
                     if where_coffee_at is not None:
                         self.O.remove_holding(obj, where_coffee_at)
+                elif obj == "cabinet":
+                    if do_print:
+                        print("You punched the cabinet", end="")
+                        self.dotdotdot()
+                        print("and broke your fingers! ouch!")
+                        self.delay()
+                        print("But as the cabinet breaks into pieces you see something suspicious behind it")
+                        self.O.add_holding("broken_cabinet","boss_office")
+                        self.O.remove_holding("cabinet","boss_office")
+                        
+                    return True
+                
+                
                 else:
                     if do_print:
                         print("uhh", end="")
@@ -428,7 +448,7 @@ class Events:
                 return True
             else:
                 if do_print:
-                    print("You can't see that")
+                    print("You can't see that") # --------------------------------------------------------------- maybe mistake
                 return False
         if obj_type == "character":
             victim_name = self.O.get_character_data("name", obj)
@@ -685,6 +705,50 @@ class Events:
             self[k] = v
 
     def greet_at_game_start(self, character) -> None:
+        print('''
+                 _____      _                       ____   __  __            _____           _    
+                |  __ \    | |                     / __ \ / _|/ _|          |  __ \         | |    
+                | |__) |___| |_ _   _ _ __ _ __   | |  | | |_| |_ ___ _ __  | |__) |   _ ___| |__  
+                |  _  // _ \ __| | | | '__| '_ \  | |  | |  _|  _/ _ \ '__| |  _  / | | / __| '_ \
+                | | \ \  __/ |_| |_| | |  | | | | | |__| | | | ||  __/ |    | | \ \ |_| \__ \ | | |
+                |_|  \_\___|\__|\__,_|_|  |_| |_|  \____/|_| |_| \___|_|    |_|  \_\__,_|___/_| |_| ''')
+       
+        self.delay(2)
+
+
+        print(''' -----------------------------------------------------------------------------------------------------------------------------
+                                                     STORY
+             
+
+
+As a new intern at Pentagon Inc., you must secure a return offer by currying favour with your boss. Compete against two other
+interns in this cutthroat corporate environment, using clever tactics and collected items to gain the upper hand. Build
+relationships, sabotage rivals, and manipulate situations to boost your standing. Use whatever means at your disposal to get
+the full-time position as the job market is tough and you will never again have a job.
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------
+                                                     OBJECTIVE
+
+
+                       
+Secure a return job offer by earning the boss's favour
+Undermine rival interns using creative sabotage or forge friendships by working together
+Explore the map and collect useful items to gain advantages
+Discover hidden secrets and unlock unique endings
+             
+             
+-------------------------------------------------------------------------------------------------------------------------------
+''')
+       
+
+
+
+
+       
+        self.delay(3)
         print(self["event_dialogues"]["greet_at_game_start"])
         name = input("what is your name? \n> ")
         room = self.O.get_holder(character)
@@ -698,14 +762,67 @@ class Events:
                 print("Logging into computer to check emails/work.........\n")
 
             # Initialize the generator only once
+     
+
             if self.email_gen is None:
                 self.email_gen = self.email_generator()
 
             try:
+
+
+                '''
+                if character != "player":
+                    random_input = rnd.choice([True, False])
+                '''
+
                 email_message, email_score = next(self.email_gen)
                 if do_print:
+                    
+                    current_likeability = self.O.get_character_data("likability", character)
+
                     print(email_message)
-                    print(f"Impact on reputation: {email_score}\n")
+                    #for player and NPC 
+                    if character == "player":
+                        user_input = input("Do you want to forward this email to the boss? (y/n): ").strip().lower()
+                        print("")
+                    else:
+                        user_input = rnd.choice(['y', 'n'])
+
+                    if user_input == "y":
+                        self.O.set_character_data(
+                            character, "likability", current_likeability + email_score
+                        )
+                        print("Email forwarded to the boss.")
+                        self.delay()
+                        self.dotdotdot()
+                        
+                        if email_score > 0:
+                            print("The boss thanks you for bringing this to his attention.")
+                        else:
+                            print("The boss thinks this email is wasting his time.")
+                        print(f"Impact on likability: {email_score}\n")
+                        return True
+                    else:
+                        if user_input == "n":
+                            print("You chose not to forward the email.\n")
+                            self.dotdotdot()
+                        else:
+                            print("Invalid input. Email not forwarded. Should have put a proper input.\n")
+                            self.dotdotdot()
+                        if email_score > 0:
+                            self.O.set_character_data(
+                                character, "likability", current_likeability - email_score
+                            )
+                            print("You failed at doing a simple job and the boss is disappointed that you exist.")
+                            print(f"Impact on likability: -{email_score}\n")
+                        else:
+                            print("Sometimes no news is good news! Impact on likability: 2\n")
+                            
+                            self.O.set_character_data(character, "likability", current_likeability + 2)
+                        return True
+                    
+                    #print(self.O.get_character_data("likability", character))
+                    
             except StopIteration:
                 if do_print:
                     print("No more emails to read.")
@@ -751,6 +868,8 @@ class Events:
                     )
                 self.O.change_holder(to_character, room, adjacent_room)
 
+
+            #Talk to NPC
             if to_character != "player":
                 # Retrieve dialogues and initialize a pointer for the character if not already set
                 dialogues = self.O.get_character_data("dialogue", to_character)
