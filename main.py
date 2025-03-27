@@ -116,7 +116,7 @@ def do_action(
         case "drink_medicine":
             return E.drink_medicine(cmd[1], character, do_print)
         case "help_command":
-            return P.help_command()
+            return P.help_command(do_print)
         case _:
             return False
 
@@ -131,14 +131,14 @@ def player_action(character: objUID, P: Parser, E: Events):
     valid_action = False
     while not valid_action:
         unparsed_cmd = input("> ")
-        if unparsed_cmd in ["Q", "quit", "skip day"]:
+        if unparsed_cmd in ["Q", "q", "quit", "skip day"]:
             break
 
         cmd = P.parse_input(unparsed_cmd)
         subroutine_key = P.find_subroutine_call(cmd)
 
-        print(f"DEBUG cmd: {cmd}")
-        print(f"DEBUG subroutine_key: {subroutine_key}")
+        # print(f"DEBUG cmd: {cmd}")
+        # print(f"DEBUG subroutine_key: {subroutine_key}")
 
         verb_str = (
             P.get_back_the_verb_string(int(cmd[0]), unparsed_cmd)
@@ -233,13 +233,12 @@ def electric_shutdown():
     print("situation...")
     msvcrt.getch()
     print()
-    power_down(5)
+    power_down(20)
     msvcrt.getch()
     pass
 
 
 def check_power():
-    print(f"remaining_lights_out: {E["variables"]["remaining_lights_out"]}")
     if E["variables"]["remaining_lights_out"] > 0:
         E["variables"]["remaining_lights_out"] = (
             E["variables"]["remaining_lights_out"] - 1
@@ -314,8 +313,10 @@ for day in range(1, game_day + 1):
     print(f"# DAY {day} #")
     print("#####################################################################")
     for turn in range(turns_in_a_day):
-        if day == 3 and turn == 2:
+        if day == 3 and turn == 10:
             electric_shutdown()
+        if day == 1 and turn == 2:
+            E.boss_anniversary()
         for character in characterS:
             print(f"{character.upper()} TURN")
             print("*************************************")
@@ -348,7 +349,7 @@ for day in range(1, game_day + 1):
 
             # sleep(t)
 
-            if unparsed_cmd in ["Q", "quit"]:
+            if unparsed_cmd in ["Q", "q", "quit"]:
                 break
             if unparsed_cmd == "skip day":
                 skip_day = True
@@ -371,7 +372,7 @@ for day in range(1, game_day + 1):
     break
 
 ending_result()  # show the result based on all stats
-if unparsed_cmd in ["Q", "quit"]:
+if unparsed_cmd in ["Q", "q", "quit"]:
     os.abort()
 print()
 print("YOU FINISHED THE GAME!")

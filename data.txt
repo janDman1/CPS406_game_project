@@ -22,7 +22,7 @@
     "main_lobby": {
       "type": "room",
       "holder": null,
-      "description": "The grand , designed to welcome visitors and employees. Fine decor hangs around the room, creating a professional and inviting atmosphere.",
+      "description": "The grand lobby, designed to welcome visitors and employees. Fine decor hangs around the room, creating a professional and inviting atmosphere.",
       "NSEW": ["secretary_office", null, "offices", "cafeteria"]  //appends "to the WEST is the cafeteria, to the NORTH is the secretary office, to the SOUTH is the building exit, to the EAST is the office area"
     },
     "secretary_office": {
@@ -134,7 +134,7 @@
     },
     "key_card": {
       "type": "item",
-      "holder": "player",
+      "holder": null,
       "description": "A raggedy white unassuming keycard with the old company logo. Perhaps someone misplaced their keycard or perhaps it holds some secrets?",
       "attributes": []
     },
@@ -197,6 +197,24 @@
       "holder": null,
       "description": "A heavy jet black steel safe, built to withstand both curiosity and questionable actions of interns. The keypad blinks ominously, waiting for a numeric 4 digit code to open the secerts its hiding.",
       "attributes": ["heavy"]
+    },
+    "strawberry_cake": {
+      "type": "item",
+      "holder": null,
+      "description": "A delightful strawberry cake with layers of fluffy sponge and fresh strawberries on top. Its sweet aroma is irresistible, making it a perfect treat for any occasion.",
+      "attributes": []
+    },
+    "chocolate_cake": {
+      "type": "item",
+      "holder": null,
+      "description": "A rich and decadent chocolate cake with a glossy ganache finish. The layers are moist and filled with creamy chocolate frosting, a dream come true for chocolate lovers.",
+      "attributes": []
+    },
+    "vanilla_cake": {
+      "type": "item",
+      "holder": null,
+      "description": "A classic vanilla cake with a smooth buttercream frosting. Its light and airy texture makes it a timeless favorite for celebrations and gatherings.",
+      "attributes": []
     },
 
     //CHARACTERS
@@ -285,7 +303,7 @@
       "type": "static_character", // does not move.. unless you talk to him
       "holder": "boss_office",
       "description": "",
-      "name": "SOME_NAME",
+      "name": "Mr.Boss",
       "status": [""],
       "dialogue": [""],
       "friendliness": 0
@@ -311,6 +329,7 @@
       //actual_obj: [synonym1, synonym2]
       "networking_teamlead": ["Steve", "Jobs"],
       "usb_hacking_script": ["usb", "script"],
+      "chocolate_cake": ["chocolate"],
       // No need, names can be mapped just by map_to_actual_obj() function
       // "NPC_1": ["Philip"],
       // "NPC_2": ["Serah"],
@@ -415,7 +434,8 @@
     "variables": {
       "MAX_INVENTORY": 8,
       "is_lights_out": false,
-      "remaining_lights_out": 0
+      "remaining_lights_out": 0,
+      "is_boss_anniversary": false
     },
 
     "email_minigame": {

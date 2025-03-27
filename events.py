@@ -8,6 +8,7 @@ from obj_dict import ObjDict
 
 class Events:
     """Class to modify the data structure"""
+
     type objUID = str
 
     def __init__(self):
@@ -740,16 +741,29 @@ class Events:
                 pass  # say something, maybe randomized
             if to_character == "boss":
                 # say something and the boss scootches over
-                if do_print:
-                    print("I don't want to talk to you, I'm busy! or other dialogues")
-                adjacent_room = self.O.find_next_room(
-                    rnd.choice(["N", "S", "E", "W"]), room
-                )
-                while adjacent_room == None:
+                is_boss_anniversary = self["variables"]["is_boss_anniversary"]
+
+                if is_boss_anniversary:
+                    if do_print:
+                        print("************BOSS ANNIVERSARY PARTY************")
+                        print("THANK YOU FOR COMING TO MY PARTY! \n"
+                        "I'M SO HAPPY TO HAVE YOU ALL HERE! \n"
+                        "I'M SO GRATEFUL FOR ALL OF YOU! \n"
+                        "DO YOU KNOW WHAT WILL MAKE THIS PARTY EVEN BETTER? \n"
+                        "IF YOU ALL GET BACK TO WORK! AND CAKE! \n")
+                else:   
+                    if do_print:
+                        print("I don't want to talk to you, I'm busy!")
+
                     adjacent_room = self.O.find_next_room(
                         rnd.choice(["N", "S", "E", "W"]), room
                     )
-                self.O.change_holder(to_character, room, adjacent_room)
+                    while adjacent_room == None:
+                        adjacent_room = self.O.find_next_room(
+                            rnd.choice(["N", "S", "E", "W"]), room
+                        )
+
+                    self.O.change_holder(to_character, room, adjacent_room)
 
             if to_character != "player":
                 # Retrieve dialogues and initialize a pointer for the character if not already set
@@ -811,6 +825,7 @@ class Events:
             return False
         gifted_name = self.O.get_character_data("name", to_character)
         current_friendliness = self.O.get_character_data("friendliness", to_character)
+        current_likability = self.O.get_character_data("likability", to_character)
         if obj in speaker_inventory:
 
             if (
@@ -864,6 +879,34 @@ class Events:
                             )
                         return False
 
+                if gifted_name == "Mr.Boss":
+                    if obj == "chocolate_cake":
+                        self.O.remove_holding(obj, from_character)
+                        self.O.set_character_data(
+                            from_character, "likability", current_likability + 20
+                        )
+                        if do_print:
+                            print(
+                                "I love chocolate cake! You're the best!"
+                            )
+                        return True
+                    if obj == "strawberry_cake":
+                        self.O.remove_holding(obj, from_character)
+                        self.O.set_character_data(
+                            from_character, "likability", current_likability + 2
+                        )
+                        if do_print:
+                            print("I like chocolate more, but thank you!")
+                        return True
+                    if obj == "vanilla_cake":
+                        self.O.remove_holding(obj, from_character)
+                        self.O.set_character_data(
+                            from_character, "likability", current_likability - 10
+                        )
+                        if do_print:
+                            print("I HATE VANILLA CAKE! GET OUT OF MY SIGHT!")
+                        return True
+
                 # Everyone else
                 if do_print:
                     print(f"{gifted_name}: Thanks! You're the best!")
@@ -882,3 +925,22 @@ class Events:
             if do_print:
                 print(f"You don't have {obj}")
         return False
+
+    def boss_anniversary(self):
+        self["variables"]["is_boss_anniversary"] = True
+
+        # Teleport players
+        for obj in self.O.keys():
+            if self.O.is_valid_obj(obj) and (
+                self.O.get_obj_type(obj) == "character" or obj == "boss"
+            ):
+                room = self.O.get_holder(obj)
+                self.O.change_holder(obj, room, "meeting_room")
+
+        self.talk_to("boss", "player")
+
+        self.O.add_holding("strawberry_cake", "cafeteria")
+        self.O.add_holding("vanilla_cake", "cafeteria")
+        self.O.add_holding("chocolate_cake", "cafeteria")
+
+        return
