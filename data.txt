@@ -370,7 +370,8 @@
       "18": ["force"] //force X on Y
     },
 
-    "prepositions": ["at", "in", "above", "under", "and", "on", "to", "with"],
+    "prepositions": //["at", "in", "above", "under", 
+        ["and", "on", "to", "with"],
 
     "lookup_table": [
       //[verb, direct_obj, preposition, indirect_obj, subroutine_key]

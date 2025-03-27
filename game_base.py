@@ -1004,9 +1004,19 @@ class Parser(dict):
         return rnd.choice(list(self["verbs"][str(verb)]))
 
     def help_command(self) -> dict:
-        print("Commands: ")
-        pprint(self["verbs"])
+        # print("Commands: ")
+        # pprint(self["verbs"])
 
+        
+        print("COMMANDS [ARGUMENTS]")
+        for cmd in self["lookup_table"]:
+            verb,obj1,prep,obj2,_ = cmd
+            verb = list(self["verbs"][str(cmd[0])])[0]
+            obj1 = "[room/item/character]" if obj1 == "*" else "" if obj1 == None else cmd[1]
+            prep = str(self["prepositions"]).split("/") if prep == "*" else "" if prep == None else cmd[2]
+            obj2 = "[room/item/character]" if obj2 == "*" else "" if obj2 == None else cmd[3]
+            print(f"{verb} {obj1} {prep} {obj2}")
+            
         """
         loop through lookup_table, get the first row, get the first element of the row, verb[number], get second element,  f"verb[number]: second element"
         verbs[list(P["lookup_table"])]
