@@ -1,168 +1,17 @@
-from pprint import pprint
-import re
 import random as rnd
 from time import sleep
 import sys
 
 
-def remove_comments(string):
-    pattern = r"(\".*?\"|\'.*?\')|(/\*.*?\*/|//[^\r\n]*$)"
-    # first group captures quoted strings (double or single)
-    # second group captures comments (//single-line or /* multi-line */)
-    regex = re.compile(pattern, re.MULTILINE | re.DOTALL)
-
-    def _replacer(match):
-        # if the 2nd group (capturing comments) is not None,
-        # it means we have captured a non-quoted (real) comment string.
-        if match.group(2) is not None:
-            return ""  # so we will return empty to remove the comment
-        else:  # otherwise, we will return the 1st group
-            return match.group(1)  # captured quoted-string
-
-    return regex.sub(_replacer, string)
-
-
-type objUID = str
-
-
-class ObjDict(dict):
-    """
-    Isolate game Data Structure and the Methods into this class.
-    Also used for save and load feature.
-    """
-
-    # adds the dot (.) syntax notation for dictionary
-    # e.g. Class.holder works as Class["holder"]
-    def __getattr__(self, attr):
-        return self[attr]
-
-    def __setattr__(self, attr, value):
-        self[attr] = value
-
-    def print_obj(self, obj: objUID) -> None:
-        """For debugging :)"""
-        if self.is_valid_obj(obj):
-            obj_str = {obj: self[obj]}
-            pprint(obj_str)
-
-    def get_obj_type(self, obj: objUID) -> str:
-        if self.is_valid_obj(obj):
-            return self[obj]["type"]
-        return "invalid object"
-
-    def is_valid_obj(self, obj: objUID):
-        if obj not in self:
-            return False
-        if not isinstance(self[obj], dict):
-            return False
-        for attr in ["type", "description", "holder"]:
-            if attr not in self[obj].keys():
-                return False
-        return True
-
-    def get_obj_description(self, obj: objUID) -> str:
-        return self[obj]["description"]
-
-    def initiate_holdings(self) -> None:
-        """
-        follow the object holder and add into holding,
-        adding empty holding for the object
-        (which might or might not be rewritten)
-        while traversing all objects in ObjDict
-        """
-        visited = set()
-        for obj in self.keys():
-            if self.is_valid_obj(obj):
-                src_obj = self[obj]["holder"]
-                if src_obj is not None:
-                    self.add_holding(obj, src_obj, False)
-                    visited.add(src_obj)
-                if obj not in visited:
-                    self.add_holding(None, obj, False)
-
-    def get_holder(self, obj: objUID) -> objUID:
-        return self[obj]["holder"]
-
-    def get_holding(self, obj: objUID) -> list[objUID]:
-        return self[obj]["holding"].copy() if "holding" in self[obj] else []
-
-    def add_holding(
-        self, obj: None | objUID, src_obj: objUID, holder_update=True
-    ) -> None:
-        if self.is_valid_obj(src_obj):  # only works if source object exists/valid
-            if obj is None:
-                if "holding" not in self[src_obj]:
-                    self[src_obj]["holding"] = []
-            elif self.is_valid_obj(obj):
-                if "holding" not in self[src_obj]:
-                    self[src_obj]["holding"] = [obj]
-                else:  # already has "holding"
-                    self[src_obj]["holding"].append(obj)
-
-                if holder_update:
-                    self[obj]["holder"] = src_obj  # point obj to newest holder
-
-    def remove_holding(self, obj: objUID, src_obj: objUID, holder_update=True) -> None:
-        self[src_obj]["holding"].remove(obj)
-        if holder_update:
-            self.remove_holder(obj)
-
-    def remove_holder(self, obj: objUID) -> None:
-        self[obj]["holder"] = None
-
-    def change_holder(self, obj: objUID, src_obj: objUID, dest_obj: objUID) -> None:
-        self.remove_holding(obj, src_obj, False)
-        self.add_holding(obj, dest_obj)
-
-    type room_objUID = str
-
-    def find_next_room(self, dir: str, room: room_objUID) -> room_objUID | None:
-        if dir == "N":
-            return self[room]["NSEW"][0]
-        if dir == "S":
-            return self[room]["NSEW"][1]
-        if dir == "E":
-            return self[room]["NSEW"][2]
-        if dir == "W":
-            return self[room]["NSEW"][3]
-        return None
-
-    def has_item_attribute(self, attr: str, obj: objUID) -> bool:
-        return attr in self[obj]["attributes"]
-
-    def get_character_data(self, data: str, char: objUID):  # -> str|int|None:
-        if data not in [
-            "name",
-            "status",
-            "likability",
-            "dialogue",
-            "friendliness",
-            "turn_speed",
-            "skip_turn",
-            "skip_cause",
-            "uses_parser",
-        ]:
-            raise KeyError(f"No {data} object Data in {char}")
-        return self[char][data]
-
-    def set_character_data(self, char: str, data: str, value: str | int | bool) -> None:
-        if data not in [
-            "name",
-            "status",
-            "likability",
-            "dialogue",
-            "friendliness",
-            "turn_speed",
-            "skip_turn",
-            "skip_cause",
-            "uses_parser",
-        ]:
-            raise KeyError(f"No {data} object Data in {char}")
-        self[char][data] = value
+from obj_dict import ObjDict
 
 
 class Events:
     """Class to modify the data structure"""
+    type objUID = str
+
+    def __init__(self):
+        self.email_gen = None
 
     # add the [] syntax notation like dictionary
     # e.g. Class["variables"] works as Class.variables
@@ -842,185 +691,194 @@ class Events:
         self.O.set_character_data(character, "name", name)
         print(f"\nYou were dropped of at the {room}.\n")
 
+    def email_work(self, character: objUID, do_print=True) -> bool:
+        room = self.O.get_holder(character)
+        if room == "offices":
+            if do_print:
+                print("Logging into computer to check emails/work.........\n")
 
-class Parser(dict):
-    """Parser. what the class name says."""
+            # Initialize the generator only once
+            if self.email_gen is None:
+                self.email_gen = self.email_generator()
 
-    # adds the dot (.) syntax for dictionary
-    # e.g. Class.holder works as Class["holder"]
-    def __getattr__(self, attr):
-        return self[attr]
-
-    def __setattr__(self, attr, value):
-        self[attr] = value
-
-    def fix_json_import(self) -> None:
-        "fix data stuct lists into sets for better lookup"
-        for k, l in self["verbs"].items():
-            self["verbs"][k] = set(l)
-        self["articles"] = set(self["articles"])
-        self["prepositions"] = set(self["prepositions"])
-
-    def load_game_dictionary(self, O: ObjDict) -> None:
-        "makes a set of all the objects in game for object lookup"
-
-        obj_nameS = set()
-        for k in O.keys():
-            if O.is_valid_obj(k):
-                obj_nameS.add(k)
-            if "name" in O[k]:
-                nam = O[k]["name"]
-                if nam != None:
-                    obj_nameS.add(nam)
-
-        valid_obj_synonyms = set()
-        for _o, synonym_lst in O["other_valid_obj_name"].items():
-            for s in synonym_lst:
-                valid_obj_synonyms.add(s)
-
-        self.game_dictionary = obj_nameS.union(valid_obj_synonyms)
-
-    def parse_input(self, user_input: str) -> list[int | str | None]:
-        """
-        Parses user input into mapable [verb:int, obj1:str, prep:str, obj2:str] for lookup in lookup_table e.g. [put, laxative, in, coffee].
-        Verifies if verbs, objects, and preposition are valid.
-        """
-        verb, obj1, prep, obj2 = None, None, None, None
-        unprocessed_list = user_input.split()
-        v_idx = None
-        o1_idx = None
-        o2_idx = None
-        processed1_list = []
-        processed2_list = []
-
-        for a in self["articles"]:
-            for _ in range(len(unprocessed_list)):
-                try:
-                    unprocessed_list.remove(a)
-                except:
-                    continue
-
-        for v, synonymS in self["verbs"].items():
-            for s in synonymS:
-                try:
-                    v_idx = unprocessed_list.index(s)
-                    try:
-                        processed1_list = unprocessed_list[v_idx + 1 :]
-                    except:
-                        pass
-                    verb = int(v)
-                    break
-                except ValueError:
-                    continue
-            if verb is not None:
-                break
-
-        # obj1 eaten
-        for valid_obj in self["game_dictionary"]:
             try:
-                o1_idx = processed1_list.index(valid_obj)
-                break
-            except:
-                continue
+                email_message, email_score = next(self.email_gen)
+                if do_print:
+                    print(email_message)
+                    print(f"Impact on reputation: {email_score}\n")
+            except StopIteration:
+                if do_print:
+                    print("No more emails to read.")
+                self.email_gen = None
 
-        # obj2 eaten
-        for valid_obj in self["game_dictionary"]:
-            try:
-                next_obj_idx = processed1_list.index(valid_obj)
-                if next_obj_idx != o1_idx:
-                    o2_idx = next_obj_idx
-                    break
-                continue
-            except:
-                continue
+            return True
+        if do_print:
+            print("You need to go to the offices to do this")
+        return False
 
-        if o2_idx is not None and o1_idx is not None:
-            if o1_idx > o2_idx:
-                o1_idx, o2_idx = o2_idx, o1_idx
-        obj1 = processed1_list[o1_idx] if o1_idx is not None else None
-        obj2 = processed1_list[o2_idx] if o2_idx is not None else None
+    # Generator to yield one email at a time
+    def email_generator(self):
+        for email, score in self["email_minigame"].items():
+            yield email, score
 
-        # obj1 will never be None before obj2
-        processed2_list = (
-            []
-            if o2_idx is None and o1_idx is None
-            else (
-                processed1_list[o1_idx:]
-                if o2_idx is None
-                else processed1_list[o1_idx : o2_idx + 1]
-            )
-        )
+    def talk_to(
+        self, to_character: objUID, from_character: objUID, do_print=True
+    ) -> bool:
+        to_character = self.map_to_actual_obj(
+            to_character, from_character
+        )  # e.g. maps Philip to NPC_1
+        room = self.O.get_holder(from_character)
+        if self.O.get_obj_type(to_character) not in ["character", "static_character"]:
+            if do_print:
+                print(
+                    f"You cannot talk to a {to_character}, this is an object, you can say something else"
+                )
+            return False
+        to_char_name = self.O.get_character_data("name", to_character)
+        if to_character in self.O.get_holding(room):  # the character same room as you
+            if to_character == "secretary":
+                pass  # say something, maybe randomized
+            if to_character == "boss":
+                # say something and the boss scootches over
+                if do_print:
+                    print("I don't want to talk to you, I'm busy! or other dialogues")
+                adjacent_room = self.O.find_next_room(
+                    rnd.choice(["N", "S", "E", "W"]), room
+                )
+                while adjacent_room == None:
+                    adjacent_room = self.O.find_next_room(
+                        rnd.choice(["N", "S", "E", "W"]), room
+                    )
+                self.O.change_holder(to_character, room, adjacent_room)
 
-        # preposition eaten
-        for w in processed2_list:
-            if w in self["prepositions"]:
-                prep = w
-        if prep not in processed2_list:
-            prep = None
+            if to_character != "player":
+                # Retrieve dialogues and initialize a pointer for the character if not already set
+                dialogues = self.O.get_character_data("dialogue", to_character)
+                if not hasattr(self, "dialogue_pointers"):
+                    self.dialogue_pointers = {}
+                if to_character not in self.dialogue_pointers:
+                    self.dialogue_pointers[to_character] = 0
 
-        return [verb, obj1, prep, obj2]
+                if dialogues and len(dialogues) > 0:
+                    # Get the current dialogue based on the pointer
+                    current_index = self.dialogue_pointers[to_character]
+                    if do_print:
+                        print(dialogues[current_index])
 
-    type subroutineID = str
+                    # Update the pointer to the next dialogue, looping back to the start if necessary
+                    self.dialogue_pointers[to_character] = (current_index + 1) % len(
+                        dialogues
+                    )
+                    return True
+                else:
+                    if do_print:
+                        print("Silence..... they have nothing else to say to you")
+                    return False
 
-    def find_subroutine_call(self, cmd: list[int | str | None]) -> subroutineID:
-        """maps user input to subroutine_key (aka eventID), optimally using trie"""
-        impossible_val = 10  # impossible because max score is 3
-        score = [impossible_val] * len(self["lookup_table"])
-        for i, match in enumerate(self["lookup_table"]):
-            if cmd == match[:4]:
-                return match[4]
-            match_verb = cmd[0] == match[0]
-            match_obj1 = cmd[1] == match[1] or match[1] == "*" and cmd[1] is not None
-            match_preb = cmd[2] == match[2] or match[2] == "*" and cmd[2] is not None
-            match_obj2 = cmd[3] == match[3] or match[3] == "*" and cmd[3] is not None
-            if match_verb and match_obj1 and match_obj1 and match_preb and match_obj2:
-                score[i] = 0
-                if match[1] == "*":
-                    score[i] += 1
-                if match[2] == "*":
-                    score[i] += 1
-                if match[3] == "*":
-                    score[i] += 1
-        best_match = 0 if score[0] is not impossible_val else None
-        min_so_far = score[0]
-        for i, v in enumerate(score[0:]):
-            if v is not impossible_val:
-                if v < min_so_far:
-                    min_so_far = v
-                    best_match = i
-        return (
-            self["lookup_table"][best_match][4]
-            if best_match is not None
-            else "no match"
-        )
-
-    def get_back_the_verb_string(self, verb: int, unprocessed_cmd: str) -> str:
-        for v in self["verbs"][str(verb)]:
-            if v in unprocessed_cmd:
-                return v
-        return "no verb found"
-
-    def get_random_verb_string(self, verb: int) -> str:
-        return rnd.choice(list(self["verbs"][str(verb)]))
-
-    def help_command(self) -> dict:
-        # print("Commands: ")
-        # pprint(self["verbs"])
-
-        
-        print("COMMANDS [ARGUMENTS]")
-        for cmd in self["lookup_table"]:
-            verb,obj1,prep,obj2,_ = cmd
-            verb = list(self["verbs"][str(cmd[0])])[0]
-            obj1 = "[room/item/character]" if obj1 == "*" else "" if obj1 == None else cmd[1]
-            prep = str(self["prepositions"]).split("/") if prep == "*" else "" if prep == None else cmd[2]
-            obj2 = "[room/item/character]" if obj2 == "*" else "" if obj2 == None else cmd[3]
-            print(f"{verb} {obj1} {prep} {obj2}")
-            
-        """
-        loop through lookup_table, get the first row, get the first element of the row, verb[number], get second element,  f"verb[number]: second element"
-        verbs[list(P["lookup_table"])]
-        
-        
-        """
+        else:  # character not in the ROOM
+            if do_print:
+                print(f"go find {to_char_name} or say something else")
         return True
+
+    def drink_medicine(self, obj, character: objUID, do_print=True) -> bool:
+        inventory = self.O.get_holding(character)
+        if obj in inventory:
+            if self.O.get_character_data("turn_speed", character) < 100:
+                if do_print:
+                    print("I drink medicine now say something")
+                self.O.remove_holding(obj, character)
+                self.O.set_character_data(character, "turn_speed", 100)  # make healthy
+                return True
+            else:
+                if do_print:
+                    print("Why? You are perfectly healthy")
+                return False
+        if do_print:
+            print("You don't have item! or maybe say something else")
+        return False
+
+    def give_obj(
+        self, obj: objUID, to_character: objUID, from_character: objUID, do_print=True
+    ) -> bool:
+        room = self.O.get_holder(from_character)
+        to_character = self.map_to_actual_obj(to_character, from_character)
+        obj = self.map_to_actual_obj(obj, from_character)
+        speaker_inventory = self.O.get_holding(from_character)
+
+        if self.O.get_obj_type(to_character) not in ["character", "static_character"]:
+            if do_print:
+                print(f"You cannot give to a {to_character}")
+            return False
+        gifted_name = self.O.get_character_data("name", to_character)
+        current_friendliness = self.O.get_character_data("friendliness", to_character)
+        if obj in speaker_inventory:
+
+            if (
+                self["variables"]["is_lights_out"]
+                and "flashlight" not in speaker_inventory
+            ):
+                if do_print:
+                    print("you cannot see anything let alone give an item to anyone")
+                return False
+
+            if to_character in self.O.get_holding(room):
+                if gifted_name == "Steve Jobs":
+                    if obj == "usb_hacking_script":
+                        if len(speaker_inventory) < self["variables"]["MAX_INVENTORY"]:
+                            self.O.remove_holding(obj, from_character)
+                            self.O.set_character_data(
+                                to_character, "friendliness", current_friendliness + 5
+                            )
+                            if do_print:
+                                print("heres a intern coin")
+                            self.O.add_holding("intern_coin", from_character)
+                            return True
+                        else:
+                            if do_print:
+                                print(
+                                    "Classic Intern holding more stuff then you can use, try dropping some stuff if you really want this device"
+                                )
+                            return False
+                    else:
+                        if do_print:
+                            print(
+                                "What is this? Worldy goods are useless to me the only thing I treasure crypto currency."
+                            )
+                        return False
+
+                if gifted_name == "Morgana":
+                    if obj == "flower":
+                        self.O.remove_holding(obj, from_character)
+                        self.O.set_character_data(
+                            to_character, "friendliness", current_friendliness + 5
+                        )
+                        if do_print:
+                            print(
+                                "Thank you so much!! This is perfect for my desk. In exchange I will give you a suggestion for dealing with the Boss. When ever he is anrgy he fratincally spells his dogs name L-U-C-Y outloud in his office for some reason. At that time best not to be to close."
+                            )  # INPUT HINT here
+                        return True
+                    else:
+                        if do_print:
+                            print(
+                                "Sorry my desk is over flowing as is, I do not need more stuff. But I would like something to liven the place up."
+                            )
+                        return False
+
+                # Everyone else
+                if do_print:
+                    print(f"{gifted_name}: Thanks! You're the best!")
+                    print(f"Friendliness with {gifted_name} increased")
+                self.O.remove_holding(obj, from_character)
+                self.O.add_holding(obj, to_character)
+                if self.O.get_character_data("uses_parser", from_character):
+                    self.O.set_character_data(
+                        to_character, "friendliness", current_friendliness + 1
+                    )
+                return True
+            else:
+                if do_print:
+                    print(f"Go look for {gifted_name}")
+        else:
+            if do_print:
+                print(f"You don't have {obj}")
+        return False
