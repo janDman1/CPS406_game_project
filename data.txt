@@ -53,7 +53,7 @@
     "offices": {
       "type": "room",
       "holder": null,
-      "description": "A maze of cubicles, each filled with half-drunk coffee cups, stacks of sticky notes, and the faint hum of computers left on standby. The air is thick with the smell of printer toner and desperation, as if the walls themselves are absorbing the stress of endless deadlines. A single yellow flower sits on one desk, a lone spark of life in an otherwise mechanical space.",,
+      "description": "A maze of cubicles, each filled with half-drunk coffee cups, stacks of sticky notes, and the faint hum of computers left on standby. The air is thick with the smell of printer toner and desperation, as if the walls themselves are absorbing the stress of endless deadlines. A single yellow flower sits on one desk, a lone spark of life in an otherwise mechanical space.",
       "NSEW": ["meeting_room", "electrical_room", "storage_room", "main_lobby"],
       "holding": ["yellow_flower","workstation_1","workstation_2","workstation_3"]
     },
@@ -197,7 +197,7 @@
     },
     "old_intern_notes": {
       "type": "item",
-      "holder": null,
+      "holder": "player",
       "description": " A stack of old intern notes, some of them are written in a language you can't understand, others are just doodles of cats.",
       "attributes": []
     },
