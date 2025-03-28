@@ -245,6 +245,7 @@
       "holder": null,
       "description": "A classic vanilla cake with a smooth buttercream frosting. Its light and airy texture makes it a timeless favorite for celebrations and gatherings.",
       "attributes": []
+    },
     "suspious_document": {
       "type": "item",
       "holder": null,
@@ -466,6 +467,10 @@
       [21, "laxative", "and", "coffee", "make_poisoned_coffee"],
       [21, "coffee", "and", "laxative", "make_poisoned_coffee"],
       [19, "laxative", "on", "coffee", "make_poisoned_coffee"],
+      [19, "*", "on","workstation_1","place_obj"],
+      [19, "*", "on","workstation_2","place_obj"],
+      [19, "*", "on","workstation_3","place_obj"],
+
       [13, "coffee", "to", "*", "give_coffee_or_poison"], //has chance of detecting poison if you give poisoned coffee
       [8, "cake", null, null, "consume_cake"],
       [13, "strawberry", null, "cake", "consume_cake"],

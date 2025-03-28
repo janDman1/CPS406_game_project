@@ -121,6 +121,8 @@ def do_action(
             return E.give_cake(cmd[1], cmd[3], character, do_print)
         case "consume_cake":
             return E.consume_cake(cmd[1], character, do_print)
+        case "place_obj":
+            return E.place_obj(cmd[1], cmd[3], character, do_print)
         case _:
             return False
 

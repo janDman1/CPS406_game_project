@@ -725,6 +725,41 @@ class Events:
             print("waiting", end="")
             self.dotdotdot()
         return True
+    
+    def place_obj(self, source: objUID, destination: objUID, character: objUID, do_print=True ) -> bool:
+        if destination not in ["workstation_1", "workstation_2", "workstation_3"]:
+            if do_print:
+                print(f"{destination} is not a valid storage area.")
+            return False
+        else:
+            current_likability = self.O.get_character_data("likability", character)
+            if do_print:
+                self.O.remove_holding(source, character)
+                if destination == "workstation_1":
+                    self.O.add_holding(source, "workstation_1")
+                    if do_print:
+                        print(f"{source} has been placed on workstation_1.")
+                        return True
+                elif destination == "workstation_2":
+                    self.O.add_holding(source, "workstation_2")
+                    if do_print:
+                        print(f"{source} has been placed on Philp's workstation.")
+                        return True
+                elif destination == "workstation_3":
+                    self.O.add_holding(source, "workstation_3")
+                    if do_print:
+                        print(f"{source} has been placed on Serah's workstation.")
+                        return True
+                
+            
+                
+                   
+
+
+            return True
+
+        
+        return True
 
     def make_poisoned_coffee(self, character: objUID, do_print=True) -> bool:
         # maybe make it work later for coffee in the room
