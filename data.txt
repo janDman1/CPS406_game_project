@@ -38,7 +38,7 @@
     "boss_office": {
       "type": "room",
       "holder": null,
-      "description": "A grand yet oddly intimidating office with a massive mahogany desk dominating the space. Framed awards and motivational quotes line the walls, but the overflowing trash bin suggests chaos beneath the surface. A tall bookshelf leans slightly under the weight of legal tomes and unread business journals, while a locked cabinet hints at secrets best left undiscovered.",
+      "description": "A grand yet oddly intimidating office with a massive mahogany desk dominating the space. Framed awards and motivational quotes line the walls, but the overflowing trash bin suggests chaos beneath the surface. A tall bookshelf leans slightly under the weight of legal tomes and unread business journals, while a old suspicious cabinet hints at secrets best left undiscovered.",
       "NSEW": [null, "secretary_office", null, "secret_room"],
       "holding": ["book_shelf", "cabinet"] //optional, the game will create for you by looking at objects "holder"
       //need for some use cases where room has duplicate items like "shelf"
@@ -97,13 +97,13 @@
     "book_shelf": {
       "type": "item",
       "holder": null,
-      "description": "Just a plain normal cabinet.",
+      "description": "Just a plain normal book self.",
       "attributes": []
     },
     "cabinet": {
       "type": "item",
       "holder": null,
-      "description": "Just a plain normal cabinet.",
+      "description": "An old and frail cabinet that looks completely out of place. Its worn-out surface and creaky hinges suggest it has seen better days, and it seems like it could fall apart at any moment.",
       "attributes": ["container"]
     },
     "broken_cabinet": {
@@ -198,7 +198,7 @@
     "old_intern_notes": {
       "type": "item",
       "holder": "player",
-      "description": " A stack of old intern notes, some of them are written in a language you can't understand, others are just doodles of cats.",
+      "description": "Old intern notes, some of them are written in a language you can't understand, others are just doodles of cats. maybe a genius can translate them?",
       "attributes": []
     },
     "intern_coin": {
