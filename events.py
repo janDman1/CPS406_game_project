@@ -1,14 +1,14 @@
 import random as rnd
-from time import sleep
 import sys
 
-
+from time import sleep
 from obj_dict import ObjDict
+
+type objUID = str
 
 
 class Events:
     """Class to modify the data structure"""
-    type objUID = str
 
     def __init__(self):
         self.email_gen = None
@@ -83,7 +83,9 @@ class Events:
         for i in ["N", "S", "E", "W"]:
             next_room = self.O.find_next_room(i, room)
             if next_room is not None:
-                if next_room == "secret_room" and "cabinet" in self.O.get_holding("boss_office"):
+                if next_room == "secret_room" and "cabinet" in self.O.get_holding(
+                    "boss_office"
+                ):
                     return True
                 else:
                     print(f"to the {self.direction(i)} is {next_room}")
@@ -432,13 +434,14 @@ class Events:
                         self.dotdotdot()
                         print("and broke your fingers! ouch!")
                         self.delay()
-                        print("But as the cabinet breaks into pieces you see something suspicious behind it")
-                        self.O.add_holding("broken_cabinet","boss_office")
-                        self.O.remove_holding("cabinet","boss_office")
-                        
+                        print(
+                            "But as the cabinet breaks into pieces you see something suspicious behind it"
+                        )
+                        self.O.add_holding("broken_cabinet", "boss_office")
+                        self.O.remove_holding("cabinet", "boss_office")
+
                     return True
-                
-                
+
                 else:
                     if do_print:
                         print("uhh", end="")
@@ -448,7 +451,9 @@ class Events:
                 return True
             else:
                 if do_print:
-                    print("You can't see that") # --------------------------------------------------------------- maybe mistake
+                    print(
+                        "You can't see that"
+                    )  # --------------------------------------------------------------- maybe mistake
                 return False
         if obj_type == "character":
             victim_name = self.O.get_character_data("name", obj)
@@ -705,18 +710,20 @@ class Events:
             self[k] = v
 
     def greet_at_game_start(self, character) -> None:
-        print('''
+        print(
+            """
                  _____      _                       ____   __  __            _____           _    
                 |  __ \    | |                     / __ \ / _|/ _|          |  __ \         | |    
                 | |__) |___| |_ _   _ _ __ _ __   | |  | | |_| |_ ___ _ __  | |__) |   _ ___| |__  
                 |  _  // _ \ __| | | | '__| '_ \  | |  | |  _|  _/ _ \ '__| |  _  / | | / __| '_ \
                 | | \ \  __/ |_| |_| | |  | | | | | |__| | | | ||  __/ |    | | \ \ |_| \__ \ | | |
-                |_|  \_\___|\__|\__,_|_|  |_| |_|  \____/|_| |_| \___|_|    |_|  \_\__,_|___/_| |_| ''')
-       
+                |_|  \_\___|\__|\__,_|_|  |_| |_|  \____/|_| |_| \___|_|    |_|  \_\__,_|___/_| |_| """
+        )
+
         self.delay(2)
 
-
-        print(''' -----------------------------------------------------------------------------------------------------------------------------
+        print(
+            """ -----------------------------------------------------------------------------------------------------------------------------
                                                      STORY
              
 
@@ -741,13 +748,9 @@ Discover hidden secrets and unlock unique endings
              
              
 -------------------------------------------------------------------------------------------------------------------------------
-''')
-       
+"""
+        )
 
-
-
-
-       
         self.delay(3)
         print(self["event_dialogues"]["greet_at_game_start"])
         name = input("what is your name? \n> ")
@@ -762,31 +765,37 @@ Discover hidden secrets and unlock unique endings
                 print("Logging into computer to check emails/work.........\n")
 
             # Initialize the generator only once
-     
 
             if self.email_gen is None:
                 self.email_gen = self.email_generator()
 
             try:
 
-
-                '''
+                """
                 if character != "player":
                     random_input = rnd.choice([True, False])
-                '''
+                """
 
                 email_message, email_score = next(self.email_gen)
                 if do_print:
-                    
-                    current_likeability = self.O.get_character_data("likability", character)
+
+                    current_likeability = self.O.get_character_data(
+                        "likability", character
+                    )
 
                     print(email_message)
-                    #for player and NPC 
+                    # for player and NPC
                     if character == "player":
-                        user_input = input("Do you want to forward this email to the boss? (y/n): ").strip().lower()
+                        user_input = (
+                            input(
+                                "Do you want to forward this email to the boss? (y/n): "
+                            )
+                            .strip()
+                            .lower()
+                        )
                         print("")
                     else:
-                        user_input = rnd.choice(['y', 'n'])
+                        user_input = rnd.choice(["y", "n"])
 
                     if user_input == "y":
                         self.O.set_character_data(
@@ -795,9 +804,11 @@ Discover hidden secrets and unlock unique endings
                         print("Email forwarded to the boss.")
                         self.delay()
                         self.dotdotdot()
-                        
+
                         if email_score > 0:
-                            print("The boss thanks you for bringing this to his attention.")
+                            print(
+                                "The boss thanks you for bringing this to his attention."
+                            )
                         else:
                             print("The boss thinks this email is wasting his time.")
                         print(f"Impact on likability: {email_score}\n")
@@ -807,22 +818,32 @@ Discover hidden secrets and unlock unique endings
                             print("You chose not to forward the email.\n")
                             self.dotdotdot()
                         else:
-                            print("Invalid input. Email not forwarded. Should have put a proper input.\n")
+                            print(
+                                "Invalid input. Email not forwarded. Should have put a proper input.\n"
+                            )
                             self.dotdotdot()
                         if email_score > 0:
                             self.O.set_character_data(
-                                character, "likability", current_likeability - email_score
+                                character,
+                                "likability",
+                                current_likeability - email_score,
                             )
-                            print("You failed at doing a simple job and the boss is disappointed that you exist.")
+                            print(
+                                "You failed at doing a simple job and the boss is disappointed that you exist."
+                            )
                             print(f"Impact on likability: -{email_score}\n")
                         else:
-                            print("Sometimes no news is good news! Impact on likability: 2\n")
-                            
-                            self.O.set_character_data(character, "likability", current_likeability + 2)
+                            print(
+                                "Sometimes no news is good news! Impact on likability: 2\n"
+                            )
+
+                            self.O.set_character_data(
+                                character, "likability", current_likeability + 2
+                            )
                         return True
-                    
-                    #print(self.O.get_character_data("likability", character))
-                    
+
+                    # print(self.O.get_character_data("likability", character))
+
             except StopIteration:
                 if do_print:
                     print("No more emails to read.")
@@ -868,8 +889,7 @@ Discover hidden secrets and unlock unique endings
                     )
                 self.O.change_holder(to_character, room, adjacent_room)
 
-
-            #Talk to NPC
+            # Talk to NPC
             if to_character != "player":
                 # Retrieve dialogues and initialize a pointer for the character if not already set
                 dialogues = self.O.get_character_data("dialogue", to_character)

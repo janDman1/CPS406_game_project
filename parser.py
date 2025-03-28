@@ -1,9 +1,11 @@
 from obj_dict import ObjDict
 import random as rnd
 
+type subroutineID = str
+
 
 class Parser(dict):
-    """Parser. what the class name says."""
+    """Parser for IO with user input and game output"""
 
     # adds the dot (.) syntax for dictionary
     # e.g. Class.holder works as Class["holder"]
@@ -118,8 +120,6 @@ class Parser(dict):
             prep = None
 
         return [verb, obj1, prep, obj2]
-
-    type subroutineID = str
 
     def find_subroutine_call(self, cmd: list[int | str | None]) -> subroutineID:
         """maps user input to subroutine_key (aka eventID), optimally using trie"""

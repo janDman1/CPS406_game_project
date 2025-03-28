@@ -1,0 +1,91 @@
+import unittest
+from unittest.mock import MagicMock, patch
+from events import Events 
+
+
+class TestEvents(unittest.TestCase):
+    def setUp(self):
+        self.events = Events()
+        self.events.O = MagicMock()
+        self.events["variables"] = {"is_lights_out": False}
+
+    def test_set_get_item(self):
+        self.events["email_gen"] = "test@example.com"
+        self.assertEqual(self.events["email_gen"], "test@example.com")
+
+    def test_load_object_dictionary(self):
+        mock_obj_dict = MagicMock()
+        self.events.load_object_dictionary(mock_obj_dict)
+        self.assertEqual(self.events.O, mock_obj_dict)
+
+    def test_go_direction_valid_move(self):
+        character = "char1"
+        self.events.O.is_valid_obj.return_value = True
+        self.events.O.get_obj_type.return_value = "character"
+        self.events.O.get_holder.return_value = "room1"
+        self.events.direction = MagicMock(return_value=["N"])
+        self.events.O.find_next_room.return_value = "room2"
+        self.events.O.get_holding.return_value = []
+        self.events.O.change_holder = MagicMock()
+        self.events.show_character_view = MagicMock()
+
+        result = self.events.go_direction(0, character, do_print=False)
+
+        self.assertTrue(result)
+        self.events.O.change_holder.assert_called_with(character, "room1", "room2")
+        self.events.show_character_view.assert_called_with(character, False)
+
+    @patch("builtins.print")
+    def test_show_character_view_no_print(self, mock_print):
+        character = "char1"
+        result = self.events.show_character_view(character, do_print=False)
+        self.assertTrue(result)
+        mock_print.assert_not_called()
+
+    @patch("builtins.print")
+    def test_show_character_view_lights_out_no_flashlight(self, mock_print):
+        character = "char1"
+        self.events.O.get_holder.return_value = "room1"
+        self.events.O.get_holding.side_effect = lambda x: (
+            [character] if x == "room1" else []
+        )
+        self.events["variables"]["is_lights_out"] = True
+
+        with patch.object(self.events, "delay") as mock_delay:
+            result = self.events.show_character_view(character, do_print=True)
+
+        self.assertFalse(result)
+        mock_print.assert_any_call("It's too dark, I cannot see anything")
+        mock_print.assert_any_call("Maybe a flashlight will help")
+        mock_delay.assert_called()
+
+    @patch("builtins.print")
+    def test_show_character_view_valid_room(self, mock_print):
+        character = "char1"
+        self.events.O.get_holder.return_value = "room1"
+        self.events.O.get_holding.side_effect = lambda x: (
+            [character, "item1", "npc1"] if x == "room1" else []
+        )
+        self.events.O.get_obj_description.return_value = "A bright room"
+        self.events.O.get_obj_type.side_effect = lambda x: (
+            "character" if x == "npc1" else "object"
+        )
+        self.events.O.get_character_data.return_value = "NPC Name"
+        self.events.direction = MagicMock(side_effect=lambda x: x)
+        self.events.O.find_next_room.side_effect = lambda i, r: (
+            "room2" if i in ["N", "E"] else None
+        )
+        self.events.print_list = MagicMock()
+
+        result = self.events.show_character_view(character, do_print=True)
+
+        self.assertTrue(result)
+        mock_print.assert_any_call("ROOM1")
+        mock_print.assert_any_call("A bright room")
+        self.events.print_list.assert_called_with(["item1", "NPC Name"])
+        mock_print.assert_any_call("to the N is room2")
+        mock_print.assert_any_call("to the E is room2")
+
+
+if __name__ == "__main__":
+    unittest.main()
