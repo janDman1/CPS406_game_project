@@ -174,6 +174,14 @@ class Events:
                 self.dotdotdot()
                 print("(the thoughts disappeared from your mind)")
             return False
+        
+        #if heavy item no pick up
+
+        if self.O.get_obj_type(obj) == "item":
+            if self.O.has_item_attribute("heavy", obj):
+                if do_print:
+                    print(f"{obj} is too heavy to pick up.")
+            return False
 
         # "flashlight" in inventory is a placeholder, change to if holding any item with "illuminate" attribute later
         if self["variables"]["is_lights_out"] and "flashlight" not in inventory:
