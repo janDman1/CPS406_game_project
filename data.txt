@@ -22,7 +22,7 @@
     "main_lobby": {
       "type": "room",
       "holder": null,
-      "description": "The grand , designed to welcome visitors and employees. Fine decor hangs around the room, creating a professional and inviting atmosphere.",
+      "description": "The grand lobby, designed to welcome visitors and employees. Fine decor hangs around the room, creating a professional and inviting atmosphere.",
       "NSEW": ["secretary_office", null, "offices", "cafeteria"]  //appends "to the WEST is the cafeteria, to the NORTH is the secretary office, to the SOUTH is the building exit, to the EAST is the office area"
     },
     "secretary_office": {
@@ -160,7 +160,7 @@
     },
     "key_card": {
       "type": "item",
-      "holder": "player",
+      "holder": null,
       "description": "A raggedy white unassuming keycard with the old company logo. Perhaps someone misplaced their keycard or perhaps it holds some secrets?",
       "attributes": []
     },
@@ -224,6 +224,23 @@
       "description": "A heavy jet black steel safe, built to withstand both curiosity and questionable actions of interns. The keypad blinks ominously, waiting for a numeric 4 letter code to open the secerts its hiding.",
       "attributes": ["heavy"]
     },
+    "strawberry_cake": {
+      "type": "item",
+      "holder": null,
+      "description": "A delightful strawberry cake with layers of fluffy sponge and fresh strawberries on top. Its sweet aroma is irresistible, making it a perfect treat for any occasion.",
+      "attributes": []
+    },
+    "chocolate_cake": {
+      "type": "item",
+      "holder": null,
+      "description": "A rich and decadent chocolate cake with a glossy ganache finish. The layers are moist and filled with creamy chocolate frosting, a dream come true for chocolate lovers.",
+      "attributes": []
+    },
+    "vanilla_cake": {
+      "type": "item",
+      "holder": null,
+      "description": "A classic vanilla cake with a smooth buttercream frosting. Its light and airy texture makes it a timeless favorite for celebrations and gatherings.",
+      "attributes": []
     "suspious_document": {
       "type": "item",
       "holder": null,
@@ -317,7 +334,7 @@
       "type": "static_character", // does not move.. unless you talk to him
       "holder": "boss_office",
       "description": "",
-      "name": "SOME_NAME",
+      "name": "Mr.Boss",
       "status": [""],
       "dialogue": [""],
       "friendliness": 0
@@ -340,16 +357,31 @@
     //     "Serah"  //and NPC_2
     // ],
     "other_valid_obj_name": {
+
       //actual_obj: [synonym1, synonym2]
       "networking_teamlead": ["Steve", "Jobs"],
       "usb_hacking_script": ["usb", "script"],
+      "chocolate_cake": ["chocolate"],
+      "vanilla_cake": ["vanilla"],
+      "strawberry_cake": ["strawberry"],
+      "blue_flower": ["blue"],
+      "yellow_flower": ["yellow"],
+
       // No need, names can be mapped just by map_to_actual_obj() function
       // "NPC_1": ["Philip"],
       // "NPC_2": ["Serah"],
-      //these first three are are mapped to the local variable of map_to_actual_obj()
+
+      //these two are are mapped to the local variable of map_to_actual_obj()
       "room": ["room", "around"],
       "character": ["self", "yourself", "myself"],
-      "inventory": ["inventory"]
+
+      // these won't be mapped to an object unlike the rest above
+      // so need manual check for these
+      "manual check": [
+        "inventory", // inventory is a list and is not object
+        "cake" // for cake there are three kinds
+      ]
+
     }
   },
 
@@ -371,7 +403,7 @@
       //~~not sure how to implement "put down"~~
       "5": ["drop", "leave"],
       //read description of an "item/room/character"
-      "6": ["examine", "inspect", "check"],
+      "6": ["EXAMINE", "inspect", "check"],
       //check inventory of "player/NPC"
       // also shows inventry when doing "> check yourself"
       "7": ["I", "inventory", "inv"],
@@ -430,6 +462,25 @@
       [21, "coffee", "and", "laxative", "make_poisoned_coffee"],
       [19, "laxative", "on", "coffee", "make_poisoned_coffee"],
       [13, "coffee", "to", "*", "give_coffee_or_poison"], //has chance of detecting poison if you give poisoned coffee
+      [8, "cake", null, null, "consume_cake"],
+      [13, "strawberry", null, "cake", "consume_cake"],
+      [13, "chocolate", null, "cake", "consume_cake"],
+      [13, "vanilla", null, "cake", "consume_cake"],
+      [13, "strawberry_cake", null, null, "consume_cake"],
+      [13, "chocolate_cake", null, null, "consume_cake"],
+      [13, "vanilla_cake", null, null, "consume_cake"],
+
+      // this shouldn't be possible
+      // [4, "strawberry", null, "cake", "take_obj"],
+      // [4, "chocolate", null, "cake", "take_obj"],
+      // [4, "vanilla", null, "cake", "take_obj"],
+      [13, "strawberry", "to", "*", "give_cake"],
+      [13, "chocolate", "to", "*", "give_cake"],
+      [13, "vanilla", "to", "*", "give_cake"],
+      [13, "cake", "to", "*", "give_cake"],
+      [13, "strawberry_cake", "to", "*", "give_cake"],
+      [13, "chocolate_cake", "to", "*", "give_cake"],
+      [13, "vanilla_cake", "to", "*", "give_cake"],
       [13, "*", "to", "*", "give_obj"],
       [22, null, null, null, "email_work"],
       [23, "*", null, null, "talk_to"],
@@ -447,7 +498,9 @@
     "variables": {
       "MAX_INVENTORY": 8,
       "is_lights_out": false,
-      "remaining_lights_out": 0
+      "remaining_lights_out": 0,
+      "is_boss_anniversary": false,
+      "is_a_secret_endings": {"become_boss": false, "marry_daughter": false}
     },
 
     "email_minigame": {
