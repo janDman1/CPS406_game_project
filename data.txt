@@ -116,20 +116,23 @@
       "type": "item",
       "holder": null,
       "description": "Your desk is cluttered with sticky notes, an empty coffee cup, and a paused game of Snake on your phone. The computer screen is locked with a reminder to vet and foward important emails to the boss.",
-      "attributes": []
+      "attributes": [],
+      "holding": [""]
     
     },
     "workstation_2": {
       "type": "item",
       "holder": null,
       "description": "Philip's desk is messy with doodles, sticky notes, and a cold coffee cup labeled 'Creative Fuel.' His phone shows a low Snake score, and the computer is locked with a short password.",
-      "attributes": []
+      "attributes": [],
+      "holding": [""]
     },
     "workstation_3": {
       "type": "item",
       "holder": null,
       "description": "Serah's desk is spotless and organized, with neatly stacked papers. Her phone shows a perfect Snake score, and the computer is locked with a long password.",
-      "attributes": []
+      "attributes": [],
+      "holding": [""]
     },
     "flashlight": {
       "type": "item",
@@ -372,6 +375,9 @@
       "strawberry_cake": ["strawberry"],
       "blue_flower": ["blue"],
       "yellow_flower": ["yellow"],
+      "workstation_1": ["workstation 1", "desk 1"],
+      "workstation_2": ["workstation 2", "desk 2"],
+      "workstation_3": ["workstation 3", "desk 3"],
 
       // No need, names can be mapped just by map_to_actual_obj() function
       // "NPC_1": ["Philip"],
@@ -416,6 +422,7 @@
       //consume an "item" i.e. in the BG change "item" holder to null and change "player/NPC" attribute
       "8": ["consume", "eat", "drink"],
       "10": ["punch", "kick", "karate", "beat", "hit"], //includes "beat up X"
+      "11": ["sabotage","hack"],
       "12": ["look"], //look at X, look around
       "13": ["give"], //give X to Y
       "19": ["put"], //put x on Y  //put laxative on coffee
@@ -430,7 +437,7 @@
 
       //interact and change "player/NPC" attribute NEGATIVE
       "9": ["throw", "chuck", "fling"], // throw coffee at Y
-      "11": ["sabotage"], //pick from random negative subroutine with requirements met or NOT
+       //pick from random negative subroutine with requirements met or NOT
       //interact and change "player/NPC attribute" POSITIVE
       "14": ["hug"],
       "15": ["play"], //play with X
@@ -470,6 +477,10 @@
       [19, "*", "on","workstation_1","place_obj"],
       [19, "*", "on","workstation_2","place_obj"],
       [19, "*", "on","workstation_3","place_obj"],
+
+      [11, "workstation_1", null, null,"hack_computer"],
+      [11,  "workstation_2", null, null,"hack_computer"],
+      [11,  "workstation_3", null, null,"hack_computer"],
 
       [13, "coffee", "to", "*", "give_coffee_or_poison"], //has chance of detecting poison if you give poisoned coffee
       [8, "cake", null, null, "consume_cake"],

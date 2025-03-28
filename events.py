@@ -726,6 +726,42 @@ class Events:
             self.dotdotdot()
         return True
     
+    def hack_computer(self, destination: objUID, character: objUID, do_print=True) -> bool:
+        room = self.O.get_holder(character)
+        inventory = self.O.get_holding(character)
+
+        if "usb_hacking_script" in inventory and room == "offices" and destination in ["workstation_1", "workstation_2", "workstation_3"]:
+            if do_print:
+                print("You insert the USB hacking script into the computer.")
+                self.delay()
+                print("The computer starts running the script...")
+                self.delay(3)
+                if destination == "workstation_1":
+                    print("Access granted! You successfully hacked workstation 1.")
+                    player_likability = self.O.get_character_data("likability", "player")
+                    self.O.set_character_data("player", "likability", player_likability - 8)
+                    return True
+                elif destination == "workstation_2":
+                    print("Access granted! You successfully hacked workstation 2.")
+                    philp_likability = self.O.get_character_data("likability", "NPC_2")
+                    self.O.set_character_data("NPC_2", "likability", philp_likability - 8)
+                    return True
+                elif destination == "workstation_3":
+                    print("Access granted! You successfully hacked workstation 3.")
+                    serah_likability = self.O.get_character_data("likability", "NPC_3")
+                    self.O.set_character_data("NPC_3", "likability", serah_likability - 8)
+                    return True 
+
+                
+            return True
+        else:
+            if do_print:
+                if "usb_hacking_script" not in inventory:
+                    print("You need the USB hacking script to perform this action.")
+            if room != "offices":
+                print("You need to be in the offices to hack the computer.")
+            return False
+    
     def place_obj(self, source: objUID, destination: objUID, character: objUID, do_print=True ) -> bool:
         if destination not in ["workstation_1", "workstation_2", "workstation_3"]:
             if do_print:
