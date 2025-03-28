@@ -92,31 +92,31 @@
       "type": "item",
       "holder": "electrical_room",
       "description": "Make it or break it, its what connects the power to the building.",
-      "attributes": []
+      "attributes": ["heavy"]
     },
     "book_shelf": {
       "type": "item",
       "holder": null,
       "description": "Just a plain normal book self.",
-      "attributes": []
+      "attributes": ["container","heavy"]
     },
     "cabinet": {
       "type": "item",
       "holder": null,
       "description": "An old and frail cabinet that looks completely out of place. Its worn-out surface and creaky hinges suggest it has seen better days, and it seems like it could fall apart at any moment.",
-      "attributes": ["container"]
+      "attributes": ["container","heavy"]
     },
     "broken_cabinet": {
       "type": "item",
       "holder": null,
       "description": "A cabinet that has been broken into, the door hangs off its hinges and the contents are scattered across the floor.",
-      "attributes": ["container"]
+      "attributes": ["container","heavy"]
     },
     "workstation_1": {
       "type": "item",
       "holder": "offices",
       "description": "Your desk is cluttered with sticky notes, an empty coffee cup, and a paused game of Snake on your phone. The computer screen is locked with a reminder to vet and foward important emails to the boss.",
-      "attributes": ["container"],
+      "attributes": ["container","heavy"],
       "holding": []
     
     },
@@ -124,13 +124,13 @@
       "type": "item",
       "holder": "offices",
       "description": "Philip's desk is messy with doodles, sticky notes, and a cold coffee cup labeled 'Creative Fuel.' His phone shows a low Snake score, and the computer is locked with a short password.",
-      "attributes": ["container"]
+      "attributes": ["container","heavy"]
     },
     "workstation_3": {
       "type": "item",
       "holder": "offices",
       "description": "Serah's desk is spotless and organized, with neatly stacked papers. Her phone shows a perfect Snake score, and the computer is locked with a long password.",
-      "attributes": ["container"]
+      "attributes": ["container","heavy"]
     },
     "flashlight": {
       "type": "item",
