@@ -195,7 +195,7 @@
     },
     "old_intern_notes": {
       "type": "item",
-      "holder": null,
+      "holder": "player",
       "description": " A stack of old intern notes, some of them are written in a language you can't understand, others are just doodles of cats.",
       "attributes": []
     },

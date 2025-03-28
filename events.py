@@ -1369,7 +1369,7 @@ Discover hidden secrets and unlock unique endings
                         if do_print:
                             print("I see you need a genius to translate this for you. Wait one second")
                             self.dotdotdot()
-                            print("The Text says: ")
+                            print("The Text says: \Rule #1: Keep your desk clean. Apparently, the boss thinks clutter is a personal attack on his soul. Might be allergic to productivity too.\nRule #2: Always bring a flashlight to work. The lights go out sometimes and people just... disappear. Not saying it's haunted, but I'm not 'not' saying that either.\nRule #3 Make the boss happy. Even if it means pretending you care about his endless speeches. Nodding a lot helps.\nRule #4: Do some actual work. Apparently, staring intently at an empty spreadsheet does not count as “being productive.” Who knew?\nWeird tip: The secretary loves flowers... but I can not figure out which ones. Could just be stress gardening. Who knows.\nWeird tip: The secretary loves flowers... but I can not figure out which ones. Saw her fussing over some roses once. Could be nothing... or everything.\nHot Investment Tip: Buy Intern Coin. It is going to the moon! Trust me, I am basically a financial genius. Plus it is endorsed by our IT guy Steve Jobs.\nAlso by the way there is this suspicious safe in the boss's office... been wondering what is inside. Have not found out what was inside in my time here probably just old mementos ")
                         return True
                     else:
                         if do_print:
