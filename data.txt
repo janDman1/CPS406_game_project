@@ -376,6 +376,11 @@
       "workstation_1": ["workstation 1", "desk 1"],
       "workstation_2": ["workstation 2", "desk 2"],
       "workstation_3": ["workstation 3", "desk 3"],
+      "intern_coin": ["intern coin", "coin"],
+      "empty_wrapper": ["empty wrapper", "wrapper"],
+      "stress_ball": ["stress ball", "ball"],
+      "fake_resume": ["fake resume", "resume"],
+      "suspicious_document": ["suspicious document", "document"],
 
       // No need, names can be mapped just by map_to_actual_obj() function
       // "NPC_1": ["Philip"],
