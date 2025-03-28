@@ -27,12 +27,12 @@ All_Data = json.loads(parsed_data_file)
 
 O = ObjDict(All_Data["Objects"])
 # adds to Objects data while game is running
-O["snacks"] = {
-    "type": "item",
-    "holder": "cafeteria",
-    "description": "Something to temporary fill the hunger.",
-    "attributes": ["energize"],
-}
+# O["snacks"] = {
+#     "type": "item",
+#     "holder": "cafeteria",
+#     "description": "Something to temporary fill the hunger.",
+#     "attributes": ["energize"],
+# }
 O.initiate_holdings()
 E = Events()
 E.load_object_dictionary(O)
@@ -110,6 +110,8 @@ def do_action(
             return E.hack_computer(cmd[1], character, do_print)
         case "take_from_container" :
             return E.take_from_container(cmd[1], cmd[3], character, do_print)
+        case "thrown_obj_at_x":
+            return E.thrown_obj_at_x(cmd[1], cmd[3], character, do_print)
         case _:
             return False
 
@@ -212,7 +214,7 @@ def become_a_millionaire():
     msvcrt.getch()
     print("They all said to sell.")
     msvcrt.getch()
-    print("\"Crypto’s just a fad!\" they laughed.")
+    print("\"Crypto's just a fad!\" they laughed.")
     msvcrt.getch()
     print("\"Invest in something real!\" they scoffed.")
     msvcrt.getch()
@@ -225,7 +227,7 @@ def become_a_millionaire():
     print("Now you can brag to your homeless friends about their poverty while you live it up using your big boy bucks to buy stupid things like a gold-plated suitcase.")
     print()
     msvcrt.getch()
-    print("Congratulations! You beat the game by skipping the corporate nonsense and going straight to billionaire status. Who needs a job when you’re too busy buying the entire company?")
+    print("Congratulations! You beat the game by skipping the corporate nonsense and going straight to billionaire status. Who needs a job when you are too busy buying the entire company?")
     print()
     msvcrt.getch()
 
@@ -461,11 +463,11 @@ for day in range(1, GAME_DAYS + 1):
         continue
     break
 
+if unparsed_cmd in ["Q", "q", "quit"]:
+    os.abort()
 if E.is_secret_ending() == "no secret endings met":
     print_ending_frame()
     ending_result()  # show the result based on all stats
-if unparsed_cmd in ["Q", "q", "quit"]:
-    os.abort()
 print()
 print("YOU FINISHED THE GAME!")
 print(

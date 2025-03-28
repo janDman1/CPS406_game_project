@@ -12,7 +12,7 @@
       "holder": null,
       "description": "A surprisingly fancy washroom for a place that only pays interns in coffee and stress.  A long mirror spans the wall above a row of sinks, each with a dispenser of antibacterial soap. The mirrors shine so cleanly that they would make a germaphobe cry out of happiness. A small shelf behind the mirror holds an assortment of suspicious supplies perhaps they have some use.",
       "NSEW": [null, null, "cafeteria", null],
-      "holding": ["laxative"]
+      "holding": []
     },
     "cafeteria": {
       "type": "room",
@@ -48,14 +48,14 @@
       "holder": null,
       "description": "Dust lingers in the air, while the only illumination comes from a single flickering bulb. Old documents labelled 'Totally Legal Stuff' are scattered haphazardly across the floor and in the corner a makeshift sacrificial altar to the stock market gods.  It is pretty obvious this room was never meant to see the light of day, a hidden stash for abandoned files and questionable choices than anything else..",
       "NSEW": [null, null, "boss_office", null],
-      "holding": ["suspicious_document"]
+      "holding": []
     },
     "offices": {
       "type": "room",
       "holder": null,
       "description": "A maze of cubicles, each filled with half-drunk coffee cups, stacks of sticky notes, and the faint hum of computers left on standby. The air is thick with the smell of printer toner and desperation, as if the walls themselves are absorbing the stress of endless deadlines. A single yellow flower sits on one desk, a lone spark of life in an otherwise mechanical space.",
       "NSEW": ["meeting_room", "electrical_room", null, "main_lobby"],
-      "holding": ["yellow_flower"]
+      "holding": []
     },
     "meeting_room": {
       "type": "room",
@@ -147,7 +147,7 @@
     },
     "laxative": {
       "type": "item",
-      "holder": "player",
+      "holder": "washroom",
       "description": "A substance that promotes bowel movements, often used to relieve constipation. Do not misuse!",
       "attributes": ["poison"]
     },
@@ -250,7 +250,7 @@
     },
     "suspicious_document": {
       "type": "item",
-      "holder": "player",
+      "holder": "secret_room",
       "description": "A confidential report titled 'Offerings to the Stock Market Gods.' Lists ritual sacrifices like '50 percent of last quarter's revenue' and 'All remaining bonuses' alongside donations to 'To The Moon Spirits Fund'",
       "attributes": []
     },
@@ -259,7 +259,7 @@
     "status_effects": ["healthy", "poisoned", "caffinated", "Hacked"],
     "player": {
       "type": "character",
-      "holder": "offices",
+      "holder": "main_lobby",
       "description": "Forge your path ye tarnished and find yourself within the chaos of this workplace. Rise ye tarnished, define whom you'll become and achieve.",
       "name": null,
       "status": ["healthy"],
@@ -272,7 +272,7 @@
     },
     "NPC_1": {
       "type": "character",
-      "holder": "washroom",
+      "holder": "offices",
       "description": "Philip is the type of person who's both easygoing and thoughtful. He's a bit of a dreamer, always coming up with creative ideas and plans, but he's grounded enough to make sure things get done. He's the kind of friend and colleague who'll always check in, even if it's just to share a funny meme or make sure you're doing okay.",
       "name": "Philip",
       "status": ["hacked"],
@@ -292,7 +292,7 @@
     },
     "NPC_2": {
       "type": "character",
-      "holder": "washroom", //"washroom",
+      "holder": "offices", //"washroom",
       "description": "Serah is independent, self-reliant, and values her personal space. She's not one to seek constant company but enjoys solitude and introspection, which allows her to think deeply and work efficiently. Serah has a quiet confidence and doesn't feel the need to seek validation from others. She's content to move at her own pace and follow her own path.",
       "name": "Serah",
       "status": ["caffinated"],
@@ -313,7 +313,7 @@
     "secretary": {
       "type": "static_character",
       "holder": "secretary_office",
-      "description": "Morgana's got a keen eye for detail and a knack for staying in the loop whether she owns up to it or not. She is the queen of gossip wrapped in a package of 'concerned professionalism' always carrying herself with a calm, composed demeanour. If something is going down in the office you can bet she knows about it. She expertly handles the Boss's mood swings like some kind of art form. Her sense of humour's sharp but she never misses the chance to toss out a sly, well timed jab when the moment's right.",
+      "description": "Morgana's is the company's secretary and she got a keen eye for detail and a knack for staying in the loop whether she owns up to it or not. She is the queen of gossip wrapped in a package of 'concerned professionalism' always carrying herself with a calm, composed demeanour. If something is going down in the office you can bet she knows about it. She expertly handles the Boss's mood swings like some kind of art form. Her sense of humour's sharp but she never misses the chance to toss out a sly, well timed jab when the moment's right.",
       "name": "Morgana",
       "status": [""],
       "dialogue": [
@@ -402,6 +402,9 @@
   },
 
   "Commands": {
+    
+    "help": "Command List for Text Adventure Game\nMovement Commands\nN, north, NORTH, S, south, SOUTH, E, east, EAST, W, west, WEST: Move in the specified direction between rooms.\n\nInventory and Item Commands\nI, inventory, inv: View current inventory.\ngrab, get, take, pick [item]: Add an item to your inventory.\ndrop, leave [item]: Remove an item from your inventory.\nput, place [item1] on [item2]: Set an item down at a specific location/room.\ncombine [item1] and [item2]: Merge two items to create something new.\nconsume, eat, drink [item]: Use or eat an item from inventory.\n\nExamination and Observation Commands\nlook, look around  Scan the current room for items or characters.\nexamine, inspect, check [item/character<>:/room]: View details about a room, item, or character.\n\nInteraction Commands\ntalk to [character]: Initiate a conversation with a character.\ngive [item] to [character]: Offer an item to a character.\nplace [item] on [location]: Set an item down at into a certain object.\nwork: Perform a task or job-related action.\nhelp: Get help or information about commands.\n\nSabotage and Combat Commands\nsabotage, hack: Disrupt or damage a workstation.\npunch, kick, karate, beat, hit: Physically attack a character.\nfling [item] at [character]: Throw an item at a character.\n\nCoffee and Food Commands\nconsume [item]: Consume item from inventory.\ncombine [item1] and [item2]: Mix item 1 and item 2 to make item 3.\n\nOther Commands\nwait: Pause and pass the time.\nSkip day: Skips the day\nQ: Quit the game.\n",
+
     //parse string by removing these
     "articles": ["of", "a", "an", "the"],
 
@@ -425,7 +428,7 @@
       "7": ["I", "inventory", "inv"],
       //consume an "item" i.e. in the BG change "item" holder to null and change "player/NPC" attribute
       "8": ["consume", "eat", "drink"],
-      "10": ["punch", "kick", "karate", "beat", "hit"], //includes "beat up X"
+      "10": ["punch", "kick", "karate", "beat", "hit", "attack"], //includes "beat up X"
       "11": ["sabotage","hack"],
       "12": ["look"], //look at X, look around
       "13": ["give"], //give X to Y
@@ -434,7 +437,6 @@
       "21": ["combine"], //combine coffee and laxative
       "22": ["work"], // email
       "23": ["talk"],
-      "24": ["earn"],
       "25": ["help"],
 
       //************************ NOT IMPLEMETED ************************//
@@ -448,11 +450,12 @@
       //players hint
       "16": ["hint"], //I don't think this is needed
       "17": ["use"], //use coffee machine
-      "18": ["force"] //force X on Y
+      "18": ["force"], //force X on Y
+      "24": ["earn"]
     },
 
-    "prepositions": //["at", "in", "above", "under", 
-        ["and", "on", "to", "with", "from"],
+    "prepositions": //["in", "above", "under", 
+        ["and", "on", "to", "with", "from", "at"],
 
     "lookup_table": [
       //[verb, direct_obj, preposition, indirect_obj, subroutine_key]
@@ -462,6 +465,7 @@
       [3, null, null, null, "go_direction"],
       [4, "*", null, null, "take_obj"],
       [5, "*", null, null, "drop_obj"],
+      [12, null, null, null, "show_room"],
       [12, "around", null, null, "show_room"], //see different commands corresponds to same action
       [6, "room", null, null, "show_room"], //`> examine room` same as `> look around`
       [6, "*", null, null, "read_obj_description"], //`> examine X` same as `look at X`
@@ -513,10 +517,10 @@
       [23, "*", null, null, "talk_to"],
       [23, "*", null, "*", "talk_to"], // because reads [talk,Steve,null,Jobs]
       [8, "medicine", null, null, "drink_medicine"],
-      [24, null, null, null, "earn_money_command"],
       [25, null, null, null, "help_command"],
 
-      [9, "coffee", "at", "*", "thrown_coffee_at_x"],
+      // [24, null, null, null, "earn_money_command"],
+      // [9, "coffee", "at", "*", "thrown_coffee_at_x"],
       [9, "*", "at", "*", "thrown_obj_at_x"]
     ]
   },

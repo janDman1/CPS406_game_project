@@ -50,13 +50,13 @@ class Events:
                             print("FINALLY", end="")
                             self.symsymsym("!")
                 self.O.change_holder(character, room, next_room)
-                self.show_character_view(character, do_print)
+                self.show_character_view(character, do_print, False)
                 return True
             if do_print:
                 print("That way leads to nowhere")
         return False
 
-    def show_character_view(self, character: objUID, do_print=True) -> bool:
+    def show_character_view(self, character: objUID, do_print=True, no_room_description=True) -> bool:
         """deduce the room the character is in and print what is there and valid directions of next rooms"""
         # override if you want to customize
         if not do_print:
@@ -74,7 +74,8 @@ class Events:
                 self.delay()
                 print("Maybe a flashlight will help")  # or any light source later
             return False
-        print(self.O.get_obj_description(room))
+        if not no_room_description:
+            print(self.O.get_obj_description(room))
         if len(room_holdings) > 0:
             for n, item in enumerate(room_holdings):
                 if self.O.get_obj_type(item) in ["character", "static_character"]:
@@ -165,6 +166,8 @@ class Events:
         if obj == "no obj found":
             print(f"{obj} is not in the game dictionary")
             return False
+        
+
 
         if self.O.get_obj_type(obj) in ["character", "static_character"]:
             if do_print:
@@ -173,14 +176,6 @@ class Events:
                 print("Unless", end="")
                 self.dotdotdot()
                 print("(the thoughts disappeared from your mind)")
-            return False
-        
-        #if heavy item no pick up
-
-        if self.O.get_obj_type(obj) == "item":
-            if self.O.has_item_attribute("heavy", obj):
-                if do_print:
-                    print(f"{obj} is too heavy to pick up.")
             return False
 
         # "flashlight" in inventory is a placeholder, change to if holding any item with "illuminate" attribute later
@@ -220,6 +215,11 @@ class Events:
                         print("without any chance of finding anything")              
 
         if obj in room_holdings_excluding_character:
+            #if heavy item no pick up
+            if self.O.has_item_attribute("heavy", obj):
+                if do_print:
+                    print(f"{obj} is too heavy to pick up. Maybe hit the gym a little more?")
+                return False
             if len(inventory) < self["variables"]["MAX_INVENTORY"]:
                 if self["variables"]["is_boss_anniversary"]:
                     cake_list = ["strawberry_cake","vanilla_cake","chocolate_cake"]
@@ -274,7 +274,7 @@ class Events:
 
         # here obj was mapped to current room
         if obj == room:
-            self.show_character_view(character, do_print)
+            self.show_character_view(character, do_print, False)
             return True
 
         obj_inventory = self.O.get_holding(obj)
@@ -479,6 +479,7 @@ class Events:
                     return True
 
         if obj_type == "room":
+            if do_print: print("go to that room to throw your tantrum")
             return False  # can't kick or throw tantrum in another room
         if obj_type == "item":
             if obj in room_holdings or obj in char_inventory:
@@ -575,6 +576,12 @@ class Events:
                 if do_print:
                     print(f"{victim_name} isn't even there dummy")
                 return False
+
+        if obj_type == "static_character" and obj in self.O.get_holding(room):
+            victim_name = self.O.get_character_data("name", obj)
+            if do_print:
+                print(f"Im scared to {verb} {victim_name}, they might report me")
+
         return False
 
     def delay(self, speed_number=2) -> None:
@@ -828,13 +835,13 @@ class Events:
         print("******** INSPECTION DAY ********")
         print()
         msvcrt.getch()
-        print("The boss shouts from the office!!!")
+        print("The boss shouts from the office!")
+        print()
         msvcrt.getch()
         print("BOSS: YOU MAGGOTS!")
         msvcrt.getch()
         print("TO THE WORKSTATIONS IMMEDIATELY!!!")
         msvcrt.getch()
-        print("")
         print()
         msvcrt.getch()
         print("everyone lines up in the offices room")
@@ -842,7 +849,7 @@ class Events:
         print("he looks at each of your tables")
         msvcrt.getch()
         print()
-        print("you gulp as he inspects veery closely")
+        print("you gulp as he inspects veery closely", end="")
         self.dotdotdot()
         msvcrt.getch()
         print()
@@ -872,7 +879,7 @@ class Events:
                     else:
                         if obj == "player":
                             print("You are a good boi!")
-                        self.O.set_character_data(obj, "likability", current_likability - 5)
+                        self.O.set_character_data(obj, "likability", current_likability + 5)
         print()
                     
 
@@ -896,6 +903,8 @@ class Events:
 
     
     def place_obj(self, obj: objUID, container: objUID, character: objUID, do_print=True ) -> bool:
+        inventory = self.O.get_holding(character)
+        current_likability = self.O.get_character_data("likability", character)
         # map to synonmys to use plus verify
         obj = self.map_to_actual_obj(obj, character)
         if obj == "no obj found":
@@ -911,26 +920,27 @@ class Events:
                 print(f"{container} is not a valid storage area.")
             return False
         else:
-            current_likability = self.O.get_character_data("likability", character)
-            if do_print:
-                self.O.remove_holding(obj, character)
+            if obj in inventory:
                 if container == "workstation_1":
                     self.O.add_holding(obj, "workstation_1")
                     if do_print:
-                        print(f"{obj} has been placed on workstation_1.")
+                        print(f"{obj} has been placed on {self.O.get_character_data("name", "player")}'s workstation.")
                         return True
                 elif container == "workstation_2":
                     self.O.add_holding(obj, "workstation_2")
                     if do_print:
-                        print(f"{obj} has been placed on Philp's workstation.")
+                        print(f"{obj} has been placed on Philp's workstation.") # fix hard for coding review 
                         return True
                 elif container == "workstation_3":
                     self.O.add_holding(obj, "workstation_3")
                     if do_print:
                         print(f"{obj} has been placed on Serah's workstation.")
                         return True
-            return True
-        return True
+                self.O.remove_holding(obj, character)
+                return True
+            else:
+                if do_print: print("Maybe try finding the item first, that would be smart.")
+            return False
 
     def make_poisoned_coffee(self, character: objUID, do_print=True) -> bool:
         # maybe make it work later for coffee in the room
@@ -1496,3 +1506,64 @@ Discover hidden secrets and unlock unique endings
             if is_true:
                 return ending
         return "no secret endings met"
+    
+    def thrown_obj_at_x(self, thrown_obj:objUID, thrown_to:objUID, character:objUID, do_print=True) -> bool:
+        inventory = self.O.get_holding(character)
+        current_likability = self.O.get_character_data("likability", character)
+        room = self.O.get_holder(character)
+
+        # map to synonmys to use plus verify
+        thrown_obj = self.map_to_actual_obj(thrown_obj, character)
+        if thrown_obj == "no obj found":
+            if do_print: print(f"{thrown_obj} is not in the game dictionary")
+            return False
+        thrown_to = self.map_to_actual_obj(thrown_to, character)
+        if thrown_to == "no obj found":
+            if do_print: print(f"{thrown_to} is not in the game dictionary")
+            return False
+        obj_type = self.O.get_obj_type(thrown_obj)
+        thrown_to_type = self.O.get_obj_type(thrown_to)
+        
+        # valid objects to throw and person to throw to
+        if obj_type != "item":
+            if do_print:
+                print(f"How would you even throw that", end="")
+                self.symsymsym("?")
+            return False
+        if thrown_to_type not in ["character", "static_character"]:
+            if do_print: 
+                print("What even would be the point of that", end="")
+            return False
+        victim_name = self.O.get_character_data("name", thrown_to)
+        
+        if thrown_obj not in inventory:
+            if do_print: print("Maybe try finding the item first, that would be smart.")
+            return False
+        if thrown_to not in self.O.get_holding(room):
+            if do_print: print(f"Maybe try finding {victim_name} first, that would be smart")
+            return False
+        if thrown_to_type == "character":
+            if do_print:
+                print(f"{victim_name} Ouch! why did you that!!")
+                print(f"Friendliness with {victim_name} decreased")
+            current_friendliness = self.O.get_character_data("friendliness", thrown_to)
+            self.O.set_character_data(character, "friendliness", current_friendliness - 1)
+        if thrown_to_type == "static_character":
+            if thrown_to == "boss":
+                if do_print:
+                    print(f"{victim_name} Bold strategy, I'm deducting 50 percent of your salary!")
+                    self.delay()
+                    print("your likabity to boss decreased")
+                current_likability = self.O.get_character_data("likability", character)
+                self.O.set_character_data(character, "likability", current_likability - 15)
+            else:
+                if do_print:
+                    print("Wow did you really do that")
+                    self.delay()
+                    print("Just so you know, I know where you live")
+                    self.delay()
+                    print(f"Friendliness with {victim_name} decreased")
+                current_friendliness = self.O.get_character_data("friendliness", thrown_to)
+                self.O.set_character_data(character, "friendliness", current_friendliness - 1)
+        self.O.change_holder(thrown_obj, character, room)
+        return True
