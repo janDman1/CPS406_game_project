@@ -12,7 +12,7 @@
       "holder": null,
       "description": "A surprisingly fancy washroom for a place that only pays interns in coffee and stress.  A long mirror spans the wall above a row of sinks, each with a dispenser of antibacterial soap. The mirrors shine so cleanly that they would make a germaphobe cry out of happiness. A small shelf behind the mirror holds an assortment of suspicious supplies perhaps they have some use.",
       "NSEW": [null, null, "cafeteria", null],
-      "holding": ["laxative", "medicine"]
+      "holding": ["laxative"]
     },
     "cafeteria": {
       "type": "room",
@@ -48,7 +48,7 @@
       "holder": null,
       "description": "Dust lingers in the air, while the only illumination comes from a single flickering bulb. Old documents labelled 'Totally Legal Stuff' are scattered haphazardly across the floor and in the corner a makeshift sacrificial altar to the stock market gods.  It is pretty obvious this room was never meant to see the light of day, a hidden stash for abandoned files and questionable choices than anything else..",
       "NSEW": [null, null, "boss_office", null],
-      "holding": ["suspious_document"]
+      "holding": ["suspicious_document"]
     },
     "offices": {
       "type": "room",
@@ -76,7 +76,7 @@
       "holder": null,
       "description": "A claustrophobic tangle of wires and cables that looks more like a techno-ritual than actual wiring. In the back wall the main breaker can be found with a 'No liquids Allowed' sign beside it is covered in passive-aggressive sticky notes, one of which reads, 'If you disobey, I WILL FIND YOU.'",
       "NSEW": ["offices", null, "networking_room", null],
-      "holding": []
+      "holding": ["breaker"]
     },
     "networking_room": {
       "type": "room",
@@ -90,7 +90,7 @@
     //ITEMS
     "breaker": {
       "type": "item",
-      "holder": "electrical_room",
+      "holder": null,
       "description": "Make it or break it, its what connects the power to the building.",
       "attributes": []
     },
@@ -102,7 +102,7 @@
     },
     "cabinet": {
       "type": "item",
-      "holder": null,
+      "holder": "boss_office",
       "description": "An old and frail cabinet that looks completely out of place. Its worn-out surface and creaky hinges suggest it has seen better days, and it seems like it could fall apart at any moment.",
       "attributes": ["container"]
     },
@@ -117,14 +117,15 @@
       "holder": "offices",
       "description": "Your desk is cluttered with sticky notes, an empty coffee cup, and a paused game of Snake on your phone. The computer screen is locked with a reminder to vet and foward important emails to the boss.",
       "attributes": ["container"],
-      "holding": []
+      "holding": ["coffee"]
     
     },
     "workstation_2": {
       "type": "item",
       "holder": "offices",
       "description": "Philip's desk is messy with doodles, sticky notes, and a cold coffee cup labeled 'Creative Fuel.' His phone shows a low Snake score, and the computer is locked with a short password.",
-      "attributes": ["container"]
+      "attributes": ["container"],
+      "holding": ["coffee"]
     },
     "workstation_3": {
       "type": "item",
@@ -142,7 +143,7 @@
       "type": "item",
       "holder": "player",
       "description": "The rich aroma and warm, comforting glow of the cup offer a brief respite from the challenges of the virtual world. The item increases player's energy and focus.",
-      "attributes": ["energize", "friendliness"]
+      "attributes": ["energize", "likability"]
     },
     "laxative": {
       "type": "item",
@@ -159,7 +160,7 @@
     },
     "usb_hacking_script": {
       "type": "item",
-      "holder": "player",
+      "holder": null,
       "description": "A tiny flash drive loaded with some suspicious software. Use it to infiltrate systems, plant evidence, or delete incriminating files just do not get caught with it.",
       "attributes": []
     },
@@ -171,7 +172,7 @@
     },
     "medicine": {
       "type": "item",
-      "holder": null,
+      "holder": "washroom",
       "description": "Bottle that can be used to heal after getting hit or injured",
       "attributes": []
     },
@@ -183,7 +184,7 @@
     },
     "blue_flower": {
       "type": "item",
-      "holder": null,
+      "holder": "meeting_room",
       "description": "Frosted blue rose, that gives off alluring arouma",
       "attributes": []
     },
@@ -195,19 +196,19 @@
     },
     "old_intern_notes": {
       "type": "item",
-      "holder": "player",
+      "holder": "storage_room",
       "description": "Old intern notes, some of them are written in a language you can't understand, others are just doodles of cats. maybe a genius can translate them?",
       "attributes": []
     },
     "intern_coin": {
       "type": "item",
-      "holder": "player",
+      "holder": "NPC_2",
       "description": "Worth 1 cent now, but Krypto King says it's going the Moon!",
       "attributes": []
     },
     "empty_wrapper": {
       "type": "item",
-      "holder": null,
+      "holder": "cafeteria",
       "description": "Why did you pick this up?",
       "attributes": []
     },
@@ -219,7 +220,7 @@
     },
     "fake_resume": {
       "type": "item",
-      "holder": null,
+      "holder": "secretary_office",
       "description": "A masterfully crafted fake resume made to show disloyalty. Useful for annihilating your competition!",
       "attributes": []
     },
@@ -274,7 +275,7 @@
       "holder": "washroom",
       "description": "Philip is the type of person who's both easygoing and thoughtful. He's a bit of a dreamer, always coming up with creative ideas and plans, but he's grounded enough to make sure things get done. He's the kind of friend and colleague who'll always check in, even if it's just to share a funny meme or make sure you're doing okay.",
       "name": "Philip",
-      "status": ["poisoned", "hacked"],
+      "status": ["hacked"],
       "dialogue": [
         "Hey! You ever just stare at the ceiling and wonder if corporate life is secretly some kind of social experiment",
         "I tried to use my charm to get out of extra tasks. Turns out charm does not work when your charisma stat is negative",
@@ -284,8 +285,8 @@
       "likability": 50,
       "friendliness": 10, //neutral to the player
       "turn_speed": 100,
-      "skip_turn": 4,
-      "skip_cause": "dev testing",
+      "skip_turn": 0,
+      "skip_cause": null,
       "uses_parser": false,
       "holding": ["laxative","intern_coin"] //yeahhh lets try it out
     },
@@ -294,7 +295,7 @@
       "holder": "washroom", //"washroom",
       "description": "Serah is independent, self-reliant, and values her personal space. She's not one to seek constant company but enjoys solitude and introspection, which allows her to think deeply and work efficiently. Serah has a quiet confidence and doesn't feel the need to seek validation from others. She's content to move at her own pace and follow her own path.",
       "name": "Serah",
-      "status": ["energized"],
+      "status": ["caffinated"],
       "dialogue": [
         "If you are here to waste my time, at least bring coffee next time.",
         "If I had a dollar for every time you all asked me a stupid question, I would buy this company just to fire everyone.",
@@ -307,7 +308,7 @@
       "skip_turn": 0,
       "skip_cause": null,
       "uses_parser": false,
-      "holding": ["coffee"]
+      "holding": ["coffee","intern_coin"]
     },
     "secretary": {
       "type": "static_character",

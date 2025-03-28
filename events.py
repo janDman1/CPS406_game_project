@@ -1149,43 +1149,42 @@ Discover hidden secrets and unlock unique endings
                 """
 
                 email_message, email_score = next(self.email_gen)
-                if do_print:
+                current_likeability = self.O.get_character_data(
+                    "likability", character
+                )
 
-                    current_likeability = self.O.get_character_data(
-                        "likability", character
+                if do_print: print(email_message)
+                # for player and NPC
+                if character == "player":
+                    user_input = (
+                        input(
+                            "Do you want to forward this email to the boss? (y/n): "
+                        )
+                        .strip()
+                        .lower()
                     )
+                    print("")
+                else:
+                    user_input = rnd.choice(["y", "n"])
 
-                    print(email_message)
-                    # for player and NPC
-                    if character == "player":
-                        user_input = (
-                            input(
-                                "Do you want to forward this email to the boss? (y/n): "
-                            )
-                            .strip()
-                            .lower()
-                        )
-                        print("")
-                    else:
-                        user_input = rnd.choice(["y", "n"])
+                if user_input == "y":
+                    self.O.set_character_data(
+                        character, "likability", current_likeability + email_score
+                    )
+                    if do_print: print("Email forwarded to the boss.")
+                    self.delay()
+                    self.dotdotdot()
 
-                    if user_input == "y":
-                        self.O.set_character_data(
-                            character, "likability", current_likeability + email_score
-                        )
-                        print("Email forwarded to the boss.")
-                        self.delay()
-                        self.dotdotdot()
-
+                    if do_print:
                         if email_score > 0:
                             print(
                                 "The boss thanks you for bringing this to his attention."
                             )
                         else:
                             print("The boss thinks this email is wasting his time.")
-                        print(f"Impact on likability: {email_score}\n")
-                        return True
-                    else:
+                    print(f"Impact on likability: +{email_score}\n")
+                else:
+                    if do_print:
                         if user_input == "n":
                             print("You chose not to forward the email.\n")
                             self.dotdotdot()
@@ -1194,27 +1193,26 @@ Discover hidden secrets and unlock unique endings
                                 "Invalid input. Email not forwarded. Should have put a proper input.\n"
                             )
                             self.dotdotdot()
-                        if email_score > 0:
-                            self.O.set_character_data(
-                                character,
-                                "likability",
-                                current_likeability - email_score,
-                            )
-                            print(
-                                "You failed at doing a simple job and the boss is disappointed that you exist."
-                            )
-                            print(f"Impact on likability: -{email_score}\n")
-                        else:
-                            print(
-                                "Sometimes no news is good news! Impact on likability: 2\n"
-                            )
+                    if email_score > 0:
+                        self.O.set_character_data(
+                            character,
+                            "likability",
+                            current_likeability - email_score,
+                        )
+                        if do_print:
+                            print("You failed at doing a simple job and the boss is disappointed that you exist.")
+                        print(f"Impact on likability: -{email_score}\n")
+                    else:
+                        print("Sometimes no news is good news! Impact on likability: +2\n")
 
-                            self.O.set_character_data(
-                                character, "likability", current_likeability + 2
-                            )
-                        return True
+                        self.O.set_character_data(
+                            character, "likability", current_likeability + 2
+                        )
+                self.O.set_character_data(character, "skip_turn", 2)
+                self.O.set_character_data(character, "skip_cause", "you are doing work")
+                return True
 
-                    # print(self.O.get_character_data("likability", character))
+                # print(self.O.get_character_data("likability", character))
 
             except StopIteration:
                 if do_print:
