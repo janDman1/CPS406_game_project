@@ -106,6 +106,10 @@ def do_action(
             return E.consume_cake(cmd[1], character, do_print)
         case "place_obj":
             return E.place_obj(cmd[1], cmd[3], character, do_print)
+        case "hack_computer":
+            return E.hack_computer(cmd[1], character, do_print)
+        case "take_from_container" :
+            return E.take_from_container(cmd[1], cmd[3], character, do_print)
         case _:
             return False
 
@@ -234,12 +238,21 @@ def electric_shutdown():
     print()
     print("**********************************************")
     print()
-    power_down(25)
+    power_down(POWER_DOWN_DURATION)
     msvcrt.getch()
     pass
 
 def become_boss():
-    pass
+    print("You finally did it. After countless hours of digging, snooping, and dodging coffee attacks from your rivals, you uncovered the truth: the boss has been laundering company money like a washed-up mobster with a taste for 'consulting fees.' Armed with undeniable evidence and a flair for the dramatic, you waltzed straight into the board meeting with Steve Jobs and dropped the bombshell.")
+    msvcrt.getch()
+    print("The fallout was glorious. The boss was escorted out in handcuffs, sputtering excuses about 'creative accounting' and 'spiritually motivated investments.' The board was so impressed with your bravery and sheer audacity that they offered you his position on the spot.")
+    msvcrt.getch()
+    print("Now you're the boss. The office trembles at your presence. Your rivals are nothing but distant memories, and your new empire is built on the ashes of your former employer's downfall. You're rich beyond your wildest dreams and can now hire your own army of interns to do your bidding or just throw coffee at each other for your amusement.")
+    msvcrt.getch()
+    print("The best part? You never have to worry about impressing anyone ever again. You are the corporate overlord now.")
+    msvcrt.getch()
+    print("Congratulations! You played the game, beat the boss, and became the legend. Enjoy ruling with a coffee mug in one hand and the power to ruin lives in the other.")
+    msvcrt.getch()
 
 def marry_daughter():
     pass
@@ -313,10 +326,11 @@ E.greet_at_game_start("player")
 
 t = 0.1
 GAME_DAYS = 3
-TURNS_IN_A_DAY = 45
+TURNS_IN_A_DAY = 30
 ANNIVERSARY_DAY = 3 #5
-ELECTRIC_SHUTDOWN_DAY = 2#3
-INSPECTION_DAY = 1
+ELECTRIC_SHUTDOWN_DAY = 2 #3
+INSPECTION_DAY = 1 #2
+POWER_DOWN_DURATION = 25 #30
 
 characterS = []
 for obj in O.keys():
@@ -333,9 +347,9 @@ for day in range(1, GAME_DAYS + 1):
     for turn in range(TURNS_IN_A_DAY):
         if day == ELECTRIC_SHUTDOWN_DAY and turn == 2: #10:
             electric_shutdown()
-        if day == ANNIVERSARY_DAY and turn == 2: #20:
+        if day == ANNIVERSARY_DAY and turn == 5: #20:
             E.boss_anniversary()
-        if day == INSPECTION_DAY and turn == 2:
+        if day == INSPECTION_DAY and turn == 8:
             E.boss_inspection()
         for character in characterS:
             print(f"{character.upper()} TURN")
@@ -404,7 +418,7 @@ if unparsed_cmd in ["Q", "q", "quit"]:
     os.abort()
 print()
 print("YOU FINISHED THE GAME!")
-print("CONGRATULATIONS!!!")
+# print("CONGRATULATIONS!!!")
 print(
     """
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⣀⣀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀

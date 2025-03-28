@@ -373,6 +373,16 @@ class Events:
             if obj in room_holdings or obj in char_inventory:  # objs_in_view:
                 print(f"{obj}: ", end="")
                 print(self.O.get_obj_description(obj))
+                if self.O.has_item_attribute("container", obj):
+                    objs_on_top = self.O.get_holding(obj)
+                    number_objs_on_top = len(objs_on_top)
+                    if number_objs_on_top >= 1:
+                        print("on top also ", end="")
+                        if number_objs_on_top > 1:
+                            print("are ", end="")
+                        elif number_objs_on_top == 1:
+                            print("is ", end="")
+                        self.print_list(objs_on_top)
                 return True
             else:
                 print("That isn't there!")
@@ -736,40 +746,58 @@ class Events:
                 self.delay()
                 print("The computer starts running the script...")
                 self.delay(3)
-                if destination == "workstation_1":
-                    print("Access granted! You successfully hacked workstation 1.")
-                    player_likability = self.O.get_character_data("likability", "player")
-                    self.O.set_character_data("player", "likability", player_likability - 8)
-                    return True
-                elif destination == "workstation_2":
-                    print("Access granted! You successfully hacked workstation 2.")
-                    philp_likability = self.O.get_character_data("likability", "NPC_2")
-                    self.O.set_character_data("NPC_2", "likability", philp_likability - 8)
-                    return True
-                elif destination == "workstation_3":
-                    print("Access granted! You successfully hacked workstation 3.")
-                    serah_likability = self.O.get_character_data("likability", "NPC_3")
-                    self.O.set_character_data("NPC_3", "likability", serah_likability - 8)
-                    return True 
-
-                
+            if destination == "workstation_1":
+                if do_print: print("Access granted! You successfully hacked workstation 1.")
+                player_likability = self.O.get_character_data("likability", "player")
+                self.O.set_character_data("player", "likability", player_likability - 8)
+                return True
+            elif destination == "workstation_2":
+                if do_print: print("Access granted! You successfully hacked workstation 2.")
+                philp_likability = self.O.get_character_data("likability", "NPC_2")
+                self.O.set_character_data("NPC_2", "likability", philp_likability - 8)
+                return True
+            elif destination == "workstation_3":
+                if do_print: print("Access granted! You successfully hacked workstation 3.")
+                serah_likability = self.O.get_character_data("likability", "NPC_3")
+                self.O.set_character_data("NPC_3", "likability", serah_likability - 8)
+                return True 
             return True
         else:
-            if do_print:
-                if "usb_hacking_script" not in inventory:
-                    print("You need the USB hacking script to perform this action.")
+            if "usb_hacking_script" not in inventory:
+                if do_print: print("You need the USB hacking script to perform this action.")
             if room != "offices":
-                print("You need to be in the offices to hack the computer.")
+                if do_print: print("You need to be in the offices to hack the computer.")
             return False
     
-    def take_from_container(self, obj, container, character, do_print=True):
-        if self.O.has_item_attribute("container", container) and obj in self.O.get_holding(container):
-            inventory = self.O.get_holding(character)
-            if inventory < self["variables"]["MAX_INVENTORY"]:
-                self.O.change_holder(obj, container, character)
+    def take_from_container(self, obj, container, character, do_print=True) -> bool:
+        room = self.O.get_holder(character)
+        # map to synonmys to use plus verify
+        obj = self.map_to_actual_obj(obj, character)
+        if obj == "no obj found":
+            if do_print: print(f"{obj} is not in the game dictionary")
+            return False
+        container = self.map_to_actual_obj(container, character)
+        if container == "no obj found":
+            if do_print: print(f"{container} is not in the game dictionary")
+            return False
+        if self.O.get_holder(container) == room:
+            if self.O.has_item_attribute("container", container) and obj in self.O.get_holding(container):
+                inventory = self.O.get_holding(character)
+                if len(inventory) < self["variables"]["MAX_INVENTORY"]:
+                    if do_print: print("Done")
+                    self.O.change_holder(obj, container, character)
+                    return True
+                else:
+                    if do_print: print("You are carrying too many items")
+            else:
+                if do_print: print(f"{container} does not hold things")
+        else:
+            if do_print: print("You cannot see that in the room")
+        return False
+
     
     def boss_inspection(self):
-        contraband = ["laxative", "poisoned_coffee", "usb_hacking_script", "fake_resume", "suspious_document"]
+        contraband = ["laxative", "poisoned_coffee", "usb_hacking_script", "fake_resume", "suspicious_document"]
 
         """
         teleport everyone to office
@@ -855,10 +883,16 @@ class Events:
 
     
     def place_obj(self, obj: objUID, container: objUID, character: objUID, do_print=True ) -> bool:
+        # map to synonmys to use plus verify
+        obj = self.map_to_actual_obj(obj, character)
+        if obj == "no obj found":
+            if do_print: print(f"{obj} is not in the game dictionary")
+            return False
         obj_type = self.O.get_obj_type(obj)
         if obj_type != "item":
             if do_print:
                 print(f"you cannot put a {obj_type} on a container")
+            return False
         if not self.O.has_item_attribute("container", container):
             if do_print:
                 print(f"{container} is not a valid storage area.")

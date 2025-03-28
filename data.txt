@@ -32,7 +32,7 @@
       "type": "room",
       "holder": null,
       "description": "A meticulously organized office where the scent of fresh coffee lingers. A large desk sits at the centre, covered with neatly stacked papers, crumbs of chocolate cake, and a phone that seems to ring endlessly. The faint sound of typing echoes from a nearby computer, as if someone was just here moments ago.",
-      "NSEW": ["boss_office", "main_lobby", null, null],
+      "NSEW": ["boss_office", "main_lobby", "meeting_room", null],
       "holding": ["fake_resume"]
     },
     "boss_office": {
@@ -53,22 +53,22 @@
     "offices": {
       "type": "room",
       "holder": null,
-      "description": "A maze of cubicles, each filled with half-drunk coffee cups, stacks of sticky notes, and the faint hum of computers left on standby. The air is thick with the smell of printer toner and desperation, as if the walls themselves are absorbing the stress of endless deadlines. A single yellow flower sits on one desk, a lone spark of life in an otherwise mechanical space.",,
-      "NSEW": ["meeting_room", "electrical_room", "storage_room", "main_lobby"],
-      "holding": ["yellow_flower","workstation_1","workstation_2","workstation_3"]
+      "description": "A maze of cubicles, each filled with half-drunk coffee cups, stacks of sticky notes, and the faint hum of computers left on standby. The air is thick with the smell of printer toner and desperation, as if the walls themselves are absorbing the stress of endless deadlines. A single yellow flower sits on one desk, a lone spark of life in an otherwise mechanical space.",
+      "NSEW": ["meeting_room", "electrical_room", null, "main_lobby"],
+      "holding": ["yellow_flower"]
     },
     "meeting_room": {
       "type": "room",
       "holder": null,
       "description": "A room where optimism comes to get murdered by PowerPoint. The long table is surrounded by chairs that are inexplicably uncomfortable despite looking ergonomic. A whiteboard is covered in half-erased ideas that probably made sense to someone at 2 a.m. There is a stack of snacks in the corner that have been untouched since the last anniversary party.",
-      "NSEW": [null, "offices", null, null],
+      "NSEW": [null, "offices", "storage_room", "secretary_office"],
       "holding": ["blue_flower"]
     },
     "storage_room": {
       "type": "room",
       "holder": null,
       "description": "A dark, musty room where broken office equipment and forgotten projects go to die. Shelves are piled with random and mysterious unlabeled boxes. Occasionally something useful can be found here.",
-      "NSEW": [null, null, "offices", null],
+      "NSEW": [null, null, null, "meeting_room"],
       "holding": ["flashlight","empty_wrapper"]
     },
     "electrical_room": {
@@ -114,20 +114,21 @@
     },
     "workstation_1": {
       "type": "item",
-      "holder": null,
+      "holder": "offices",
       "description": "Your desk is cluttered with sticky notes, an empty coffee cup, and a paused game of Snake on your phone. The computer screen is locked with a reminder to vet and foward important emails to the boss.",
-      "attributes": ["container"]
+      "attributes": ["container"],
+      "holding": []
     
     },
     "workstation_2": {
       "type": "item",
-      "holder": null,
+      "holder": "offices",
       "description": "Philip's desk is messy with doodles, sticky notes, and a cold coffee cup labeled 'Creative Fuel.' His phone shows a low Snake score, and the computer is locked with a short password.",
       "attributes": ["container"]
     },
     "workstation_3": {
       "type": "item",
-      "holder": null,
+      "holder": "offices",
       "description": "Serah's desk is spotless and organized, with neatly stacked papers. Her phone shows a perfect Snake score, and the computer is locked with a long password.",
       "attributes": ["container"]
     },
@@ -188,7 +189,7 @@
     },
     "yellow_flower": {
       "type": "item",
-      "holder": null,
+      "holder": "offices",
       "description": "Yellow peonies, they appear to be wilting but may hold on for a few more days",
       "attributes": []
     },
@@ -412,7 +413,7 @@
       //~~not sure how to implement "put down"~~
       "5": ["drop", "leave"],
       //read description of an "item/room/character"
-      "6": ["EXAMINE", "inspect", "check"],
+      "6": ["examine", "inspect", "check"],
       //check inventory of "player/NPC"
       // also shows inventry when doing "> check yourself"
       "7": ["I", "inventory", "inv"],
@@ -422,7 +423,7 @@
       "11": ["sabotage","hack"],
       "12": ["look"], //look at X, look around
       "13": ["give"], //give X to Y
-      "19": ["put"], //put x on Y  //put laxative on coffee
+      "19": ["put","place"], //put x on Y  //put laxative on coffee
       "20": ["wait"],
       "21": ["combine"], //combine coffee and laxative
       "22": ["work"], // email
