@@ -44,7 +44,7 @@
       "holder": null,
       "description": "Dust lingers in the air, while the only illumination comes from a single flickering bulb. Old documents labelled 'Totally Legal Stuff' are scattered haphazardly across the floor and in the corner a makeshift sacrificial altar to the stock market gods.  It is pretty obvious this room was never meant to see the light of day, a hidden stash for abandoned files and questionable choices than anything else..",
       "NSEW": [null, null, "boss_office", null],
-      "holding": []
+      "holding": ["suspious_document"]
     },
     "offices": {
       "type": "room",
@@ -81,6 +81,7 @@
       "NSEW": [null, null, null, "electrical_room"],
       "holding": []
     },
+    
 
     //ITEMS
     "breaker": {
@@ -100,6 +101,31 @@
       "holder": null,
       "description": "Just a plain normal cabinet.",
       "attributes": ["container"]
+    },
+    "broken_cabinet": {
+      "type": "item",
+      "holder": null,
+      "description": "A cabinet that has been broken into, the door hangs off its hinges and the contents are scattered across the floor.",
+      "attributes": ["container"]
+    },
+    "workstation_1": {
+      "type": "item",
+      "holder": null,
+      "description": "Your desk is cluttered with sticky notes, an empty coffee cup, and a paused game of Snake on your phone. The computer screen is locked with a reminder to vet and foward important emails to the boss.",
+      "attributes": []
+    
+    },
+    "workstation_2": {
+      "type": "item",
+      "holder": null,
+      "description": "Philip's desk is messy with doodles, sticky notes, and a cold coffee cup labeled 'Creative Fuel.' His phone shows a low Snake score, and the computer is locked with a short password.",
+      "attributes": []
+    },
+    "workstation_3": {
+      "type": "item",
+      "holder": null,
+      "description": "Serah's desk is spotless and organized, with neatly stacked papers. Her phone shows a perfect Snake score, and the computer is locked with a long password.",
+      "attributes": []
     },
     "flashlight": {
       "type": "item",
@@ -195,7 +221,7 @@
     "safe": {
       "type": "item",
       "holder": null,
-      "description": "A heavy jet black steel safe, built to withstand both curiosity and questionable actions of interns. The keypad blinks ominously, waiting for a numeric 4 digit code to open the secerts its hiding.",
+      "description": "A heavy jet black steel safe, built to withstand both curiosity and questionable actions of interns. The keypad blinks ominously, waiting for a numeric 4 letter code to open the secerts its hiding.",
       "attributes": ["heavy"]
     },
     "strawberry_cake": {
@@ -215,13 +241,18 @@
       "holder": null,
       "description": "A classic vanilla cake with a smooth buttercream frosting. Its light and airy texture makes it a timeless favorite for celebrations and gatherings.",
       "attributes": []
+    "suspious_document": {
+      "type": "item",
+      "holder": null,
+      "description": "A confidential report titled 'Offerings to the Stock Market Gods.' Lists ritual sacrifices like '50 percent of last quarter's revenue' and 'All remaining bonuses' alongside donations to 'To The Moon Spirits Fund'",
+      "attributes": []
     },
 
     //CHARACTERS
     "status_effects": ["healthy", "poisoned", "caffinated", "Hacked"],
     "player": {
       "type": "character",
-      "holder": "boss_office",
+      "holder": "offices",
       "description": "Forge your path ye tarnished and find yourself within the chaos of this workplace. Rise ye tarnished, define whom you'll become and achieve.",
       "name": null,
       "status": ["healthy"],
@@ -473,16 +504,35 @@
     },
 
     "email_minigame": {
-      "Subject: Invest Now for Big Profits! \nFrom: KryptoKing@internet.ca\nTo: Intern@corporate.ca\n         Good morning,\n \n      Here is the weekly marketing metrics summary. Social media engagement is up \n      by 5%, but email open rates have dropped by 3%. If you have any suggestions on \n      improving outreach, let us know.\n      Thanks, \n      Marketing Team": 3,
-      "Subject: I Think I Like You... \nFrom: Secretary@corporate.ca\nTo: Intern@corporate.ca\n \n    I know this might sound weird, but I have been meaning to tell you that I think you are really cool. \n    Maybe we could grab a coffee sometime?\n    Just do not tell the boss. He will lose it.\n \n    Secretary": -5,
+      
+
+      "Subject: Invest Now for Big Profits! \nFrom: CryptoKing@internet.ca\nTo: You\n \n    Congratulations! You have been chosen to invest in the next big crypto coin: IntershipCoin. \n    Get in now for early gains and secure your financial future. Just send $1000 to the wallet address 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa to 100x your investment! \n    Do not miss out!\n    Crypto King" : -5,
+      "Subject: Weekly Marketing Metrics \nFrom: Marketing@corporate.ca\nTo: AllStaff@corporate.ca\n \n    Good morning,\n    Here is the weekly marketing metrics summary. Social media engagement is up by 5 percent, but email open rates have dropped by 3 percent. \n    If you have any suggestions on improving outreach, let us know.\n    Thanks,\n    Marketing Team" : -3,
+      "Subject: Annual Corporate Mixer - RSVP Required \nFrom: Events@corporate.ca\nTo: Intern@corporate.ca\n \n    Good news! The annual corporate mixer is happening this Friday at 7 PM in the main conference hall. \n    There will be food, drinks, and a chance to meet executives. \n    Please RSVP by Thursday. Attendance is optional, but networking is encouraged!\n    Events Team" : 4,
+      "Subject: Reception Aquarium Leak \nFrom: Facilities@corporate.ca\nTo: AllStaff@corporate.ca\n \n    Dear Staff,\n    The reception aquarium has suffered a catastrophic leak, and most of the fish have been relocated to temporary bowls. \n    Unfortunately, some are still unaccounted for. If you see a fish flopping around or in an unusual place, please rescue it.\n    Facilities Team" : 3,
+      "Subject: Unattended Birthday Cake in Break Room \nFrom: OfficeAdmin@corporate.ca\nTo: AllStaff@corporate.ca\n \n    Hello Team,\n    There's an unclaimed birthday cake in the break room. No one has taken responsibility for it, and it is just sitting there, untouched. \n    If you left it, please let us know.\n    Office Admin" : 2,
+
+
       "Subject: Can Someone Check the Air Conditioning? \nFrom: Maintenance@corporate.ca\nTo: AllStaff@corporate.ca\n \n    Hey everyone,\n    We have been getting complaints about strange noises coming from the vents. \n    If anyone notices anything unusual, please let us know. Might just be a raccoon again.\n    Maintenance Team": -4,
+      "Subject: Questionable Expense Report \nFrom: Accounting@corporate.ca\nTo: Intern@corporate.ca\n \n    Hey,\n    I was reviewing the latest expense reports, and something weird stood out—someone billed the company for an expensive dinner last Friday, but no one remembers attending any corporate event. \n    Do you know anything about this?\n    I am trying to figure out if this was an error or something shady. Let me know.\n    Thanks,\n    Megan - Accounting" : -3,
+      "Subject: Unscheduled Meeting in the Basement \nFrom: Anonymous@leakmail.ca\nTo: Intern@corporate.ca\n \n    There is going to be a secret meeting in the basement at midnight tonight. \n    Apparently, it is about the upcoming promotion decisions. \n    Be there if you want insider info.\n    Anonymous" : 2,
+      "Subject: Vote on Office Mascot Name \nFrom: HR@corporate.ca\nTo: AllStaff@corporate.ca\n \n    Hi Team,\n    We are officially voting on a name for the new office mascot (a cheerful stuffed penguin). \n    Current top contenders are: Waddles, Mr. Beakerson, and Sir Fluffington. \n    Please cast your vote by Friday.\n    HR Department" : 2,
+
+      "Subject: Furry Creature Near Break Room \nFrom: Security@corporate.ca\nTo: AllStaff@corporate.ca\n \n    Hey Everyone,\n    A small, furry creature (possibly a raccoon? or an unusually aggressive ferret?) has been spotted near the break room. \n    Please do not attempt to pet or capture it. Animal control is on the way.\n    Security Team" : 4,
+
+
+      "Subject: I Think I Like You... \nFrom: Secretary@corporate.ca\nTo: Intern@corporate.ca\n \n    I know this might sound weird, but I have been meaning to tell you that I think you are really cool. \n    Maybe we could grab a coffee sometime?\n    Just do not tell the boss. He will lose it.\n \n    Secretary": -5,
       "Subject: Scheduled Server Maintenance \nFrom: IT@corporate.ca\nTo: AllStaff@corporate.ca\n \n    Dear Staff,\n    We will be performing routine server maintenance on Friday from 3 PM to 5 PM. \n    During this time, access to the internal network will be limited. Please save your work and log off before 3 PM. \n    Let us know if you experience issues outside of the maintenance window.\n    IT Team": 4,
       "Subject: Upcoming Investor Meeting \nFrom: ChiefFinancialOfficer@corporate.ca\nTo: Intern@corporate.ca\n \n    Just a heads-up Boss, the Investor meeting has been rescheduled for next Wednesday at 12 PM at Maple Dragon Golf Club. \n    This is a big opportunity as Microsoft says they want to invest $1,000,000 into our new product. \n    Also, let me know if you want any specific data pulled for the meeting.\n    Alex": 4,
       "Subject: Dress Code Reminder \nFrom: HR@corporate.ca\nTo: AllStaff@corporate.ca\n \n    Hi Team,\n    We have noticed some employees are not adhering to the business casual dress code. \n    Please ensure that your attire remains professional at all times. \n    Let us keep the office looking sharp!\n    HR Team": -2,
       "Subject: Someone Keeps Stealing Pens! \nFrom: OfficeAdmin@corporate.ca\nTo: AllStaff@corporate.ca\n      Dear All,\n    We have noticed that office supplies, especially pens and notepads, are disappearing faster than usual. \n    Please be mindful and take only what you need. If you see anyone hoarding supplies, kindly remind them to be considerate.\n    Office Admin": -1,
       "Subject: Surpise Free Pizza Day - Friday! \nFrom: HR@corporate.ca\nTo: AllStaff@corporate.ca\n \n    Good news, everyone!\n    Next Friday, we at HR have decided to celebrate Employee Appreciation Day with free pizza in the cafeteria from 12 PM to 2 PM. \n    Stop by and grab a slice on us!\n    Lets show our hardworking employees some love!\n    HR Team": 3,
+      "Subject: Rumor About the Boss \nFrom: Anonymous@leakmail.ca\nTo: Intern@corporate.ca\n \n    Just thought you should know, there is a rumor going around that the boss has been siphoning company funds for personal use. \n    Not saying it is true, but it might explain why the budget's been tight lately. \n    Do with this information what you will." : -5,
+
       "Subject: Suspicious Attachment Detected \nFrom: IT@corporate.ca\nTo: Intern@corporate.ca\n \n    Hi,\n    We detected a suspicious file attachment in your inbox titled 'PerformanceReview.docx.' \n    It appears to be from an external email address. Please avoid opening it and report any suspicious activity immediately.\n    IT Department": -4,
       "Subject: Weird Expenses from Last Quarter \nFrom: Finance@corporate.ca\nTo: Intern@corporate.ca\n \n    Hey,\n    I was reviewing the expense reports from Q4, and I noticed a few weird entries. \n    Someone charged $500 for 'client entertainment' at a karaoke bar three times in one week. \n    Also, there is an invoice for 'motivational posters' that never arrived. \n    Should we be worried about misuse of company funds? Let me know if you think this is worth escalating.\n    Kevin (Finance)": 5,
+      "Subject: Strange Smell from the Cafeteria \nFrom: CafeteriaManager@corporate.ca\nTo: AllStaff@corporate.ca\n \n    Hello,\n    We have been getting reports of a strange odor coming from the cafeteria. Maintenance is investigating, but if anyone knows what might be causing it, let us know. \n    It kind of smells like burned rubber mixed with spoiled milk.\n    Cafeteria Manager" : -2,
+
       "Subject: Noise Complaint - Floor 5 \nFrom: BuildingMaintenance@corporate.ca\nTo: AllStaff@corporate.ca\n \n    Good morning,\n    We have received several reports of loud banging noises coming from Floor 5 after hours. \n    We suspect it could be construction, but there should not be any scheduled work. \n    Let us know if you hear anything unusual.\n    Building Maintenance": -3,
       "Subject: Weird Legal Query \nFrom: Legal@corporate.ca\nTo: AllStaff@corporate.ca\n \n    Hi everyone,\n    We have received a notice about a potential trademark infringement concerning one of our recent marketing campaigns. \n    Please let us know if anyone has used unlicensed images or copyrighted phrases. \n    This could escalate, so please be honest and transparent.\n    Corporate Legal Team": 4,
       "Subject: Re: Frustration with Management \nFrom: Anonymous@leakmail.ca\nTo: Intern@leakmail.ca\n \n    Just between us, I am getting really tired of how the boss micromanages every little thing. \n    A lot of people in the office feel the same way but are too scared to say anything. \n    Someone should really address this before morale tanks completely.\n    Do not mention my name.\n    Concerned Employee": -5
