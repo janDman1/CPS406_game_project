@@ -130,8 +130,12 @@ def player_action(character: objUID, P: Parser, E: Events):
         cmd = P.parse_input(unparsed_cmd)
         subroutine_key = P.find_subroutine_call(cmd)
 
-        print(f"DEBUG cmd: {cmd}")
-        print(f"DEBUG subroutine_key: {subroutine_key}")
+        if subroutine_key == "no match":
+            print("the stock market gods are baffled by your input")
+            print("learn how to spell. Use [ > help ]!!!")
+
+        # print(f"DEBUG cmd: {cmd}")
+        # print(f"DEBUG subroutine_key: {subroutine_key}")
 
         verb_str = (
             P.get_back_the_verb_string(int(cmd[0]), unparsed_cmd)
@@ -180,28 +184,140 @@ def job_offer_with_coworker(pitcher):
     print(f"FAVOUR, {pitcher.upper()} PITCHED IN FOR Y'ALL!")
     msvcrt.getch()
 
-
 def exclusive_job_offer(highest_likability):
-    print("COMPETITIVENESS RAN IN THE ENTIRE")
+    print("OUTSMARTING AND OUTPERFORMING THEIR RIVALS WITH A MIX OF SKILL,") 
     msvcrt.getch()
-    print("PERIOD OF THE INTERSHIP, BUT ONE")
+    print("CHARM, AND A LITTLE BIT OF QUESTIONABLE ETHICS!") 
     msvcrt.getch()
-    print("ONLY ONE STOOD ON TOP! THAT IS")
+    print("THE BATTLE FOR SUPREMACY RAGED ON FROM DAY ONE,") 
+    msvcrt.getch()
+    print("BUT ONE, ONLY ONE STOOD ON TOP! THAT IS")
     msvcrt.getch()
     print(f"{highest_likability.upper()} BEAT EVERYONE IN CAPABILITIES")
     msvcrt.getch()
-
 
 def no_one_gets_rehired():
     print("NONE OF YOU GOT THE BOSS'S FAVOUR")
     msvcrt.getch()
     print("YOU ALL DID A BAD JOB IN THE INTERNSHIP")
     msvcrt.getch()
-    print('"PROFESSIONALS YOU ARE NOT" WAS THE')
+    print("PROFESSIONALS YOU ARE NOT WAS THE")
     msvcrt.getch()
     print("BOSS'S LASTS WORDS TO ALL OF YOU!!!")
     msvcrt.getch()
+    print("BUT I HEARD MCDONALDS IS HIRING")
 
+def become_a_millionaire():
+    print("They all said you were crazy.")
+    msvcrt.getch()
+    print("They all said to sell.")
+    msvcrt.getch()
+    print("\"Crypto’s just a fad!\" they laughed.")
+    msvcrt.getch()
+    print("\"Invest in something real!\" they scoffed.")
+    msvcrt.getch()
+    print("But look at them now.")
+    print()
+    msvcrt.getch()
+    print("You did not even bother checking if you got the return offer. You did not even need the boss's approval. You just needed Intern Coin the next big thing that everyone doubted. While they are still grinding away at office politics, you are floating on your private yacht, sipping champagne with a smug grin.")
+    print()
+    msvcrt.getch()
+    print("Now you can brag to your homeless friends about their poverty while you live it up using your big boy bucks to buy stupid things like a gold-plated suitcase.")
+    print()
+    msvcrt.getch()
+    print("Congratulations! You beat the game by skipping the corporate nonsense and going straight to billionaire status. Who needs a job when you’re too busy buying the entire company?")
+    print()
+    msvcrt.getch()
+
+def become_boss():
+    print("SECERT ENDING FOUND!!!!\n\nYou finally did it. After countless hours of digging, snooping, and dodging coffee attacks from your rivals, you uncovered the truth: the boss has been laundering company money like a washed-up mobster with a taste for 'consulting fees.' Armed with undeniable evidence and a flair for the dramatic, you waltzed straight into the board meeting with Steve Jobs and dropped the bombshell.\n")
+    msvcrt.getch()
+    print("The fallout was glorious. The boss was escorted out in handcuffs, sputtering excuses about 'creative accounting' and 'spiritually motivated investments.' The board was so impressed with your bravery and sheer audacity that they offered you his position on the spot.\n")
+    msvcrt.getch()
+    print("Now you're the boss. The office trembles at your presence. Your rivals are nothing but distant memories, and your new empire is built on the ashes of your former employer's downfall. You're rich beyond your wildest dreams and can now hire your own army of interns to do your bidding or just throw coffee at each other for your amusement.\n")
+    msvcrt.getch()
+    print("The best part? You never have to worry about impressing anyone ever again. You are the corporate overlord now.\n")
+    msvcrt.getch()
+    print("Congratulations! You played the game, beat the boss, and became the legend. Enjoy ruling with a coffee mug in one hand and the power to ruin lives in the other.\n")
+    msvcrt.getch()
+
+def marry_daughter():
+    print("SECERT ENDING FOUND!!!!\n\nYou did it! You got the job offer, and as if that wasn't enough, you somehow managed to charm your way into a relationship with the boss's daughter.")
+    msvcrt.getch()
+    print("Now you get to sit back, kick your feet up, and watch the money roll in while your new sugar mama takes care of everything. The best part? You do not even have to worry about impressing the boss anymore you're practically family.")
+    msvcrt.getch()
+    print("Who knew that your internship would end in both professional success and romantic bliss? Some might call it luck, others might call it pure genius. Either way, you have made it, and life just got a whole lot easier.")
+    msvcrt.getch()
+    print("Congratulations! You’ve officially secured both the job and a lifelong supply of luxury coffee and designer clothes. Enjoy your new life as the ultimate corporate gold digger!")
+    msvcrt.getch()
+
+def print_ending_frame():
+    print("""
+          )   (       (         )             
+       ( /(   )\ )    )\ )   ( /(   (         
+ (     )\()) (()/(   (()/(   )\())  )\ )      
+ )\   ((_)\   /(_))   /(_)) ((_)\  (()/(      
+((_)   _((_) (_))_   (_))    _((_)  /(_))_    
+| __| | \| |  |   \  |_ _|  | \| | (_)) __|   
+| _|  | .` |  | |) |  | |   | .` |   | (_ |   
+|___| |_|\_|  |___/  |___|  |_|\_|    \___|   
+""")
+    print()
+    msvcrt.getch()
+
+def ending_result():
+    global LIKABILITY_GOAL, FRIENDLINESS_GOAL, characterS
+    friendliness_reached = True
+    likability_reached = [True] * len(characterS)
+    likability_reached_idxS = []
+    pitcher = None
+    for i, character in enumerate(characterS):
+        current_friendliness = E.O.get_character_data("friendliness", character)
+        if (
+            current_friendliness is not None
+            and current_friendliness < FRIENDLINESS_GOAL
+        ):
+            friendliness_reached = False
+        if E.O.get_character_data("likability", character) < LIKABILITY_GOAL:
+            likability_reached[i] = False
+    for i, b in enumerate(likability_reached):
+        if b:
+            likability_reached_idxS.append(i)
+    if len(likability_reached_idxS) > 0:
+        pitcher = characterS[likability_reached_idxS[0]]
+        highest_likability = characterS[likability_reached_idxS[0]]
+        for i in likability_reached_idxS[1:]:
+            if characterS[i] == "player":
+                pitcher = "player"
+            current_likability = E.O.get_character_data("likability", characterS[i])
+            if current_likability > E.O.get_character_data(
+                "likability", highest_likability
+            ):
+                highest_likability = characterS[i]
+
+    # ending 4
+    if "intern_coin" == E.O.get_holding("player"):
+        return 
+    # ending 1
+    if friendliness_reached and any(likability_reached):
+        return job_offer_with_coworker(E.O.get_character_data("name", pitcher))
+    # ending 2
+    if any(likability_reached):
+        return exclusive_job_offer(E.O.get_character_data("name", highest_likability))
+    # ending 3
+    if not any(likability_reached):
+        return no_one_gets_rehired()
+
+def check_secret_ending() -> bool:
+    for k,v in E["variables"]["is_a_secret_endings"].items():
+        if v:
+            print_ending_frame()
+            if k == "become_boss":
+                become_boss()
+            if k == "marry_daughter":
+                marry_daughter()
+            return True
+    return False           
 
 # INSIDE Events aka E.power_down()
 # can be called from spill_coffee
@@ -213,7 +329,6 @@ def power_down(turns=10):
             room = O.get_holder(obj)
             if O.get_obj_type(obj) == "character":
                 O.change_holder(obj, room, "electrical_room")
-
 
 def electric_shutdown():
     print("###########")
@@ -242,30 +357,6 @@ def electric_shutdown():
     msvcrt.getch()
     pass
 
-def become_boss():
-    print("You finally did it. After countless hours of digging, snooping, and dodging coffee attacks from your rivals, you uncovered the truth: the boss has been laundering company money like a washed-up mobster with a taste for 'consulting fees.' Armed with undeniable evidence and a flair for the dramatic, you waltzed straight into the board meeting with Steve Jobs and dropped the bombshell.")
-    msvcrt.getch()
-    print("The fallout was glorious. The boss was escorted out in handcuffs, sputtering excuses about 'creative accounting' and 'spiritually motivated investments.' The board was so impressed with your bravery and sheer audacity that they offered you his position on the spot.")
-    msvcrt.getch()
-    print("Now you're the boss. The office trembles at your presence. Your rivals are nothing but distant memories, and your new empire is built on the ashes of your former employer's downfall. You're rich beyond your wildest dreams and can now hire your own army of interns to do your bidding or just throw coffee at each other for your amusement.")
-    msvcrt.getch()
-    print("The best part? You never have to worry about impressing anyone ever again. You are the corporate overlord now.")
-    msvcrt.getch()
-    print("Congratulations! You played the game, beat the boss, and became the legend. Enjoy ruling with a coffee mug in one hand and the power to ruin lives in the other.")
-    msvcrt.getch()
-
-def marry_daughter():
-    pass
-
-def check_secret_ending():
-    for k,v in E["variables"]["is_a_secret_endings"].items():
-        if v:
-            if k == "become_boss":
-                become_boss()
-            if k == "marry_daughter":
-                marry_daughter()
-            
-
 def check_power():
     if E["variables"]["remaining_lights_out"] > 0:
         E["variables"]["remaining_lights_out"] = (
@@ -276,52 +367,6 @@ def check_power():
             print()
             E["variables"]["is_lights_out"] = False
 
-
-likability_goal = 80
-friendliness_goal = 5
-
-
-def ending_result():
-    global likability_goal, friendliness_goal, characterS
-    friendliness_reached = True
-    likability_reached = [True] * len(characterS)
-    likability_reached_idxS = []
-    pitcher = None
-    for i, character in enumerate(characterS):
-        current_friendliness = E.O.get_character_data("friendliness", character)
-        if (
-            current_friendliness is not None
-            and current_friendliness < friendliness_goal
-        ):
-            friendliness_reached = False
-        if E.O.get_character_data("likability", character) < likability_goal:
-            likability_reached[i] = False
-    for i, b in enumerate(likability_reached):
-        if b:
-            likability_reached_idxS.append(i)
-    if len(likability_reached_idxS) > 0:
-        pitcher = characterS[likability_reached_idxS[0]]
-        highest_likability = characterS[likability_reached_idxS[0]]
-        for i in likability_reached_idxS[1:]:
-            if characterS[i] == "player":
-                pitcher = "player"
-            current_likability = E.O.get_character_data("likability", characterS[i])
-            if current_likability > E.O.get_character_data(
-                "likability", highest_likability
-            ):
-                highest_likability = characterS[i]
-
-    # ending 1
-    if friendliness_reached and any(likability_reached):
-        return job_offer_with_coworker(E.O.get_character_data("name", pitcher))
-    # ending 2
-    if any(likability_reached):
-        return exclusive_job_offer(E.O.get_character_data("name", highest_likability))
-    # ending 3
-    if not any(likability_reached):
-        return no_one_gets_rehired()
-
-
 E.greet_at_game_start("player")
 
 t = 0.1
@@ -331,6 +376,8 @@ ANNIVERSARY_DAY = 3 #5
 ELECTRIC_SHUTDOWN_DAY = 2 #3
 INSPECTION_DAY = 1 #2
 POWER_DOWN_DURATION = 25 #30
+LIKABILITY_GOAL = 80
+FRIENDLINESS_GOAL = 20
 
 characterS = []
 for obj in O.keys():
@@ -359,10 +406,11 @@ for day in range(1, GAME_DAYS + 1):
             # DEBUG #
             # print(f"DEBUG {character} skip_turn: {skip_turn}")
             # print(f"DEBUG {character} turn_speed: {turn_speed}")
-            print(f"holder: {E.O.get_holder(character)}")
-            print(f"holding: {E.O.get_holding(character)}")
-            print(f"likability: {E.O.get_character_data("likability", character)}")
-            print(f"friendliness: {E.O.get_character_data("friendliness", character)}")
+            # print(f"holder: {E.O.get_holder(character)}")
+            # print(f"holding: {E.O.get_holding(character)}")
+            if character != "player":
+                print(f"likability: {E.O.get_character_data("likability", character)}")
+                print(f"friendliness: {E.O.get_character_data("friendliness", character)}")
             print("------------")
             if skip_turn > 0:
                 print("skipping turn...")
@@ -389,7 +437,7 @@ for day in range(1, GAME_DAYS + 1):
 
             # sleep(t)
 
-            check_secret_ending()
+            if check_secret_ending(): break
 
             if unparsed_cmd in ["Q", "q", "quit"]:
                 break
@@ -413,12 +461,13 @@ for day in range(1, GAME_DAYS + 1):
         continue
     break
 
-ending_result()  # show the result based on all stats
+if E.is_secret_ending() == "no secret endings met":
+    print_ending_frame()
+    ending_result()  # show the result based on all stats
 if unparsed_cmd in ["Q", "q", "quit"]:
     os.abort()
 print()
 print("YOU FINISHED THE GAME!")
-# print("CONGRATULATIONS!!!")
 print(
     """
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⣀⣀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀

@@ -422,12 +422,13 @@ class Events:
 
         original_obj = obj
 
-        # if self["variables"]["is_boss_anniversary"] and obj == "boss":
-        #     if do_print:
-        #         print("I LIKE HOW YOU HIT BOI!!!")
-        #         self.delay()
-        #         print("HERE'S MY DAUGHTER!")
-        #         marry_daughter_ending()
+        if self["variables"]["is_boss_anniversary"] and obj == "boss":
+            if do_print:
+                print("I LIKE HOW YOU HIT BOI!!!")
+                self.delay()
+                print("HERE'S MY DAUGHTER!")
+            self["variables"]["is_a_secret_endings"]["marry_daughter"] = True
+            return True
 
         if self["variables"]["is_lights_out"] and "flashlight" not in char_inventory:
             if obj != character:  # if you are not punching yourself
@@ -739,6 +740,7 @@ class Events:
     def hack_computer(self, destination: objUID, character: objUID, do_print=True) -> bool:
         room = self.O.get_holder(character)
         inventory = self.O.get_holding(character)
+        LIKABILITY_CUT = 8
 
         if "usb_hacking_script" in inventory and room == "offices" and destination in ["workstation_1", "workstation_2", "workstation_3"]:
             if do_print:
@@ -747,20 +749,23 @@ class Events:
                 print("The computer starts running the script...")
                 self.delay(3)
             if destination == "workstation_1":
-                if do_print: print("Access granted! You successfully hacked workstation 1.")
+                if do_print: 
+                    print("Access granted! You successfully hacked workstation 1.")
+                    print(f"{self.O.get_character_data("name", "player")} lost {LIKABILITY_CUT} likability for")
                 player_likability = self.O.get_character_data("likability", "player")
-                self.O.set_character_data("player", "likability", player_likability - 8)
-                return True
+                self.O.set_character_data("player", "likability", player_likability - LIKABILITY_CUT)
             elif destination == "workstation_2":
-                if do_print: print("Access granted! You successfully hacked workstation 2.")
+                if do_print: 
+                    print("Access granted! You successfully hacked workstation 2.")
+                    print(f"{self.O.get_character_data("name", "NPC_1")} lost {LIKABILITY_CUT} likability for a picture of the Boss in a speedo as his background.")
                 philp_likability = self.O.get_character_data("likability", "NPC_2")
-                self.O.set_character_data("NPC_2", "likability", philp_likability - 8)
-                return True
+                self.O.set_character_data("NPC_2", "likability", philp_likability - LIKABILITY_CUT)
             elif destination == "workstation_3":
-                if do_print: print("Access granted! You successfully hacked workstation 3.")
+                if do_print: 
+                    print("Access granted! You successfully hacked workstation 3.")
+                    print(f"{self.O.get_character_data("name", "NPC_2")} lost {LIKABILITY_CUT} likability for a picture of the Boss in a speedo as her background.")
                 serah_likability = self.O.get_character_data("likability", "NPC_3")
-                self.O.set_character_data("NPC_3", "likability", serah_likability - 8)
-                return True 
+                self.O.set_character_data("NPC_3", "likability", serah_likability - LIKABILITY_CUT)
             return True
         else:
             if "usb_hacking_script" not in inventory:
@@ -1347,6 +1352,14 @@ Discover hidden secrets and unlock unique endings
             if to_character in self.O.get_holding(room):
 
                 # for hacking script and translating the old intern notes
+                if gifted_name == "Mr.Boss" and obj == "suspicious_document":
+                    if do_print:
+                        print("Well, well... you found it I knew I should have burnt as a sacrifice. Gotta hand it to you, kid you are sharp. Lucky for me, you did not run to those heathen board memebers or the cops. That is loyalty I can respect.\nTell you what keep this between us, and you can marry my daughter. She's been talking about you anyway. Plus, I could use a smart son-in-law to keep things... discree!")
+                    self["variables"]["is_a_secret_endings"]["marry_daughter"] = True
+                    return True
+
+
+                    return True
                 if gifted_name == "Steve Jobs":
                     if obj == "intern_coin":
                         if len(speaker_inventory) < self["variables"]["MAX_INVENTORY"]:
@@ -1367,10 +1380,22 @@ Discover hidden secrets and unlock unique endings
                             return False
                     elif obj == "old_intern_notes":
                         if do_print:
-                            print("I see you need a genius to translate this for you. Wait one second")
+                            print("I see you need a genius to translate this for you. Wait one second", end="")
                             self.dotdotdot()
-                            print("The Text says: \Rule #1: Keep your desk clean. Apparently, the boss thinks clutter is a personal attack on his soul. Might be allergic to productivity too.\nRule #2: Always bring a flashlight to work. The lights go out sometimes and people just... disappear. Not saying it's haunted, but I'm not 'not' saying that either.\nRule #3 Make the boss happy. Even if it means pretending you care about his endless speeches. Nodding a lot helps.\nRule #4: Do some actual work. Apparently, staring intently at an empty spreadsheet does not count as “being productive.” Who knew?\nWeird tip: The secretary loves flowers... but I can not figure out which ones. Could just be stress gardening. Who knows.\nWeird tip: The secretary loves flowers... but I can not figure out which ones. Saw her fussing over some roses once. Could be nothing... or everything.\nHot Investment Tip: Buy Intern Coin. It is going to the moon! Trust me, I am basically a financial genius. Plus it is endorsed by our IT guy Steve Jobs.\nAlso by the way there is this suspicious safe in the boss's office... been wondering what is inside. Have not found out what was inside in my time here probably just old mementos ")
+                            print("\nThe Text says: \nRule #1: Keep your desk clean. Apparently, the boss thinks clutter is a personal attack on his soul. Might be allergic to productivity too.\nRule #2: Always bring a flashlight to work. The lights go out sometimes and people just... disappear. Not saying it's haunted, but I'm not 'not' saying that either.\nRule #3 Make the boss happy. Even if it means pretending you care about his endless speeches. Nodding a lot helps.\nRule #4: Do some actual work. Apparently, staring intently at an empty spreadsheet does not count as “being productive.” Who knew?\nWeird tip: The secretary loves flowers... but I can not figure out which ones. Could just be stress gardening. Who knows.\nWeird tip: The secretary loves flowers... but I can not figure out which ones. Saw her fussing over some roses once. Could be nothing... or everything.\nHot Investment Tip: Buy Intern Coin. It is going to the moon! Trust me, I am basically a financial genius. Plus it is endorsed by our IT guy Steve Jobs.\nAlso by the way there is this suspicious safe in the boss's office... been wondering what is inside. Have not found out what was inside in my time here probably just old mementos.\n ")
+                            self.dotdotdot()
+                            print("I liked that Intern shame 'THEY' got him")
+
+                        
                         return True
+                    
+                    elif obj == "suspicious_document":
+                        if do_print:
+                            print("What is this??? Susicious documents with dirt against the Boss!! Good job my boy with this I can finally be free!!")
+                        # switch the ending on and gets checked after turns
+                        self["variables"]["is_a_secret_endings"]["become_boss"] = True
+                        return True
+
                     else:
                         if do_print:
                             print(
@@ -1464,4 +1489,4 @@ Discover hidden secrets and unlock unique endings
         for ending,is_true in self["variables"]["is_a_secret_endings"].items():
             if is_true:
                 return ending
-        return "no_secret_endings_met"
+        return "no secret endings met"

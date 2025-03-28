@@ -201,7 +201,7 @@
     },
     "intern_coin": {
       "type": "item",
-      "holder": null,
+      "holder": "player",
       "description": "Worth 1 cent now, but Krypto King says it's going the Moon!",
       "attributes": []
     },
@@ -249,7 +249,7 @@
     },
     "suspicious_document": {
       "type": "item",
-      "holder": null,
+      "holder": "player",
       "description": "A confidential report titled 'Offerings to the Stock Market Gods.' Lists ritual sacrifices like '50 percent of last quarter's revenue' and 'All remaining bonuses' alongside donations to 'To The Moon Spirits Fund'",
       "attributes": []
     },
@@ -281,9 +281,9 @@
         "I will imbue you with some wisdom if someone catches you napping at your desk, just say you are meditating. Boom! Instant productivity points.",
         "If I get fired, I am starting a podcast where I just complain about office life. Working title 'Imprisoned Intern.'"
       ],
-      "likability": 0,
-      "friendliness": 2, //neutral to the player
-      "turn_speed": 70,
+      "likability": 50,
+      "friendliness": 10, //neutral to the player
+      "turn_speed": 100,
       "skip_turn": 4,
       "skip_cause": "dev testing",
       "uses_parser": false,
@@ -301,8 +301,8 @@
         "Someone in the break room just tried to motivate me. I almost threw my coffee at them. Almost .........",
         "Why do I have to put my coffee away every time I visit IT? It is not like I will spill my coffee in the electrical room. But even if I did it would be the architect's fault for designing such a bad floor plan. "
       ],
-      "likability": 0,
-      "friendliness": 0, //aggressive to the player
+      "likability": 50,
+      "friendliness": 5, //aggressive to the player
       "turn_speed": 120,
       "skip_turn": 0,
       "skip_cause": null,
