@@ -1,5 +1,6 @@
 import random as rnd
 import sys
+import msvcrt
 
 from time import sleep
 from obj_dict import ObjDict
@@ -121,8 +122,17 @@ class Events:
     def drop_obj(self, obj: objUID, character: objUID, do_print=True) -> bool:
         """check character holder (aka the room) and drop item there"""
         inventory = self.O.get_holding(character)
+
+        # make coffee and poisoned coffee indistinguishable
         if obj == "coffee" and "poisoned_coffee" in inventory:
             obj = "poisoned_coffee"
+
+        # maps obj synonym to actual object
+        obj = self.map_to_actual_obj(obj, character)
+        if obj == "no obj found":
+            print(f"{obj} is not in the game dictionary")
+            return False
+
         if self.O.is_valid_obj(obj) and obj in inventory:
             room = self.O.get_holder(character)
             self.O.change_holder(obj, character, room)
@@ -137,9 +147,24 @@ class Events:
         room_holdings_excluding_character = self.O.get_holding(room)
         room_holdings_excluding_character.remove(character)
         inventory = self.O.get_holding(character)
-        obj = self.map_to_actual_obj(obj, character)
+
+        # process synonyms aka manual check
         if obj == "coffee" and "poisoned_coffee" in room_holdings_excluding_character:
             obj = "poisoned_coffee"
+        if obj == "cake":
+            if self["variables"]["is_boss_anniversary"]:
+                if do_print:
+                    print("try again but put with the flavour")
+                return False
+            else:
+                print("Ahh, you'll be in for a surprise in a few days")
+                return True
+
+        # map to actual object if there is
+        obj = self.map_to_actual_obj(obj, character)
+        if obj == "no obj found":
+            print(f"{obj} is not in the game dictionary")
+            return False
 
         if self.O.get_obj_type(obj) in ["character", "static_character"]:
             if do_print:
@@ -155,7 +180,8 @@ class Events:
             if do_print:
                 print("You probed the surface until", end="")
                 self.dotdotdot()
-            if rnd.randint(1, 100) <= 50:
+            # right side is percentage of giving up
+            if rnd.randint(1, 100) <= 0:
                 if do_print:
                     print("You gave up!")
                     print("Finding anything without lights is hard")
@@ -169,21 +195,31 @@ class Events:
 
                     # keep trying until its item, i.e. remove characters from choice
                     while self.O.get_obj_type(obj) in ["character", "static_character"]:
-                        obj = rnd.choice(room_holdings_excluding_character)
                         room_holdings_excluding_character.remove(obj)
                         if len(room_holdings_excluding_character) <= 0:
+                            if do_print:
+                                print("You search every corner of the room")
+                                self.delay()
+                                print("but unfortunately cannot find anything")
                             break
+                        obj = rnd.choice(room_holdings_excluding_character)
                     else:
-                        if do_print:
-                            print("You actually found an item!")
+                        if do_print: print("You actually found an item!")
                         # falls through if its actually in the room
-                    if do_print:
-                        print("You search every corner of the room")
-                        self.delay()
-                        print("but unfortunately cannot find anything")
+                else:
+                    if do_print: 
+                        print("until you probbed everywhere")
+                        print("without any chance of finding anything")              
 
         if obj in room_holdings_excluding_character:
             if len(inventory) < self["variables"]["MAX_INVENTORY"]:
+                if self["variables"]["is_boss_anniversary"]:
+                    cake_list = ["strawberry_cake","vanilla_cake","chocolate_cake"]
+                    if obj in cake_list:
+                        cake_list.remove(obj)
+                        for i,cake in enumerate(cake_list,1):
+                            self.O.change_holder(cake, room, f"NPC_{i}")
+                            # falls through to take the cake that was removed
                 self.O.change_holder(obj, room, character)
                 if do_print:
                     print("Done")
@@ -216,13 +252,28 @@ class Events:
         char_inventory = self.O.get_holding(character)
         if obj == "coffee" and "poisoned_coffee" in room_holdings + char_inventory:
             obj = "poisoned_coffee"
-        if (
-            obj == "inventory" or obj == "room" or obj == room
-        ):  # obj is the room the character is in
+
+        ## process synonyms here instead of the actual obj ##
+        # check data.txt "other_valid_obj_name" section
+        if obj == "inventory":
+            self.show_inventory(character, do_print)
+
+        # map the synonym to actual object here now
+        obj = self.map_to_actual_obj(obj, character)
+        if obj == "no obj found":
+            print(f"{obj} is not in the game dictionary")
+            return False
+
+        # here obj was mapped to current room
+        if obj == room:
             self.show_character_view(character, do_print)
             return True
-        obj = self.map_to_actual_obj(obj, character)
+
         obj_inventory = self.O.get_holding(obj)
+        obj_type = self.O.get_obj_type(obj)
+        if not do_print and obj_type != "invalid object":
+            # skips below "room" "character" and "item" prints
+            return True
 
         # For the safe
         if room == "boss_office" and obj == "safe":
@@ -241,7 +292,9 @@ class Events:
                         attempts = 3
 
                         while attempts > 0:
+
                             code = input("Enter the 4 letter code: ").strip().lower()
+
                             if code == correct_code:
                                 print("The safe opens and you find a keycard inside.")
                                 self.O.add_holding("key_card", character)
@@ -271,8 +324,6 @@ class Events:
 
             return True
 
-        obj_type = self.O.get_obj_type(obj)
-
         original_obj = obj
         if self["variables"]["is_lights_out"] and "flashlight" not in char_inventory:
             if self.O.get_obj_type(original_obj) in ["character", "static_character"]:
@@ -296,9 +347,6 @@ class Events:
             return True
         obj = original_obj
 
-        if not do_print and obj_type != "invalid object":
-            # skips below "room" "character" and "item" prints
-            return True
         if obj_type == "room":
             print("Go there and find for yourself")
             return True
@@ -309,6 +357,7 @@ class Events:
             if obj in room_holdings:
                 print(self.O.get_obj_description(obj))
                 if obj_type == "character":
+                    print(f"likability: {self.O.get_character_data("likability", obj)}")
                     if len(obj_inventory) != 0:
                         print(f"{other_char_name} is holding ", end="")
                         self.print_list(obj_inventory)
@@ -362,6 +411,14 @@ class Events:
         obj_type = self.O.get_obj_type(obj)
 
         original_obj = obj
+
+        # if self["variables"]["is_boss_anniversary"] and obj == "boss":
+        #     if do_print:
+        #         print("I LIKE HOW YOU HIT BOI!!!")
+        #         self.delay()
+        #         print("HERE'S MY DAUGHTER!")
+        #         marry_daughter_ending()
+
         if self["variables"]["is_lights_out"] and "flashlight" not in char_inventory:
             if obj != character:  # if you are not punching yourself
                 obj_is_a_character = obj_type in ["character", "static_character"]
@@ -528,33 +585,69 @@ class Events:
     def dotdotdot(self, newline=True) -> None:
         self.symsymsym(".", newline)
 
-    def map_to_actual_obj(self, obj_name: objUID, character: objUID) -> objUID:
-        # map_to_actual_obj() ia a bit of a misnomer, the second argument is just used to identify the room and self
+    def map_to_actual_obj(self, obj_synonym: objUID, character: objUID) -> objUID:
 
+        # maps to actual object if given (well the object itself or ) the objects "name"
         for obj, attrS in self.O.items():
-            if obj == obj_name:
+            if obj == obj_synonym:
                 return obj
-            if "name" in attrS and self.O.get_character_data("name", obj) == obj_name:
+            if "name" in attrS and self.O.get_character_data("name", obj) == obj_synonym:
                 return obj
+
+        # the second argument is just used to identify the room and self
+        # e.g. passing "room" maps to actual room
+        room = self.O.get_holder(character)  
 
         # map local var value if it is same name as obj_name e.g. "myself" gets the key "character" which then maps to the character value and is returned
-
-        room = self.O.get_holder(character)  # this will be mapped if given "room"
-        # inventory = self.O.get_holding(character)  # this will be mapped if given "inventory"  ## NOO, THIS WILL RETURN A LIST NOT AN objUID ##
-        mapped_obj = "no obj found"
-        for o, syn_lst in self.O["other_valid_obj_name"].items():
-            for s in syn_lst:
-                if obj_name == s:
-                    mapped_obj = o
+        mapped_obj = ""
+        for obj, synonym_list in self.O["other_valid_obj_name"].items():
+            for synonym in synonym_list:
+                if obj_synonym == synonym:
+                    mapped_obj = obj
                     break
             else:
                 continue
             break
-
         for name, value in locals().items():
             if mapped_obj == name:
                 return value
-        return mapped_obj
+
+        # last check if mapped obj is valid
+        if self.O.is_valid_obj(mapped_obj):
+            return mapped_obj
+        return "no obj found"
+
+    def consume_cake(self, obj: objUID, character: objUID, do_print=True) -> bool:
+        inventory = self.O.get_holding(character)
+
+        # process synonym, in this case "cake" to map to any in your inventory
+        if obj == "cake":
+            for item in inventory:
+                if item in ["strawberry_cake", "chocolate_cake", "vanilla_cake"]:
+                    obj = item
+
+        # map the rest of synonyms
+        obj = self.map_to_actual_obj(obj, character)
+
+        if obj in inventory:
+            if do_print: 
+                print("You lavishly ate the whole cake")
+                self.delay()
+                print("mouth was filled with icing")
+                self.delay()
+                print("Your eyes dilated...")
+                self.delay()
+                print("You can feel the sugar enter your")
+                self.delay()
+                print("blood stream")
+                self.delay()
+                print("You are now on sugar-rush")
+            # always with extra turn
+            current_turn_speed = self.O.get_character_data("turn_speed", character)
+            self.O.set_character_data(character, "turn_speed", current_turn_speed + 100)
+            return True
+        if do_print: print("You do not have cake with you")
+        return False
 
     def consume_coffee(self, obj: objUID, character: objUID, do_print=True) -> bool:
         inventory = self.O.get_holding(character)
@@ -633,6 +726,35 @@ class Events:
             self.dotdotdot()
         return True
 
+    def place_obj(self, source: objUID, destination: objUID, character: objUID, do_print=True ) -> bool:
+        if destination not in ["workstation_1", "workstation_2", "workstation_3"]:
+            if do_print:
+                print(f"{destination} is not a valid storage area.")
+            return False
+        else:
+            current_likability = self.O.get_character_data("likability", character)
+            if do_print:
+                self.O.remove_holding(source, character)
+                if destination == "workstation_1":
+                    self.O.add_holding(source, "workstation_1")
+                    if do_print:
+                        print(f"{source} has been placed on workstation_1.")
+                        return True
+                elif destination == "workstation_2":
+                    self.O.add_holding(source, "workstation_2")
+                    if do_print:
+                        print(f"{source} has been placed on Philp's workstation.")
+                        return True
+                elif destination == "workstation_3":
+                    self.O.add_holding(source, "workstation_3")
+                    if do_print:
+                        print(f"{source} has been placed on Serah's workstation.")
+                        return True
+
+            return True
+
+        return True
+
     def make_poisoned_coffee(self, character: objUID, do_print=True) -> bool:
         # maybe make it work later for coffee in the room
         if all(x in self.O.get_holding(character) for x in ["coffee", "laxative"]):
@@ -654,12 +776,13 @@ class Events:
         room = self.O.get_holder(from_character)
         to_character = self.map_to_actual_obj(to_character, from_character)
         inventory = self.O.get_holding(from_character)
-        if self.O.get_obj_type(to_character) != "character":
+
+        if self.O.get_obj_type(to_character) not in ["character", "static_character"]:
             if do_print:
                 print(f"Giving to a {to_character}, are you mad?")
             return False
         gifted_name = self.O.get_character_data("name", to_character)
-        current_friendliness = self.O.get_character_data("friendliness", to_character)
+        current_friendliness = self.O.get_character_data("likability", to_character)
         if obj == "coffee" and "poisoned_coffee" in inventory:  # + room_holdings
             obj = "poisoned_coffee"
         if obj in inventory:
@@ -704,6 +827,86 @@ class Events:
             if do_print:
                 print(f"I need to get more coffee before that")
         return False
+
+    def give_cake(self, obj, taker:objUID, giver:objUID, do_print=True):
+        cake_list = ["strawberry_cake","vanilla_cake","chocolate_cake"]
+        # get the right cake by manual check
+        if obj == "cake":
+            for cake in cake_list:
+                if cake in self.O.get_holding(giver):
+                    obj = cake
+
+        # verify objects
+        obj = self.map_to_actual_obj(obj, giver)
+        if obj == "no obj found":
+            if do_print: print(f"{obj} is not in the game dictionary")
+        # maps name to actual obj for characters
+        taker = self.map_to_actual_obj(taker, giver)
+        taker_type = self.O.get_obj_type(taker)
+        if taker_type not in ["character", "static_character"]:
+            if do_print: print(f"You cannot give to a {taker}")
+            return False
+        taker_name = self.O.get_character_data("name", taker)
+
+        # giver will always be a valid character so no need to verify
+        room = self.O.get_holder(giver)
+        inventory = self.O.get_holding(giver)
+        current_likability = self.O.get_character_data("likability", giver)
+
+        if obj not in inventory:
+            if do_print: print("I need to get cake first")
+            return False
+
+        # i.e. if giver is a "player"
+        if self.O.get_character_data("uses_parser", giver):
+            if taker == "boss":
+                if "boss" not in self.O.get_holding(room):
+                    print("Go look for the boss first")
+                    return False
+
+                # NPCs will give their cake then falls through to give your cake
+                # but they can drop the cake or if you can steal them anytime
+                else:
+                    cake_list = [x for x in cake_list if x not in self.O.get_holding("player")]
+                    # maybe just adjusting NPC likability once given
+                    # npc = f"NPC_{i}"
+                    # npc_likability = self.O.get_character_data("likability", npc)
+                    # self.O.set_character_data(npc, "likability", npc_likability + 5)
+                    for i,cake in enumerate(cake_list,1):
+                        self.give_cake(cake, "boss", f"NPC_{i}", False)
+
+        if taker == "boss":
+            if obj == "chocolate_cake":
+                self.O.remove_holding(obj, giver)
+                self.O.set_character_data(
+                    giver, "likability", current_likability + 20
+                )
+                if do_print:
+                    print(f"{taker_name}: I love chocolate cake! You're the best!")
+            if obj == "strawberry_cake":
+                self.O.remove_holding(obj, giver)
+                self.O.set_character_data(
+                    giver, "likability", current_likability + 2
+                )
+                if do_print:
+                    print(f"{taker_name}: I like chocolate more, but thank you!")
+            if obj == "vanilla_cake":
+                self.O.remove_holding(obj, giver)
+                self.O.set_character_data(
+                    giver, "likability", current_likability - 10
+                )
+                if do_print:
+                    print(f"{taker_name}: I HATE VANILLA CAKE! GET OUT OF MY SIGHT!")
+            return True
+        else:
+            if taker in self.O.get_holding(room):
+                if do_print: print("I'm sure the boss will like it better")
+            else:
+                if do_print: 
+                    print(f"{taker_name} isn't in the room")
+                    self.delay()
+                    print(f"but should you really give to {taker_name}?")
+            return False
 
     def load_events_data_structure(self, dict):
         for k, v in dict.items():
@@ -878,16 +1081,33 @@ Discover hidden secrets and unlock unique endings
                 pass  # say something, maybe randomized
             if to_character == "boss":
                 # say something and the boss scootches over
-                if do_print:
-                    print("I don't want to talk to you, I'm busy! or other dialogues")
-                adjacent_room = self.O.find_next_room(
-                    rnd.choice(["N", "S", "E", "W"]), room
-                )
-                while adjacent_room == None:
+                is_boss_anniversary = self["variables"]["is_boss_anniversary"]
+
+                if is_boss_anniversary:
+                    if do_print:
+                        print("THANK YOU FOR COMING TO MY PARTY!")
+                        self.delay()
+                        print("I'M SO HAPPY TO HAVE YOU ALL HERE!")
+                        self.delay()
+                        print("I'M SO GRATEFUL FOR ALL OF YOU!")
+                        self.delay()
+                        print("DO YOU KNOW WHAT WILL MAKE THIS PARTY EVEN")
+                        self.delay()
+                        print("BETTER? PLENTY OF OVERTIME WORK! AND CAKE!")
+                        print()
+                else:   
+                    if do_print:
+                        print("I don't want to talk to you, I'm busy!")
+
                     adjacent_room = self.O.find_next_room(
                         rnd.choice(["N", "S", "E", "W"]), room
                     )
-                self.O.change_holder(to_character, room, adjacent_room)
+                    while adjacent_room == None:
+                        adjacent_room = self.O.find_next_room(
+                            rnd.choice(["N", "S", "E", "W"]), room
+                        )
+
+                    self.O.change_holder(to_character, room, adjacent_room)
 
             # Talk to NPC
             if to_character != "player":
@@ -924,7 +1144,7 @@ Discover hidden secrets and unlock unique endings
         if obj in inventory:
             if self.O.get_character_data("turn_speed", character) < 100:
                 if do_print:
-                    print("I drink medicine now say something")
+                    print("I drink medicine, now I feel good")
                 self.O.remove_holding(obj, character)
                 self.O.set_character_data(character, "turn_speed", 100)  # make healthy
                 return True
@@ -933,7 +1153,7 @@ Discover hidden secrets and unlock unique endings
                     print("Why? You are perfectly healthy")
                 return False
         if do_print:
-            print("You don't have item! or maybe say something else")
+            print("You don't have item!")
         return False
 
     def give_obj(
@@ -961,23 +1181,32 @@ Discover hidden secrets and unlock unique endings
                 return False
 
             if to_character in self.O.get_holding(room):
+
+                # for hacking script and translating the old intern notes
                 if gifted_name == "Steve Jobs":
-                    if obj == "usb_hacking_script":
+                    if obj == "intern_coin":
                         if len(speaker_inventory) < self["variables"]["MAX_INVENTORY"]:
                             self.O.remove_holding(obj, from_character)
                             self.O.set_character_data(
                                 to_character, "friendliness", current_friendliness + 5
                             )
-                            if do_print:
-                                print("heres a intern coin")
-                            self.O.add_holding("intern_coin", from_character)
-                            return True
+                            if obj == "intern_coin":
+                                if do_print:
+                                    print("Here's the USB hacking script as promised.")
+                                self.O.add_holding("usb_hacking_script", from_character)
+                                return True
                         else:
                             if do_print:
                                 print(
-                                    "Classic Intern holding more stuff then you can use, try dropping some stuff if you really want this device"
+                                    "Classic Intern holding more stuff then you can use, try dropping some stuff if you really want this "
                                 )
                             return False
+                    elif obj == "old_intern_notes":
+                        if do_print:
+                            print("I see you need a genius to translate this for you. Wait one second")
+                            self.dotdotdot()
+                            print("The Text says: ")
+                        return True
                     else:
                         if do_print:
                             print(
@@ -985,8 +1214,10 @@ Discover hidden secrets and unlock unique endings
                             )
                         return False
 
+                # for the hint to the safe
+
                 if gifted_name == "Morgana":
-                    if obj == "flower":
+                    if obj == "blue_flower":
                         self.O.remove_holding(obj, from_character)
                         self.O.set_character_data(
                             to_character, "friendliness", current_friendliness + 5
@@ -1021,3 +1252,52 @@ Discover hidden secrets and unlock unique endings
             if do_print:
                 print(f"You don't have {obj}")
         return False
+
+    def boss_anniversary(self):
+        self["variables"]["is_boss_anniversary"] = True
+
+        # Teleport players
+        for obj in self.O.keys():
+            if self.O.is_valid_obj(obj) and (
+                self.O.get_obj_type(obj) == "character" or obj == "boss"
+            ):
+                room = self.O.get_holder(obj)
+                self.O.change_holder(obj, room, "meeting_room")
+
+        print("###########")
+        print("#  EVENT  #")
+        print("###########")
+        print()
+        msvcrt.getch()
+        print("******** BOSS ANNIVERSARY PARTY ********")
+        print()
+        msvcrt.getch()
+        print("The old room speaker started ringing for Annoucement")
+        msvcrt.getch()
+        print("Everyone is to attend this mandatory event for our")
+        msvcrt.getch()
+        print("beloved Mr.Boss!! You are to leave your workstations")
+        msvcrt.getch()
+        print("Immediately!!!")
+        print()
+        msvcrt.getch()
+        self.talk_to("boss", "player")
+        msvcrt.getch()
+        print("There are cakes in the cafeteria")
+        msvcrt.getch()
+        print("maybe the boss likes some")
+        msvcrt.getch()
+        print()
+        print("**********************************************")
+        print()
+        msvcrt.getch()
+
+        self.O.add_holding("strawberry_cake", "cafeteria")
+        self.O.add_holding("vanilla_cake", "cafeteria")
+        self.O.add_holding("chocolate_cake", "cafeteria")
+
+    def is_secret_ending(self):
+        for ending,is_true in self["variables"]["is_a_secret_endings"].items():
+            if is_true:
+                return ending
+        return "no_secret_endings_met"

@@ -99,7 +99,13 @@ def do_action(
         case "drink_medicine":
             return E.drink_medicine(cmd[1], character, do_print)
         case "help_command":
-            return P.help_command()
+            return P.help_command(do_print)
+        case "give_cake":
+            return E.give_cake(cmd[1], cmd[3], character, do_print)
+        case "consume_cake":
+            return E.consume_cake(cmd[1], character, do_print)
+        case "place_obj":
+            return E.place_obj(cmd[1], cmd[3], character, do_print)
         case _:
             return False
 
@@ -114,7 +120,7 @@ def player_action(character: objUID, P: Parser, E: Events):
     valid_action = False
     while not valid_action:
         unparsed_cmd = input("> ")
-        if unparsed_cmd in ["Q", "quit", "skip day"]:
+        if unparsed_cmd in ["Q", "q", "quit", "skip day"]:
             break
 
         cmd = P.parse_input(unparsed_cmd)
@@ -145,8 +151,6 @@ def random_action(npc_character: objUID, P: Parser, E: Events):
             cmd[3] == rand_obj2
 
         # DEBUG #
-        # print(f"holder: {E.O.get_holder(npc_character)}")
-        # print(f"holding: {E.O.get_holding(npc_character)}")
         # print(f"cmd: {cmd}")
         # print(f"subroutine_key: {subroutine_key}")
 
@@ -201,28 +205,30 @@ def electric_shutdown():
     print("#  EVENT  #")
     print("###########")
     print()
+    msvcrt.getch()
+    print("******** ELECTRIC SHUTDOWN ********")
+    print()
+    msvcrt.getch()
     print("THE LIGHTS SUDDENLY WENT DOWN")
     msvcrt.getch()
-    print('BOSS: "GO FIX THE BREAKER YOU')
-    print('         USELESS INTERNS!!!"')
+    print('BOSS: "GO FIX THE BREAKER YOU USELESS INTERNS!!!"')
     msvcrt.getch()
     print()
-    print("Everyone is now at the electric room")
+    print("Everyone hurried to the electric room")
     msvcrt.getch()
-    print("as per the boss's orders. Fix the")
+    print("as per the boss's orders. Fix the lights")
     msvcrt.getch()
-    print("lights or take opportunity of the")
-    msvcrt.getch()
-    print("situation...")
+    print("or take opportunity of the situation...")
     msvcrt.getch()
     print()
-    power_down(5)
+    print("**********************************************")
+    print()
+    power_down(25)
     msvcrt.getch()
     pass
 
 
 def check_power():
-    print(f"remaining_lights_out: {E["variables"]["remaining_lights_out"]}")
     if E["variables"]["remaining_lights_out"] > 0:
         E["variables"]["remaining_lights_out"] = (
             E["variables"]["remaining_lights_out"] - 1
@@ -283,6 +289,8 @@ E.greet_at_game_start("player")
 t = 0.1
 game_day = 5
 turns_in_a_day = 45
+ANNIVERSARY_DAY = 1 #5
+ELECTRIC_SHUTDOWN_DAY = 2#3
 
 characterS = []
 for obj in O.keys():
@@ -297,15 +305,23 @@ for day in range(1, game_day + 1):
     print(f"# DAY {day} #")
     print("#####################################################################")
     for turn in range(turns_in_a_day):
-        if day == 3 and turn == 2:
+        if day == ELECTRIC_SHUTDOWN_DAY and turn == 2: #10:
             electric_shutdown()
+        if day == ANNIVERSARY_DAY and turn == 2: #20:
+            E.boss_anniversary()
         for character in characterS:
             print(f"{character.upper()} TURN")
             print("*************************************")
             skip_turn = E.O.get_character_data("skip_turn", character)
             turn_speed = E.O.get_character_data("turn_speed", character)
-            # print(f"DEBUG {character} skip_turn: {skip_turn}")  # DEBUG
-            # print(f"DEBUG {character} turn_speed: {turn_speed}")  # DEBUG
+            # DEBUG #
+            # print(f"DEBUG {character} skip_turn: {skip_turn}")
+            # print(f"DEBUG {character} turn_speed: {turn_speed}")
+            print(f"holder: {E.O.get_holder(character)}")
+            print(f"holding: {E.O.get_holding(character)}")
+            print(f"likability: {E.O.get_character_data("likability", character)}")
+            print(f"friendliness: {E.O.get_character_data("friendliness", character)}")
+            print("------------")
             if skip_turn > 0:
                 print("skipping turn...")
                 print(f"because {E.O.get_character_data("skip_cause", character)}")
@@ -318,9 +334,9 @@ for day in range(1, game_day + 1):
                 if rnd.randint(1, 100) <= turn_speed:
                     character_action(character, P, E)
                 else:
-                    print("FALSE, you lost your turn!!!")  # DEBUG
+                    print("You are unwell and lost the turn")  # DEBUG
                 if turn_speed > 100 and rnd.randint(1, 100) <= turn_speed - 100:
-                    print("(extra turn granted) caffinated in effect...")
+                    print("(extra turn granted caffinated or sugar rush in effect)")
                     # if character == "player":
                     #     print("(extra turn granted) caffinated in effect...")
                     character_action(character, P, E)  # see extra action
@@ -331,7 +347,7 @@ for day in range(1, game_day + 1):
 
             # sleep(t)
 
-            if unparsed_cmd in ["Q", "quit"]:
+            if unparsed_cmd in ["Q", "q", "quit"]:
                 break
             if unparsed_cmd == "skip day":
                 skip_day = True
@@ -354,7 +370,7 @@ for day in range(1, game_day + 1):
     break
 
 ending_result()  # show the result based on all stats
-if unparsed_cmd in ["Q", "quit"]:
+if unparsed_cmd in ["Q", "q", "quit"]:
     os.abort()
 print()
 print("YOU FINISHED THE GAME!")

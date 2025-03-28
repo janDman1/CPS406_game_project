@@ -1,7 +1,8 @@
-- Spilling coffee on electrical
-- Boss anniversary?
-- Hints for the safe
+- Spilling coffee on electrical (maybe if we have time)
+- Boss anniversary?(done?)
+- Hints for the safe (done)
 
 
-- command to show other commands
-- Fix up game mechanics (eg. friendliness, gifts)
+- command to show other commands (done)
+- Fix up game mechanics (eg. friendliness, gifts) (maybe done?
+- Make a simple hack function that when given to desk it makes that person loose likability or we can make it offshoot of give fuction )
