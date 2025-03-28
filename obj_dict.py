@@ -2,6 +2,7 @@ from pprint import pprint
 
 
 type objUID = str
+type room_objUID = str
 
 
 class ObjDict(dict):
@@ -93,8 +94,6 @@ class ObjDict(dict):
         self.remove_holding(obj, src_obj, False)
         self.add_holding(obj, dest_obj)
 
-    type room_objUID = str
-
     def find_next_room(self, dir: str, room: room_objUID) -> room_objUID | None:
         if dir == "N":
             return self[room]["NSEW"][0]
@@ -109,7 +108,7 @@ class ObjDict(dict):
     def has_item_attribute(self, attr: str, obj: objUID) -> bool:
         return attr in self[obj]["attributes"]
 
-    def get_character_data(self, data: str, char: objUID):  # -> str|int|None:
+    def get_character_data(self, data: str, char: objUID):
         if data not in [
             "name",
             "status",
