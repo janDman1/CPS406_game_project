@@ -116,20 +116,20 @@
       "type": "item",
       "holder": null,
       "description": "Your desk is cluttered with sticky notes, an empty coffee cup, and a paused game of Snake on your phone. The computer screen is locked with a reminder to vet and foward important emails to the boss.",
-      "attributes": []
+      "attributes": ["container"]
     
     },
     "workstation_2": {
       "type": "item",
       "holder": null,
       "description": "Philip's desk is messy with doodles, sticky notes, and a cold coffee cup labeled 'Creative Fuel.' His phone shows a low Snake score, and the computer is locked with a short password.",
-      "attributes": []
+      "attributes": ["container"]
     },
     "workstation_3": {
       "type": "item",
       "holder": null,
       "description": "Serah's desk is spotless and organized, with neatly stacked papers. Her phone shows a perfect Snake score, and the computer is locked with a long password.",
-      "attributes": []
+      "attributes": ["container"]
     },
     "flashlight": {
       "type": "item",
@@ -224,7 +224,7 @@
     },
     "safe": {
       "type": "item",
-      "holder": null,
+      "holder": "boss_office",
       "description": "A heavy jet black steel safe, built to withstand both curiosity and questionable actions of interns. The keypad blinks ominously, waiting for a numeric 4 letter code to open the secerts its hiding.",
       "attributes": ["heavy"]
     },
@@ -246,7 +246,7 @@
       "description": "A classic vanilla cake with a smooth buttercream frosting. Its light and airy texture makes it a timeless favorite for celebrations and gatherings.",
       "attributes": []
     },
-    "suspious_document": {
+    "suspicious_document": {
       "type": "item",
       "holder": null,
       "description": "A confidential report titled 'Offerings to the Stock Market Gods.' Lists ritual sacrifices like '50 percent of last quarter's revenue' and 'All remaining bonuses' alongside donations to 'To The Moon Spirits Fund'",
@@ -441,7 +441,7 @@
     },
 
     "prepositions": //["at", "in", "above", "under", 
-        ["and", "on", "to", "with"],
+        ["and", "on", "to", "with", "from"],
 
     "lookup_table": [
       //[verb, direct_obj, preposition, indirect_obj, subroutine_key]
@@ -479,6 +479,8 @@
       [13, "strawberry_cake", null, null, "consume_cake"],
       [13, "chocolate_cake", null, null, "consume_cake"],
       [13, "vanilla_cake", null, null, "consume_cake"],
+      [4, "*", "on", "*", "take_from_container"],
+      [4, "*", "from", "*", "take_from_container"],
 
       // this shouldn't be possible
       // [4, "strawberry", null, "cake", "take_obj"],

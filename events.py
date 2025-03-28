@@ -726,39 +726,128 @@ class Events:
             self.dotdotdot()
         return True
     
-    def place_obj(self, source: objUID, destination: objUID, character: objUID, do_print=True ) -> bool:
-        if destination not in ["workstation_1", "workstation_2", "workstation_3"]:
+    def take_from_container(self, obj, container, character, do_print=True):
+        if self.O.has_item_attribute("container", container) and obj in self.O.get_holding(container):
+            inventory = self.O.get_holding(character)
+            if inventory < self["variables"]["MAX_INVENTORY"]:
+                self.O.change_holder(obj, container, character)
+    
+    def boss_inspection(self):
+        contraband = ["laxative", "poisoned_coffee", "usb_hacking_script", "fake_resume", "suspious_document"]
+
+        """
+        teleport everyone to office
+        check each table of the people
+        if person has their likability goes down?
+        or get fired?
+
+        """
+
+        print("###########")
+        print("#  EVENT  #")
+        print("###########")
+        print()
+        msvcrt.getch()
+        print("******** INSPECTION DAY ********")
+        print()
+        msvcrt.getch()
+        print("The boss shouts from the office!!!")
+        msvcrt.getch()
+        print("BOSS: YOU MAGGOTS!")
+        msvcrt.getch()
+        print("TO THE WORKSTATIONS IMMEDIATELY!!!")
+        msvcrt.getch()
+        print("")
+        print()
+        msvcrt.getch()
+        print("everyone lines up in the offices room")
+        msvcrt.getch()
+        print("he looks at each of your tables")
+        msvcrt.getch()
+        print()
+        print("you gulp as he inspects veery closely")
+        self.dotdotdot()
+        msvcrt.getch()
+        print()
+        print("**********************************************")
+        print()
+        msvcrt.getch()
+
+        for obj in self.O.keys():
+            if self.O.get_obj_type(obj) == "character":
+                # teleports players to offices for the event
+                room = self.O.get_holder(obj)
+                self.O.change_holder(obj, room, "offices")
+
+                if obj in ["player", "NPC_1", "NPC_2"]:
+                    current_likability = self.O.get_character_data("likability", obj)
+                    for item in self.O.get_holding(obj):
+                        if item in contraband:
+                            if obj == "player":
+                                print(f"Why do you have {item}???")
+                                self.delay()
+                                print(f"Are you trying to destroy the professinality")
+                                self.delay()
+                                print("of our establishment")
+                            
+                            self.O.set_character_data(obj, "likability", current_likability - 5)
+                            break
+                    else:
+                        if obj == "player":
+                            print("You are a good boi!")
+                        self.O.set_character_data(obj, "likability", current_likability - 5)
+        print()
+                    
+
+
+                # for cont in self.O.keys:
+                #     if "workstation_" in cont:
+                #         if obj in self.O.get_obj_description(cont)[:10]:
+                #             for item in self.O.get_holding(cont):
+                #                 if item in contraband:
+                #                     return True
+                
+                    
+
+            #     for item in self.O.get_holding(obj):
+            #         if item in contraband:
+            #             return True
+            # else:
+            #     # add likability
+            #     pass
+            
+
+    
+    def place_obj(self, obj: objUID, container: objUID, character: objUID, do_print=True ) -> bool:
+        obj_type = self.O.get_obj_type(obj)
+        if obj_type != "item":
             if do_print:
-                print(f"{destination} is not a valid storage area.")
+                print(f"you cannot put a {obj_type} on a container")
+        if not self.O.has_item_attribute("container", container):
+            if do_print:
+                print(f"{container} is not a valid storage area.")
             return False
         else:
             current_likability = self.O.get_character_data("likability", character)
             if do_print:
-                self.O.remove_holding(source, character)
-                if destination == "workstation_1":
-                    self.O.add_holding(source, "workstation_1")
+                self.O.remove_holding(obj, character)
+                if container == "workstation_1":
+                    self.O.add_holding(obj, "workstation_1")
                     if do_print:
-                        print(f"{source} has been placed on workstation_1.")
+                        print(f"{obj} has been placed on workstation_1.")
                         return True
-                elif destination == "workstation_2":
-                    self.O.add_holding(source, "workstation_2")
+                elif container == "workstation_2":
+                    self.O.add_holding(obj, "workstation_2")
                     if do_print:
-                        print(f"{source} has been placed on Philp's workstation.")
+                        print(f"{obj} has been placed on Philp's workstation.")
                         return True
-                elif destination == "workstation_3":
-                    self.O.add_holding(source, "workstation_3")
+                elif container == "workstation_3":
+                    self.O.add_holding(obj, "workstation_3")
                     if do_print:
-                        print(f"{source} has been placed on Serah's workstation.")
+                        print(f"{obj} has been placed on Serah's workstation.")
                         return True
                 
-            
-                
-                   
-
-
             return True
-
-        
         return True
 
     def make_poisoned_coffee(self, character: objUID, do_print=True) -> bool:
@@ -789,7 +878,7 @@ class Events:
                 print(f"Giving to a {to_character}, are you mad?")
             return False
         gifted_name = self.O.get_character_data("name", to_character)
-        current_friendliness = self.O.get_character_data("likability", to_character)
+        current_friendliness = self.O.get_character_data("friendliness", to_character)
         if obj == "coffee" and "poisoned_coffee" in inventory:  # + room_holdings
             obj = "poisoned_coffee"
         if obj in inventory:
@@ -924,7 +1013,7 @@ class Events:
                  _____      _                       ____   __  __            _____           _    
                 |  __ \    | |                     / __ \ / _|/ _|          |  __ \         | |    
                 | |__) |___| |_ _   _ _ __ _ __   | |  | | |_| |_ ___ _ __  | |__) |   _ ___| |__  
-                |  _  // _ \ __| | | | '__| '_ \  | |  | |  _|  _/ _ \ '__| |  _  / | | / __| '_ \
+                |  _  // _ \ __| | | | '__| '_ \  | |  | |  _|  _/ _ \ '__| |  _  / | | / __| '_ \\
                 | | \ \  __/ |_| |_| | |  | | | | | |__| | | | ||  __/ |    | | \ \ |_| \__ \ | | |
                 |_|  \_\___|\__|\__,_|_|  |_| |_|  \____/|_| |_| \___|_|    |_|  \_\__,_|___/_| |_| ''')
        

@@ -187,22 +187,33 @@ def character_action(character: objUID, P: Parser, E: Events):
 
 def job_offer_with_coworker(pitcher):
     print("YOU ALL GOT JOB OFFER WITH YOUR COWORKERS")
+    msvcrt.getch()
     print("EVEN THOUGHT SOME OF YOU DID'T GET THE BOSS'S")
+    msvcrt.getch()
     print(f"FAVOUR, {pitcher.upper()} PITCHED IN FOR Y'ALL!")
+    msvcrt.getch()
 
 
 def exclusive_job_offer(highest_likability):
     print("COMPETITIVENESS RAN IN THE ENTIRE")
+    msvcrt.getch()
     print("PERIOD OF THE INTERSHIP, BUT ONE")
+    msvcrt.getch()
     print("ONLY ONE STOOD ON TOP! THAT IS")
+    msvcrt.getch()
     print(f"{highest_likability.upper()} BEAT EVERYONE IN CAPABILITIES")
+    msvcrt.getch()
 
 
 def no_one_gets_rehired():
     print("NONE OF YOU GOT THE BOSS'S FAVOUR")
+    msvcrt.getch()
     print("YOU ALL DID A BAD JOB IN THE INTERNSHIP")
+    msvcrt.getch()
     print('"PROFESSIONALS YOU ARE NOT" WAS THE')
+    msvcrt.getch()
     print("BOSS'S LASTS WORDS TO ALL OF YOU!!!")
+    msvcrt.getch()
 
 
 # INSIDE Events aka E.power_down()
@@ -244,6 +255,20 @@ def electric_shutdown():
     msvcrt.getch()
     pass
 
+def become_boss():
+    pass
+
+def marry_daughter():
+    pass
+
+def check_secret_ending():
+    for k,v in E["variables"]["is_a_secret_endings"].items():
+        if v:
+            if k == "become_boss":
+                become_boss()
+            if k == "marry_daughter":
+                marry_daughter()
+            
 
 def check_power():
     if E["variables"]["remaining_lights_out"] > 0:
@@ -304,10 +329,11 @@ def ending_result():
 E.greet_at_game_start("player")
 
 t = 0.1
-game_day = 5
-turns_in_a_day = 45
-ANNIVERSARY_DAY = 1 #5
+GAME_DAYS = 3
+TURNS_IN_A_DAY = 45
+ANNIVERSARY_DAY = 3 #5
 ELECTRIC_SHUTDOWN_DAY = 2#3
+INSPECTION_DAY = 1
 
 characterS = []
 for obj in O.keys():
@@ -315,17 +341,19 @@ for obj in O.keys():
         characterS.append(obj)
 
 unparsed_cmd = None  # input("> ")  # e.g. `> put A LaXaTiVe in the coffee`
-# while game_day > 0 and unparsed_cmd not in ["Q", "quit"]: #while not ending():
-for day in range(1, game_day + 1):
+# while GAME_DAYS > 0 and unparsed_cmd not in ["Q", "quit"]: #while not ending():
+for day in range(1, GAME_DAYS + 1):
     skip_day = False
     print("#########")
     print(f"# DAY {day} #")
     print("#####################################################################")
-    for turn in range(turns_in_a_day):
+    for turn in range(TURNS_IN_A_DAY):
         if day == ELECTRIC_SHUTDOWN_DAY and turn == 2: #10:
             electric_shutdown()
         if day == ANNIVERSARY_DAY and turn == 2: #20:
             E.boss_anniversary()
+        if day == INSPECTION_DAY and turn == 2:
+            E.boss_inspection()
         for character in characterS:
             print(f"{character.upper()} TURN")
             print("*************************************")
@@ -358,11 +386,13 @@ for day in range(1, game_day + 1):
                     #     print("(extra turn granted) caffinated in effect...")
                     character_action(character, P, E)  # see extra action
             print("*************************************\n")
-
+            
             if character == "player":
                 msvcrt.getch()
 
             # sleep(t)
+
+            check_secret_ending()
 
             if unparsed_cmd in ["Q", "q", "quit"]:
                 break
@@ -411,41 +441,3 @@ print(
 ⠀⠘⣆⠀⠀⠈⠣⣔⠁⢸⠒⣑⠠⠐⠉⠉⠉⠀⠀⠀⠀⠀⠀⡠⠚⡘⠀⠀⠀
 """
 )
-
-
-# checked_likability = []
-# def check_milestone():
-#   if any likability == 50:
-#     print(f"{character_x} has reached good boss connections")
-#     checked_likability.append(character_x)
-
-
-# USING percentage of having a chance to move per turn
-world_speed = 70  # 100 is default, 120 is energized, 70 is poisoned
-skip_npc_turn = 0  # skips turn due to some event e.g. spilled coffee
-skip_player_turn = 0
-#     if skip_player_turn > 0:
-#         skip_player_turn -= 1
-#         continue
-#     else:
-#         if rnd.randint(1,100) <= world_speed:
-#             player_action()  # aka character_action("player")
-#         if world_speed > 100 and  rnd.randint(1,100) <= world_speed-100:
-#             player_action()  #see extra action
-#     if skip_npc_turn > 0:
-#         skip_npc_turn -= 1
-#         continue
-#     else:
-#         npc_action()  # aka character_action("NPC_X")
-#     boss_action()
-
-
-# USING 2 for loops to have X number of moves per turn
-# player_speed,npc_speed = 1,1  #1:1 normal
-# player_speed,npc_speed = 6,5  #1.2:1 ratio  //energized
-player_speed = 7
-npc_speed = 10  # 0.7:1 ratio  //poisoned
-# for _ in range(player_speed):
-# 	player_action()
-# for _ in range(npc_speed):
-# 	npc_action()
