@@ -649,12 +649,14 @@ class Events:
         room = self.O.get_holder(from_character)
         to_character = self.map_to_actual_obj(to_character, from_character)
         inventory = self.O.get_holding(from_character)
+        
+
         if self.O.get_obj_type(to_character) != "character":
             if do_print:
                 print(f"Giving to a {to_character}, are you mad?")
             return False
         gifted_name = self.O.get_character_data("name", to_character)
-        current_friendliness = self.O.get_character_data("friendliness", to_character)
+        current_friendliness = self.O.get_character_data("likability", to_character)
         if obj == "coffee" and "poisoned_coffee" in inventory:  # + room_holdings
             obj = "poisoned_coffee"
         if obj in inventory:
@@ -941,29 +943,40 @@ Discover hidden secrets and unlock unique endings
                 return False
 
             if to_character in self.O.get_holding(room):
+
+                # for hacking script and translating the old intern notes
                 if gifted_name == "Steve Jobs":
-                    if obj == "usb_hacking_script":
+                    if obj == "intern_coin":
                         if len(speaker_inventory) < self["variables"]["MAX_INVENTORY"]:
                             self.O.remove_holding(obj, from_character)
                             self.O.set_character_data(
                                 to_character, "friendliness", current_friendliness + 5
                             )
-                            if do_print:
-                                print("heres a intern coin")
-                            self.O.add_holding("intern_coin", from_character)
-                            return True
+                            if obj == "intern_coin":
+                                if do_print:
+                                    print("Here's the USB hacking script as promised.")
+                                self.O.add_holding("usb_hacking_script", from_character)
+                                return True
                         else:
                             if do_print:
                                 print(
-                                    "Classic Intern holding more stuff then you can use, try dropping some stuff if you really want this device"
+                                    "Classic Intern holding more stuff then you can use, try dropping some stuff if you really want this "
                                 )
                             return False
+                    elif obj == "old_intern_notes":
+                        if do_print:
+                            print("I see you need a genius to translate this for you. Wait one second")
+                            self.dotdotdot()
+                            print("The Text says: ")
+                        return True
                     else:
                         if do_print:
                             print(
                                 "What is this? Worldy goods are useless to me the only thing I treasure crypto currency."
                             )
                         return False
+                    
+                #for the hint to the safe  
 
                 if gifted_name == "Morgana":
                     if obj == "flower":

@@ -11,25 +11,29 @@
       // "items": ["laxative", "medicine", 'towel'],
       "holder": null,
       "description": "A surprisingly fancy washroom for a place that only pays interns in coffee and stress.  A long mirror spans the wall above a row of sinks, each with a dispenser of antibacterial soap. The mirrors shine so cleanly that they would make a germaphobe cry out of happiness. A small shelf behind the mirror holds an assortment of suspicious supplies perhaps they have some use.",
-      "NSEW": [null, null, "cafeteria", null] //appends "To the EAST is the cafeteria"
+      "NSEW": [null, null, "cafeteria", null],
+      "holding": ["laxative", "medicine"]
     },
     "cafeteria": {
       "type": "room",
       "holder": "Screen",
       "description": "A corporate culinary wonderland where dreams go to die. The aroma of burnt coffee mingles with the scent of questionable vegan salmon salad fills the room. The screen on the wall plays a never-ending loop of motivational videos featuring disturbingly happy people. Well, posters are plastered around highlighting the importance of a 120 percent vegan workplace.",
-      "NSEW": [null, null, "main_lobby", "washroom"] //append "To the WEST is the washroom, to the EAST is the main lobby"
+      "NSEW": [null, null, "main_lobby", "washroom"],
+      "holding": ["coffee","empty_wrapper"]
     },
     "main_lobby": {
       "type": "room",
       "holder": null,
       "description": "The grand , designed to welcome visitors and employees. Fine decor hangs around the room, creating a professional and inviting atmosphere.",
-      "NSEW": ["secretary_office", null, "offices", "cafeteria"]  //appends "to the WEST is the cafeteria, to the NORTH is the secretary office, to the SOUTH is the building exit, to the EAST is the office area"
+      "NSEW": ["secretary_office", null, "offices", "cafeteria"],
+      "holding": []
     },
     "secretary_office": {
       "type": "room",
       "holder": null,
       "description": "no description yet",
-      "NSEW": ["boss_office", "main_lobby", null, null] //appends "to the SOUTH is the main_lobby
+      "NSEW": ["boss_office", "main_lobby", null, null],
+      "holding": ["fake_resume"]
     },
     "boss_office": {
       "type": "room",
@@ -51,21 +55,21 @@
       "holder": null,
       "description": "",
       "NSEW": ["meeting_room", "electrical_room", "storage_room", "main_lobby"],
-      "holding": []
+      "holding": ["yellow_flower","workstation_1","workstation_2","workstation_3"]
     },
     "meeting_room": {
       "type": "room",
       "holder": null,
       "description": "A room where optimism comes to get murdered by PowerPoint. The long table is surrounded by chairs that are inexplicably uncomfortable despite looking ergonomic. A whiteboard is covered in half-erased ideas that probably made sense to someone at 2 a.m. There is a stack of snacks in the corner that have been untouched since the last anniversary party.",
       "NSEW": [null, "offices", null, null],
-      "holding": []
+      "holding": ["blue_flower"]
     },
     "storage_room": {
       "type": "room",
       "holder": null,
       "description": "A dark, musty room where broken office equipment and forgotten projects go to die. Shelves are piled with random and mysterious unlabeled boxes. Occasionally something useful can be found here.",
       "NSEW": [null, null, "offices", null],
-      "holding": []
+      "holding": ["flashlight","empty_wrapper"]
     },
     "electrical_room": {
       "type": "room",
@@ -79,7 +83,7 @@
       "holder": null,
       "description": "Racks of humming machinery are packed in tight, like robot soldiers awaiting orders. Occasionally, a monitor flickers with obscure error codes that no ones bothered to fix since 2001. In the corner, there is a simple desk and computer where our sole IT employee Steve slaves away. ",
       "NSEW": [null, null, null, "electrical_room"],
-      "holding": []
+      "holding": ["stress_ball"]
     },
     
 
@@ -160,7 +164,7 @@
     },
     "key_card": {
       "type": "item",
-      "holder": "player",
+      "holder": null,
       "description": "A raggedy white unassuming keycard with the old company logo. Perhaps someone misplaced their keycard or perhaps it holds some secrets?",
       "attributes": []
     },
@@ -178,13 +182,13 @@
     },
     "blue_flower": {
       "type": "item",
-      "holder": "player",
+      "holder": null,
       "description": "Frosted blue rose, that gives off alluring arouma",
       "attributes": []
     },
     "yellow_flower": {
       "type": "item",
-      "holder": "player",
+      "holder": null,
       "description": "Yellow peonies, they appear to be wilting but may hold on for a few more days",
       "attributes": []
     },
@@ -264,7 +268,7 @@
       "skip_turn": 4,
       "skip_cause": "dev testing",
       "uses_parser": false,
-      "holding": ["laxative"] //yeahhh lets try it out
+      "holding": ["laxative","intern_coin"] //yeahhh lets try it out
     },
     "NPC_2": {
       "type": "character",
@@ -283,7 +287,8 @@
       "turn_speed": 120,
       "skip_turn": 0,
       "skip_cause": null,
-      "uses_parser": false
+      "uses_parser": false,
+      "holding": ["coffee"]
     },
     "secretary": {
       "type": "static_character",
