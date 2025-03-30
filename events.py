@@ -94,17 +94,26 @@ class Events:
         return True
 
     def print_list(self, lst: list[str], add_newline=True) -> None:
+        items_counting_duplicates = {}
         for n, item in enumerate(lst):
             if item == "poisoned_coffee":
                 item = "coffee"  # to perceive as normal coffee
             item = item.replace("_", " ")
-            print(item, end="")
-            if n < len(lst) - 1:
-                if len(lst) == 2:
+            if item not in items_counting_duplicates:
+                items_counting_duplicates[item] = 1
+            else:
+                items_counting_duplicates[item] += 1
+        for n,(item,count) in enumerate(items_counting_duplicates.items()):
+            if count > 1:
+                print(f"x{count} {item}", end="")
+            else:
+                print(item, end="")
+            if n < len(items_counting_duplicates) - 1:
+                if len(items_counting_duplicates) == 2:
                     print(" and ", end="")
                 else:
                     print(", ", end="")
-                    if n == len(lst) - 2:
+                    if n == len(items_counting_duplicates) - 2:
                         print("and ", end="")
             else:
                 if add_newline:
@@ -514,8 +523,8 @@ class Events:
                         print(
                             "But as the cabinet breaks into pieces you see something suspicious behind it"
                         )
-                        self.O.add_holding("broken_cabinet", "boss_office")
-                        self.O.remove_holding("cabinet", "boss_office")
+                    self.O.add_holding("broken_cabinet", "boss_office")
+                    self.O.remove_holding("cabinet", "boss_office")
 
                     return True
 
@@ -773,14 +782,14 @@ class Events:
                 if do_print: 
                     print("Access granted! You successfully hacked workstation 2.")
                     print(f"{self.O.get_character_data("name", "NPC_1")} lost {LIKABILITY_CUT} likability for a picture of the Boss in a speedo as his background.")
-                philp_likability = self.O.get_character_data("likability", "NPC_2")
-                self.O.set_character_data("NPC_2", "likability", philp_likability - LIKABILITY_CUT)
+                philp_likability = self.O.get_character_data("likability", "NPC_1")
+                self.O.set_character_data("NPC_1", "likability", philp_likability - LIKABILITY_CUT)
             elif destination == "workstation_3":
                 if do_print: 
                     print("Access granted! You successfully hacked workstation 3.")
                     print(f"{self.O.get_character_data("name", "NPC_2")} lost {LIKABILITY_CUT} likability for a picture of the Boss in a speedo as her background.")
-                serah_likability = self.O.get_character_data("likability", "NPC_3")
-                self.O.set_character_data("NPC_3", "likability", serah_likability - LIKABILITY_CUT)
+                serah_likability = self.O.get_character_data("likability", "NPC_2")
+                self.O.set_character_data("NPC_2", "likability", serah_likability - LIKABILITY_CUT)
             return True
         else:
             if "usb_hacking_script" not in inventory:
@@ -800,19 +809,57 @@ class Events:
         if container == "no obj found":
             if do_print: print(f"{container} is not in the game dictionary")
             return False
-        if self.O.get_holder(container) == room:
-            if self.O.has_item_attribute("container", container) and obj in self.O.get_holding(container):
-                inventory = self.O.get_holding(character)
-                if len(inventory) < self["variables"]["MAX_INVENTORY"]:
-                    if do_print: print("Done")
-                    self.O.change_holder(obj, container, character)
-                    return True
+        container_type = self.O.get_obj_type(container)
+        if container_type == "room":
+            if container != room:
+                if obj in self.O.get_holding(container):
+                    if do_print: print(f"You reached your invisible hands on {container}, another room")
+                    if self.O.has_item_attribute("heavy", obj):
+                        if do_print: 
+                            print("But apparrently the object is too heavy to drag")
+                            print("STILL, INVISIBLE HANDS?!")
+                        return False
+                    else:  # does not check max inventory using this way
+                        if do_print:
+                            print(f"taking the {obj} without anyone noticing and put it in your inventory")
+                            print("ARE YOU GOD?!")
+                        self.O.change_holder(obj, container, character)
+                        return True
                 else:
-                    if do_print: print("You are carrying too many items")
+                    if do_print: print(f"Maybe try looking what the {container} is holding first")
+                    return False
+            else:
+                if do_print: print("How are you supposed to shove an entire room in your pocket?")
+        if self.O.get_holder(container) == room:
+            if container_type == "static_character":
+                if do_print: 
+                    print("It's not allowed to steal belongings from the company employees")
+                    print("but do try with your fellow interns!")
+                return False
+            if container_type == "character":
+                npc_name = self.O.get_character_data("name", container)
+                if obj in self.O.get_holding(container):
+                    if do_print: print(f"You need to beat it out of {npc_name}")
+                else:
+                    if do_print: print(f"Try to examine {npc_name} to see if he/she is actually holding that")
+                return False
+            if container_type == "item" and self.O.has_item_attribute("container", container):
+                if obj in self.O.get_holding(container):
+                    inventory = self.O.get_holding(character)
+                    if len(inventory) < self["variables"]["MAX_INVENTORY"]:
+                        if do_print: print("Done")
+                        self.O.change_holder(obj, container, character)
+                        return True
+                    else:
+                        if do_print: print("You are carrying too many items")
+                else: 
+                    if do_print: 
+                        print(f"Look at the {container}...")
+                        print(f"Do you honestly see any {obj} there?")
             else:
                 if do_print: print(f"{container} does not hold things")
         else:
-            if do_print: print("You cannot see that in the room")
+            if do_print: print(f"You cannot see {self.O.get_character_data("name", container) if container_type in ["character", "static_character"] else container} in the room")
         return False
 
     
@@ -881,25 +928,6 @@ class Events:
                             print("You are a good boi!")
                         self.O.set_character_data(obj, "likability", current_likability + 5)
         print()
-                    
-
-
-                # for cont in self.O.keys:
-                #     if "workstation_" in cont:
-                #         if obj in self.O.get_obj_description(cont)[:10]:
-                #             for item in self.O.get_holding(cont):
-                #                 if item in contraband:
-                #                     return True
-                
-                    
-
-            #     for item in self.O.get_holding(obj):
-            #         if item in contraband:
-            #             return True
-            # else:
-            #     # add likability
-            #     pass
-            
 
     
     def place_obj(self, obj: objUID, container: objUID, character: objUID, do_print=True ) -> bool:
@@ -1189,9 +1217,10 @@ Discover hidden secrets and unlock unique endings
                     self.O.set_character_data(
                         character, "likability", current_likeability + email_score
                     )
-                    if do_print: print("Email forwarded to the boss.")
-                    self.delay()
-                    self.dotdotdot()
+                    if do_print: 
+                        print("Email forwarded to the boss.")
+                        self.delay()
+                        self.dotdotdot()
 
                     if do_print:
                         if email_score > 0:
@@ -1200,7 +1229,7 @@ Discover hidden secrets and unlock unique endings
                             )
                         else:
                             print("The boss thinks this email is wasting his time.")
-                    print(f"Impact on likability: +{email_score}\n")
+                    print(f"Impact on likability: {email_score}\n")
                 else:
                     if do_print:
                         if user_input == "n":
@@ -1221,7 +1250,7 @@ Discover hidden secrets and unlock unique endings
                             print("You failed at doing a simple job and the boss is disappointed that you exist.")
                         print(f"Impact on likability: -{email_score}\n")
                     else:
-                        print("Sometimes no news is good news! Impact on likability: +2\n")
+                        print("Sometimes no news is good news! Impact on likability: 2\n")
 
                         self.O.set_character_data(
                             character, "likability", current_likeability + 2

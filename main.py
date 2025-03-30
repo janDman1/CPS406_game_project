@@ -372,11 +372,11 @@ def check_power():
 E.greet_at_game_start("player")
 
 t = 0.1
-GAME_DAYS = 3
+GAME_DAYS = 5
 TURNS_IN_A_DAY = 30
-ANNIVERSARY_DAY = 3 #5
-ELECTRIC_SHUTDOWN_DAY = 2 #3
-INSPECTION_DAY = 1 #2
+ANNIVERSARY_DAY = 5
+ELECTRIC_SHUTDOWN_DAY = 3
+INSPECTION_DAY = 2
 POWER_DOWN_DURATION = 25 #30
 LIKABILITY_GOAL = 80
 FRIENDLINESS_GOAL = 20
@@ -401,7 +401,8 @@ for day in range(1, GAME_DAYS + 1):
         if day == INSPECTION_DAY and turn == 8:
             E.boss_inspection()
         for character in characterS:
-            print(f"{character.upper()} TURN")
+            character_name = E.O.get_character_data("name", character)
+            print(f"{character_name.upper()}'S TURN")
             print("*************************************")
             skip_turn = E.O.get_character_data("skip_turn", character)
             turn_speed = E.O.get_character_data("turn_speed", character)
@@ -413,7 +414,7 @@ for day in range(1, GAME_DAYS + 1):
             if character != "player":
                 print(f"likability: {E.O.get_character_data("likability", character)}")
                 print(f"friendliness: {E.O.get_character_data("friendliness", character)}")
-            print("------------")
+                print("------------")
             if skip_turn > 0:
                 print("skipping turn...")
                 print(f"because {E.O.get_character_data("skip_cause", character)}")

@@ -19,7 +19,7 @@
       "holder": "Screen",
       "description": "A corporate culinary wonderland where dreams go to die. The aroma of burnt coffee mingles with the scent of questionable vegan salmon salad fills the room. The screen on the wall plays a never-ending loop of motivational videos featuring disturbingly happy people. Well, posters are plastered around highlighting the importance of a 120 percent vegan workplace.",
       "NSEW": [null, null, "main_lobby", "washroom"],
-      "holding": ["coffee","empty_wrapper"]
+      "holding": ["coffee","coffee","coffee","coffee","coffee"]
     },
     "main_lobby": {
       "type": "room",
@@ -33,14 +33,14 @@
       "holder": null,
       "description": "A meticulously organized office where the scent of fresh coffee lingers. A large desk sits at the centre, covered with neatly stacked papers, crumbs of chocolate cake, and a phone that seems to ring endlessly. The faint sound of typing echoes from a nearby computer, as if someone was just here moments ago.",
       "NSEW": ["boss_office", "main_lobby", "meeting_room", null],
-      "holding": ["fake_resume"]
+      "holding": []
     },
     "boss_office": {
       "type": "room",
       "holder": null,
       "description": "A grand yet oddly intimidating office with a massive mahogany desk dominating the space. Framed awards and motivational quotes line the walls, but the overflowing trash bin suggests chaos beneath the surface. A tall bookshelf leans slightly under the weight of legal tomes and unread business journals, while a old suspicious cabinet hints at secrets best left undiscovered.",
       "NSEW": [null, "secretary_office", null, "secret_room"],
-      "holding": ["book_shelf", "cabinet"] //optional, the game will create for you by looking at objects "holder"
+      "holding": ["book_shelf"] //optional, the game will create for you by looking at objects "holder"
       //need for some use cases where room has duplicate items like "shelf"
     },
     "secret_room": {
@@ -62,7 +62,7 @@
       "holder": null,
       "description": "A room where optimism comes to get murdered by PowerPoint. The long table is surrounded by chairs that are inexplicably uncomfortable despite looking ergonomic. A whiteboard is covered in half-erased ideas that probably made sense to someone at 2 a.m. There is a stack of snacks in the corner that have been untouched since the last anniversary party.",
       "NSEW": [null, "offices", "storage_room", "secretary_office"],
-      "holding": ["blue_flower"]
+      "holding": []
     },
     "storage_room": {
       "type": "room",
@@ -202,7 +202,7 @@
     },
     "intern_coin": {
       "type": "item",
-      "holder": "NPC_2",
+      "holder": "NPC_1",
       "description": "Worth 1 cent now, but Krypto King says it's going the Moon!",
       "attributes": []
     },
@@ -263,7 +263,7 @@
       "description": "Forge your path ye tarnished and find yourself within the chaos of this workplace. Rise ye tarnished, define whom you'll become and achieve.",
       "name": null,
       "status": ["healthy"],
-      "likability": 0,
+      "likability": 20,
       "friendliness": null, //no behaviour check
       "turn_speed": 100, //100 is default, 120 is energized, 70 is poisoned
       "skip_turn": 0, //skips turn due to some event e.g. spilled coffee
@@ -282,13 +282,13 @@
         "I will imbue you with some wisdom if someone catches you napping at your desk, just say you are meditating. Boom! Instant productivity points.",
         "If I get fired, I am starting a podcast where I just complain about office life. Working title 'Imprisoned Intern.'"
       ],
-      "likability": 50,
+      "likability": 80,
       "friendliness": 10, //neutral to the player
       "turn_speed": 100,
       "skip_turn": 0,
       "skip_cause": null,
       "uses_parser": false,
-      "holding": ["laxative","intern_coin"] //yeahhh lets try it out
+      "holding": ["laxative"] //yeahhh lets try it out
     },
     "NPC_2": {
       "type": "character",
@@ -327,7 +327,7 @@
     "networking_teamlead": {
       "type": "static_character",
       "holder": "networking_room",
-      "description": "",
+      "description": "no character description yet",
       "name": "Steve Jobs",
       "status": [""],
       "dialogue": [
@@ -367,13 +367,15 @@
     "other_valid_obj_name": {
 
       //actual_obj: [synonym1, synonym2]
-      "networking_teamlead": ["Steve", "Jobs"],
+      "networking_teamlead": ["Steve"],
       "usb_hacking_script": ["usb", "script"],
       "chocolate_cake": ["chocolate"],
       "vanilla_cake": ["vanilla"],
       "strawberry_cake": ["strawberry"],
       "blue_flower": ["blue"],
       "yellow_flower": ["yellow"],
+      
+      // only checks for one word, parser cannot map split words
       "workstation_1": ["workstation 1", "desk 1"],
       "workstation_2": ["workstation 2", "desk 2"],
       "workstation_3": ["workstation 3", "desk 3"],
@@ -403,7 +405,7 @@
 
   "Commands": {
     
-    "help": "Command List for Text Adventure Game\nMovement Commands\nN, north, NORTH, S, south, SOUTH, E, east, EAST, W, west, WEST: Move in the specified direction between rooms.\n\nInventory and Item Commands\nI, inventory, inv: View current inventory.\ngrab, get, take, pick [item]: Add an item to your inventory.\ndrop, leave [item]: Remove an item from your inventory.\nput, place [item1] on [item2]: Set an item down at a specific location/room.\ncombine [item1] and [item2]: Merge two items to create something new.\nconsume, eat, drink [item]: Use or eat an item from inventory.\n\nExamination and Observation Commands\nlook, look around  Scan the current room for items or characters.\nexamine, inspect, check [item/character<>:/room]: View details about a room, item, or character.\n\nInteraction Commands\ntalk to [character]: Initiate a conversation with a character.\ngive [item] to [character]: Offer an item to a character.\nplace [item] on [location]: Set an item down at into a certain object.\nwork: Perform a task or job-related action.\nhelp: Get help or information about commands.\n\nSabotage and Combat Commands\nsabotage, hack: Disrupt or damage a workstation.\npunch, kick, karate, beat, hit: Physically attack a character.\nfling [item] at [character]: Throw an item at a character.\n\nCoffee and Food Commands\nconsume [item]: Consume item from inventory.\ncombine [item1] and [item2]: Mix item 1 and item 2 to make item 3.\n\nOther Commands\nwait: Pause and pass the time.\nSkip day: Skips the day\nQ: Quit the game.\n",
+    "help": "Command List for Text Adventure Game with formatting:\nverb [object] <optional>\n\nMovement Commands\nN, north, NORTH, S, south, SOUTH, E, east, EAST, W, west, WEST: Move in the specified direction between rooms.\n\nInventory and Item Commands\nI, inventory, inv: View current inventory.\ngrab, get, take, pick up [item] <from [container]>: Add an item to your inventory.\ndrop, leave [item]: Remove an item from your inventory.\nExamination and Observation Commands\nlook, look around: Scan the current room for items or characters.\nexamine, inspect, check [item/character/room]: View details about a room, item, or character.\n\nInteraction Commands\ntalk to [character]: Initiate a conversation with a character.\ngive [item] to [character]: Offer an item to a character.\nput, place [item] on [location]: Set an item down at into a certain object.\nwork: Perform a task or job-related action.\nhelp: Get help or information about commands.\n\nSabotage and Combat Commands\nsabotage, hack: Disrupt or damage a workstation.\npunch, kick, karate, beat, hit [item/character]: Physically attack anything in your surrounding.\nfling [item] at [character]: Throw an item at a character.\n\nCoffee and Food Commands\nconsume, eat, drink [item]: Consume item from inventory.\ncombine [item1] and [item2]: Merge two items to create something new.\n\nOther Commands\nwait: Pause and pass the time.\nSkip day: Skips the day\nQ: Quit the game.\n",
 
     //parse string by removing these
     "articles": ["of", "a", "an", "the"],
