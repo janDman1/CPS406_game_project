@@ -1,5 +1,8 @@
 import re
+import sys
+from time import sleep
 
+type objUID = str
 
 def remove_comments(string):
     pattern = r"(\".*?\"|\'.*?\')|(/\*.*?\*/|//[^\r\n]*$)"
@@ -16,3 +19,31 @@ def remove_comments(string):
             return match.group(1)  # captured quoted-string
 
     return regex.sub(_replacer, string)
+
+def delay(speed_number=2) -> None:
+    sys.stdout.flush()
+    match speed_number:
+        case 0:
+            pass
+        case 1:
+            sleep(0.3)
+        case 2:
+            sleep(1.2)
+        case 3:
+            sleep(2.3)
+        case 4:
+            sleep(4)
+        case 5:
+            sleep(7)
+
+def symsymsym(symbol: str, newline=True) -> None:
+    delay()
+    for _ in range(3):
+        print(f"{symbol}", end="")
+        delay(1)
+    if newline:
+        print()
+
+def dotdotdot(newline=True) -> None:
+    symsymsym(".", newline)
+

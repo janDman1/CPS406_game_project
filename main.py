@@ -1,6 +1,5 @@
-import re
-
-from events import Events
+# from events import Events
+from all_actions import Actions as Events
 from obj_dict import ObjDict
 from parser import Parser
 from utils import remove_comments
@@ -22,6 +21,7 @@ RETURN OFFER RUSH GAME
 
 
 # LOAD DATA FILE AS YOUR DATABASE TO USE
+# parsed_data_file = remove_comments(open("data.txt").read())
 parsed_data_file = remove_comments(open("data.txt").read())
 All_Data = json.loads(parsed_data_file)
 
