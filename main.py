@@ -1,6 +1,7 @@
 import re
 
-from events import Events
+# from events import Events
+from all_actions import Actions
 from obj_dict import ObjDict
 from parser import Parser
 from utils import remove_comments
@@ -22,7 +23,8 @@ RETURN OFFER RUSH GAME
 
 
 # LOAD DATA FILE AS YOUR DATABASE TO USE
-parsed_data_file = remove_comments(open("data.txt").read())
+# parsed_data_file = remove_comments(open("data.txt").read())
+parsed_data_file = remove_comments(open("C:/Users/jaede/Desktop/CPS406_project/CPS406_game_project/data.txt").read())
 All_Data = json.loads(parsed_data_file)
 
 O = ObjDict(All_Data["Objects"])
@@ -34,7 +36,7 @@ O = ObjDict(All_Data["Objects"])
 #     "attributes": ["energize"],
 # }
 O.initiate_holdings()
-E = Events()
+E = Actions()
 E.load_object_dictionary(O)
 E.load_events_data_structure(All_Data["Events"])
 P = Parser(All_Data["Commands"])
@@ -52,7 +54,7 @@ def do_action(
     cmd: list,
     character: objUID,
     P: Parser,
-    E: Events,
+    E: Actions,
     verb_str: None | str = None,
     do_print=False,
 ) -> bool:
@@ -116,7 +118,7 @@ def do_action(
             return False
 
 
-def player_action(character: objUID, P: Parser, E: Events):
+def player_action(character: objUID, P: Parser, E: Actions):
     global unparsed_cmd
 
     # DEBUG #
@@ -147,7 +149,7 @@ def player_action(character: objUID, P: Parser, E: Events):
         valid_action = do_action(subroutine_key, cmd, character, P, E, verb_str, True)
 
 
-def random_action(npc_character: objUID, P: Parser, E: Events):
+def random_action(npc_character: objUID, P: Parser, E: Actions):
     valid_action = False
     while not valid_action:
         rand_action = rnd.choice(list(P["lookup_table"]))
@@ -171,7 +173,7 @@ def random_action(npc_character: objUID, P: Parser, E: Events):
     )
 
 
-def character_action(character: objUID, P: Parser, E: Events):
+def character_action(character: objUID, P: Parser, E: Actions):
     if E.O.get_character_data("uses_parser", character):
         player_action(character, P, E)
     else:

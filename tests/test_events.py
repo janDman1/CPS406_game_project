@@ -1,6 +1,8 @@
 import unittest
 from unittest.mock import MagicMock, patch
-from events import Events
+# from events import Events
+
+from all_actions import Actions as Events
 
 
 class TestEvents(unittest.TestCase):
