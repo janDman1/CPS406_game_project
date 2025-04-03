@@ -61,7 +61,7 @@ class TestParser(unittest.TestCase):
 
         # Check that prepositions are converted to a set
         self.assertIsInstance(self.mock_parser["prepositions"], set)
-        self.assertEqual(self.mock_parser["prepositions"], {"and", "on", "to", "with"})
+        self.assertEqual(self.mock_parser["prepositions"], {"and", "on", "to", "with", "at", "from"})
 
     def test_load_game_dictionary(self):
         # Call the method to load the game dictionary

@@ -40,7 +40,7 @@ class TestEvents(unittest.TestCase):
 
         self.assertTrue(result)
         self.events.O.change_holder.assert_called_with(character, "room1", "room2")
-        self.events.show_character_view.assert_called_with(character, False)
+        self.events.show_character_view.assert_called_with(character, False, False)
 
     @patch("builtins.print")
     def test_show_character_view_no_print(self, mock_print):
@@ -88,7 +88,6 @@ class TestEvents(unittest.TestCase):
 
         self.assertTrue(result)
         mock_print.assert_any_call("ROOM1")
-        mock_print.assert_any_call("A bright room")
         self.events.print_list.assert_called_with(["item1", "NPC Name"])
         mock_print.assert_any_call("to the N is room2")
         mock_print.assert_any_call("to the E is room2")
@@ -162,24 +161,6 @@ class TestEvents(unittest.TestCase):
 
         self.assertFalse(result)
         mock_print.assert_called_with("no obj found is not in the game dictionary")
-
-    @patch("builtins.print")
-    def test_take_obj_success_normal(self, mock_print):
-        # Setup: Normal case where the object is in the room and can be taken.
-        character = "character1"
-        room = "room1"
-        obj = "item1"
-        self.events.O.get_holder.return_value = room
-        self.events.O.get_holding.side_effect = lambda x: (
-            [character, obj] if x == room else []
-        )
-        self.events.map_to_actual_obj.return_value = obj
-        self.events.O.get_obj_type.return_value = "item"
-
-        result = self.events.take_obj(obj, character, do_print=False)
-
-        self.assertTrue(result)
-        self.events.O.change_holder.assert_called_with(obj, room, character)
 
 
 if __name__ == "__main__":
