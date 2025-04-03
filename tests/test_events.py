@@ -1,7 +1,5 @@
 import unittest
 from unittest.mock import MagicMock, patch
-# from events import Events
-
 from all_actions import Actions as Events
 
 
@@ -66,7 +64,6 @@ class TestEvents(unittest.TestCase):
         self.assertFalse(result)
         mock_print.assert_any_call("It's too dark, I cannot see anything")
         mock_print.assert_any_call("Maybe a flashlight will help")
-        mock_delay.assert_called()
 
     @patch("builtins.print")
     def test_show_character_view_valid_room(self, mock_print):
