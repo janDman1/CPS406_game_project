@@ -1,10 +1,9 @@
 from utils import delay, dotdotdot, symsymsym
+from base_actions import Actions
 import random as rnd
-
 type objUID = str
 
-class BasicActions:
-
+class BasicActions(Actions):
 
     def go_direction(self, dir: int, character: objUID, do_print=True) -> bool:
         """move to direction e.g. North, using character"""
@@ -37,17 +36,21 @@ class BasicActions:
                 print("That way leads to nowhere")
         return False
 
-
     def show_character_view(self, character: objUID, do_print=True, no_room_description=True) -> bool:
         """deduce the room the character is in and print what is there and valid directions of next rooms"""
         # override if you want to customize
         if not do_print:
+            if not self.O.get_character_data("uses_parser", character):
+                # NPC looking around does not waste their turns
+                return False
+            # players do however even if print is disabled
             return True
         room = self.O.get_holder(character)
         # change to send_to_console if implementing formatter class
         print(room.upper())
         room_holdings = self.O.get_holding(room)
         room_holdings.remove(character)
+        container_list = []
         if self["variables"][
             "is_lights_out"
         ] and "flashlight" not in self.O.get_holding(character):
@@ -60,10 +63,19 @@ class BasicActions:
             print(self.O.get_obj_description(room))
         if len(room_holdings) > 0:
             for n, item in enumerate(room_holdings):
-                if self.O.get_obj_type(item) in ["character", "static_character"]:
+                obj_type = self.O.get_obj_type(item)
+                if obj_type in ["character", "static_character"]:
                     room_holdings[n] = self.O.get_character_data("name", item)
+                if obj_type == "item" and self.O.has_item_attribute("container", item) and len(self.O.get_holding(item)) > 0:
+                        container_list.append(item)
+            
             print(f"You can see ", end="")
             self.print_list(room_holdings)
+            if len(container_list) > 0:
+                print("looking closer.. ", end="")
+                self.print_list(container_list, False)
+                print(" seem to be holding something")
+    
         for i in ["N", "S", "E", "W"]:
             next_room = self.O.find_next_room(i, room)
             if next_room is not None:
@@ -75,10 +87,10 @@ class BasicActions:
                     print(f"to the {self.direction(i)} is {next_room}")
         return True
 
-
     def show_inventory(self, character: objUID, do_print=True) -> bool:
-        if not do_print:
-            return True
+        if not self.O.get_character_data("uses_parser", character):
+            # NPC does not need to see inventory
+            return False
         inventory = self.O.get_holding(character)
         if len(inventory) > 0:
             print(f"You have with you ", end="")
@@ -86,7 +98,6 @@ class BasicActions:
         else:
             print("You aren't carrying anything.")
         return True
-
 
     def print_list(self, lst: list[str], add_newline=True) -> None:
         items_counting_duplicates = {}
@@ -114,7 +125,6 @@ class BasicActions:
                 if add_newline:
                     print()
 
-
     def direction(self, dir: int | str):
         if dir in [1, "S"]:
             return "SOUTH"
@@ -125,21 +135,31 @@ class BasicActions:
         if dir in [0, "N"]:
             return "NORTH"
 
-
     def take_from_container(self, obj, container, character, do_print=True) -> bool:
         room = self.O.get_holder(character)
+
         # map to synonmys to use plus verify
-        obj = self.map_to_actual_obj(obj, character)
-        if obj == "no obj found":
+        mapped_obj = self.map_to_actual_obj(obj, character)
+        if mapped_obj == "no obj found":
             if do_print: print(f"{obj} is not in the game dictionary")
             return False
-        container = self.map_to_actual_obj(container, character)
-        if container == "no obj found":
+        else: obj = mapped_obj
+        mapped_obj = self.map_to_actual_obj(container, character)
+        if mapped_obj == "no obj found":
             if do_print: print(f"{container} is not in the game dictionary")
             return False
+        else: container = mapped_obj
+        obj_type = self.O.get_obj_type(obj)
         container_type = self.O.get_obj_type(container)
+
+        # if obj_type != "item":
+            
+        #     if do_print:
+        #         print(f"you cannot take a {obj_type} from a container!")
+        #     return False
+
         if container_type == "room":
-            if container != room:
+            if container != room and obj_type == "item":
                 if obj in self.O.get_holding(container):
                     if do_print: print(f"You reached your invisible hands on {container}, another room")
                     if self.O.has_item_attribute("heavy", obj):
@@ -156,8 +176,9 @@ class BasicActions:
                 else:
                     if do_print: print(f"Maybe try looking what the {container} is holding first")
                     return False
-            else:
-                if do_print: print("How are you supposed to shove an entire room in your pocket?")
+            elif container == room:
+                if do_print: print("You know you can just take it from the room without saying the room you're in right?")
+            return self.take_obj(obj, character, do_print)
         if self.O.get_holder(container) == room:
             if container_type == "static_character":
                 if do_print: 
@@ -190,7 +211,6 @@ class BasicActions:
             if do_print: print(f"You cannot see {self.O.get_character_data("name", container) if container_type in ["character", "static_character"] else container} in the room")
         return False
 
-
     def drop_obj(self, obj: objUID, character: objUID, do_print=True) -> bool:
         """check character holder (aka the room) and drop item there"""
         inventory = self.O.get_holding(character)
@@ -200,10 +220,11 @@ class BasicActions:
             obj = "poisoned_coffee"
 
         # maps obj synonym to actual object
-        obj = self.map_to_actual_obj(obj, character)
-        if obj == "no obj found":
-            print(f"{obj} is not in the game dictionary")
+        mapped_obj = self.map_to_actual_obj(obj, character)
+        if mapped_obj == "no obj found":
+            if do_print: print(f"{obj} is not in the game dictionary")
             return False
+        else: obj = mapped_obj
 
         if self.O.is_valid_obj(obj) and obj in inventory:
             room = self.O.get_holder(character)
@@ -212,7 +233,6 @@ class BasicActions:
                 print("Done")
             return True
         return False
-
 
     def take_obj(self, obj: objUID, character: objUID, do_print=True) -> bool:
         """put obj1 to character holdings (aka inventory). also update holder"""
@@ -227,20 +247,19 @@ class BasicActions:
         if obj == "cake":
             if self["variables"]["is_boss_anniversary"]:
                 if do_print:
-                    print("try again but put with the flavour")
+                    print("try again but put with the flavour e.g [ > take strawberry_cake ] ")
                 return False
             else:
-                print("Ahh, you'll be in for a surprise in a few days")
-                return True
+                print("Ahh, it ain't here but you'll be in for a surprise in a few days")
+                return False
 
-        # map to actual object if there is
-        obj = self.map_to_actual_obj(obj, character)
-        if obj == "no obj found":
-            print(f"{obj} is not in the game dictionary")
+        # map the rest of synonyms
+        mapped_obj = self.map_to_actual_obj(obj, character)
+        if mapped_obj == "no obj found":
+            if do_print: print(f"{obj} is not in the game dictionary")
             return False
+        else: obj = mapped_obj
         
-
-
         if self.O.get_obj_type(obj) in ["character", "static_character"]:
             if do_print:
                 print("You cannot pickup a living person! ", end="")
@@ -248,6 +267,10 @@ class BasicActions:
                 print("Unless", end="")
                 dotdotdot()
                 print("(the thoughts disappeared from your mind)")
+            return False
+        
+        if self.O.get_obj_type(obj) == "room":
+            if do_print: print("How are you supposed to shove an entire room in your pocket?")
             return False
 
         # "flashlight" in inventory is a placeholder, change to if holding any item with "illuminate" attribute later
@@ -298,7 +321,9 @@ class BasicActions:
                     if obj in cake_list:
                         cake_list.remove(obj)
                         for i,cake in enumerate(cake_list,1):
-                            self.O.change_holder(cake, room, f"NPC_{i}")
+                            cake_holder = self.O.get_holder(cake)
+                            if cake_holder != None:
+                                self.O.change_holder(cake, cake_holder, f"NPC_{i}")
                             # falls through to take the cake that was removed
                 self.O.change_holder(obj, room, character)
                 if do_print:
@@ -308,56 +333,65 @@ class BasicActions:
                 if do_print:
                     print("You have too much stuff already")
         else:
-            if not self["variables"]["is_lights_out"]:
-                if do_print:
-                    print(f"{obj} is not in the room!")
+            if not self["variables"]["is_lights_out"] or "flashlight" in inventory:
+                    if do_print:
+                        print(f"{obj} is not in the room!")
+            # say nothing its already covered by lights out section i.e. (is_lights_out and flashlight not in inventory)
         return False
-
 
     def place_obj(self, obj: objUID, container: objUID, character: objUID, do_print=True ) -> bool:
         inventory = self.O.get_holding(character)
+        room = self.O.get_holder(character)
         current_likability = self.O.get_character_data("likability", character)
+
         # map to synonmys to use plus verify
-        obj = self.map_to_actual_obj(obj, character)
-        if obj == "no obj found":
+        mapped_obj = self.map_to_actual_obj(obj, character)
+        if mapped_obj == "no obj found":
             if do_print: print(f"{obj} is not in the game dictionary")
             return False
+        else: obj = mapped_obj
+        mapped_obj = self.map_to_actual_obj(container, character)
+        if mapped_obj == "no obj found":
+            if do_print: print(f"{container} is not in the game dictionary")
+            return False
+        else: container = mapped_obj
         obj_type = self.O.get_obj_type(obj)
+        container_type = self.O.get_obj_type(container)
+
         if obj_type != "item":
             if do_print:
                 print(f"you cannot put a {obj_type} on a container")
             return False
-        if not self.O.has_item_attribute("container", container):
+        if container_type != "item" or not self.O.has_item_attribute("container", container):
             if do_print:
                 print(f"{container} is not a valid storage area.")
             return False
         else:
             if obj in inventory:
-                if container == "workstation_1":
-                    self.O.add_holding(obj, "workstation_1")
+                if container in self.O.get_holding(room):
+                    self.O.change_holder(obj, character, container)
+                    if container == "workstation_1":
+                        if do_print:
+                            print(f"{obj} has been placed on {self.O.get_character_data("name", "player")}'s workstation.")
+                    elif container == "workstation_2":
+                        if do_print:
+                            print(f"{obj} has been placed on Philp's workstation.") # fix hard for coding review 
+                    elif container == "workstation_3":
+                        if do_print:
+                            print(f"{obj} has been placed on Serah's workstation.")
+                    else:
+                        if do_print:
+                            print(f"{obj} has been placed on {container}.")
+                    return True
+                else:
                     if do_print:
-                        print(f"{obj} has been placed on {self.O.get_character_data("name", "player")}'s workstation.")
-                        return True
-                elif container == "workstation_2":
-                    self.O.add_holding(obj, "workstation_2")
-                    if do_print:
-                        print(f"{obj} has been placed on Philp's workstation.") # fix hard for coding review 
-                        return True
-                elif container == "workstation_3":
-                    self.O.add_holding(obj, "workstation_3")
-                    if do_print:
-                        print(f"{obj} has been placed on Serah's workstation.")
-                        return True
-                self.O.remove_holding(obj, character)
-                return True
+                        print(f"{container} is not in the room.")
+                    return False
             else:
                 if do_print: print("Maybe try finding the item first, that would be smart.")
             return False
 
-
-    def read_obj_description(
-        self, obj: objUID, character: objUID, do_print=True
-    ) -> bool:
+    def read_obj_description(self, obj: objUID, character: objUID, do_print=True) -> bool:
         room = self.O.get_holder(character)
         room_holdings = self.O.get_holding(room)
         char_inventory = self.O.get_holding(character)
@@ -370,24 +404,29 @@ class BasicActions:
             self.show_inventory(character, do_print)
 
         # map the synonym to actual object here now
-        obj = self.map_to_actual_obj(obj, character)
-        if obj == "no obj found":
-            print(f"{obj} is not in the game dictionary")
+        mapped_obj = self.map_to_actual_obj(obj, character)
+        if mapped_obj == "no obj found":
+            if do_print: print(f"{obj} is not in the game dictionary")
             return False
+        else: obj = mapped_obj
 
         # here obj was mapped to current room
         if obj == room:
-            self.show_character_view(character, do_print, False)
-            return True
+            return self.show_character_view(character, do_print, False)
 
         obj_inventory = self.O.get_holding(obj)
         obj_type = self.O.get_obj_type(obj)
-        if not do_print and obj_type != "invalid object":
-            # skips below "room" "character" and "item" prints
-            return True
+        if not self.O.get_character_data("uses_parser", character) and obj_type != "invalid object":
+            if obj in room_holdings or obj in char_inventory:
+                # NPC skips below "room" "character" and "item" prints
+                return True
+            else:
+                return False
 
         # For the safe
         if room == "boss_office" and obj == "safe":
+
+            # stops NPC from trying to open the safe also
             if do_print:
                 print(f"{obj}: ", end="")
                 print(self.O.get_obj_description(obj))
@@ -415,7 +454,7 @@ class BasicActions:
                                 if attempts > 0:
                                     print(
                                         "Incorrect code. You have",
-                                        attempts - 1,
+                                        attempts,
                                         "attempts left.",
                                     )
                                 else:
@@ -476,8 +515,9 @@ class BasicActions:
                         print(f"{other_char_name} isn't holding anything")
                 return True
             else:
-                print(f"{other_char_name} is in the {self.O.get_holder(obj)}")
-                return True
+                print(f"I don't know where {other_char_name} would be")
+                print(f"try to look for them?")
+                return False
 
         # item
         elif obj_type == "item":
@@ -500,10 +540,12 @@ class BasicActions:
                 return False
         return False
     
-
-    def wait_time(self, character: None | objUID = None, do_print=True) -> bool:
+    def wait_time(self, character: objUID, do_print=True) -> bool:
         # the character var for something in the future e.g. maybe add a sereness item that boost player speed if they wait 5 times in a row
+        if not self.O.get_character_data("uses_parser", character):
+            # NPC is always on the move, never waits doing nothing
+            return False
         if do_print:
             print("waiting", end="")
-            dotdotdot()
+            print("...")  # dotdotdot() # I don't want the delay
         return True

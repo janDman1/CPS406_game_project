@@ -1,8 +1,8 @@
+from base_actions import Actions
 from utils import delay, dotdotdot
-
 type objUID = str
 
-class ConsumeAction:
+class ConsumeActions(Actions):
 
     def consume_cake(self, obj: objUID, character: objUID, do_print=True) -> bool:
         inventory = self.O.get_holding(character)
@@ -15,10 +15,13 @@ class ConsumeAction:
 
         # map the rest of synonyms
         obj = self.map_to_actual_obj(obj, character)
+        if obj == "no obj found":
+            # it will be caught later in the code as not having any cake
+            pass
 
         if obj in inventory:
             if do_print: 
-                print("You lavishly ate the whole cake")
+                print("You ate some part of the cake")
                 delay()
                 print("mouth was filled with icing")
                 delay()
@@ -31,8 +34,10 @@ class ConsumeAction:
                 print("You are now on sugar-rush")
             # always with extra turn
             current_turn_speed = self.O.get_character_data("turn_speed", character)
-            self.O.set_character_data(character, "turn_speed", current_turn_speed + 100)
+            self.O.set_character_data(character, "turn_speed", current_turn_speed + 100 if current_turn_speed < 200 else 200)
             return True
+        
+        # either "no obj found" because "cake" didn't map to anything or just not in inventory
         if do_print: print("You do not have cake with you")
         return False
 
@@ -84,6 +89,21 @@ class ConsumeAction:
         likability = self.O.get_character_data("likability", character)
         room = self.O.get_holder(character)
         inventory = self.O.get_holding(character)
+        # map the synonyms
+        mapped_obj = self.map_to_actual_obj(obj, character)
+        if mapped_obj == "no obj found":
+            print(f"{obj} is not in the game dictionary")
+            return False
+        else: obj = mapped_obj
+
+        if not self.O.get_character_data("uses_parser", character):
+            # NPC won't try to eat inedible objects
+            return False
+        
+        if obj == character:
+            if do_print:
+                print("You cannot eat yourself, that's just ridiculous")
+            return False
         if self["variables"]["is_lights_out"] and "flashlight" not in inventory:
             if do_print:
                 print("Don't even try because you cannot see anything")

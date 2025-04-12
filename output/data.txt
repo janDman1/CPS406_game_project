@@ -1,0 +1,596 @@
+{
+  "Objects": {
+    //AREAS
+    "Screen": {
+      "type": "screen",
+      "holder": null,
+      "description": "Where the current things can be seen or viewed, i.e. switch view to control the NPC's while showing the big events of the background characters."
+    },
+    "washroom": {
+      "type": "room",
+      "holder": null,
+      "description": "A surprisingly fancy washroom for a place that only pays interns in coffee and stress.  A long mirror spans the wall above a row of sinks, each with a dispenser of antibacterial soap. The mirrors shine so cleanly that they would make a germaphobe cry out of happiness. A small shelf behind the mirror holds an assortment of suspicious supplies perhaps they have some use.",
+      "NSEW": [null, null, "cafeteria", null]
+    },
+    "cafeteria": {
+      "type": "room",
+      "holder": "Screen",
+      "description": "A corporate culinary wonderland where dreams go to die. The aroma of burnt coffee mingles with the scent of questionable vegan salmon salad fills the room. The screen on the wall plays a never-ending loop of motivational videos featuring disturbingly happy people. Well, posters are plastered around highlighting the importance of a 120 percent vegan workplace.",
+      "NSEW": [null, null, "main_lobby", "washroom"],
+      "holding": ["coffee","coffee","coffee","coffee","coffee"]
+    },
+    "main_lobby": {
+      "type": "room",
+      "holder": null,
+      "description": "The grand lobby, designed to welcome visitors and employees. Fine decor hangs around the room, creating a professional and inviting atmosphere.",
+      "NSEW": ["secretary_office", null, "offices", "cafeteria"]
+    },
+    "secretary_office": {
+      "type": "room",
+      "holder": null,
+      "description": "A meticulously organized office where the scent of fresh coffee lingers. A large desk sits at the centre, covered with neatly stacked papers, crumbs of chocolate cake, and a phone that seems to ring endlessly. The faint sound of typing echoes from a nearby computer, as if someone was just here moments ago.",
+      "NSEW": ["boss_office", "main_lobby", "meeting_room", null]
+    },
+    "boss_office": {
+      "type": "room",
+      "holder": null,
+      "description": "A grand yet oddly intimidating office with a massive mahogany desk dominating the space. Framed awards and motivational quotes line the walls, but the overflowing trash bin suggests chaos beneath the surface. A tall bookshelf leans slightly under the weight of legal tomes and unread business journals, while a old suspicious cabinet hints at secrets best left undiscovered.",
+      "NSEW": [null, "secretary_office", null, "secret_room"]
+    },
+    "secret_room": {
+      "type": "room",
+      "holder": null,
+      "description": "Dust lingers in the air, while the only illumination comes from a single flickering bulb. Old documents labelled 'Totally Legal Stuff' are scattered haphazardly across the floor and in the corner a makeshift sacrificial altar to the stock market gods.  It is pretty obvious this room was never meant to see the light of day, a hidden stash for abandoned files and questionable choices than anything else..",
+      "NSEW": [null, null, "boss_office", null]
+    },
+    "offices": {
+      "type": "room",
+      "holder": null,
+      "description": "A maze of cubicles, each filled with half-drunk coffee cups, stacks of sticky notes, and the faint hum of computers left on standby. The air is thick with the smell of printer toner and desperation, as if the walls themselves are absorbing the stress of endless deadlines. A single yellow flower sits on one desk, a lone spark of life in an otherwise mechanical space.",
+      "NSEW": ["meeting_room", "electrical_room", null, "main_lobby"]
+    },
+    "meeting_room": {
+      "type": "room",
+      "holder": null,
+      "description": "A room where optimism comes to get murdered by PowerPoint. The long table is surrounded by chairs that are inexplicably uncomfortable despite looking ergonomic. A whiteboard is covered in half-erased ideas that probably made sense to someone at 2 a.m. There is a stack of snacks in the corner that have been untouched since the last anniversary party.",
+      "NSEW": [null, "offices", "storage_room", "secretary_office"]
+    },
+    "storage_room": {
+      "type": "room",
+      "holder": null,
+      "description": "A dark, musty room where broken office equipment and forgotten projects go to die. Shelves are piled with random and mysterious unlabeled boxes. Occasionally something useful can be found here.",
+      "NSEW": [null, null, null, "meeting_room"],
+      "holding": ["empty_wrapper"] //optional, the game will create for you by looking at objects "holder"
+      //need for some use cases where room has duplicate items like "shelf"
+    },
+    "electrical_room": {
+      "type": "room",
+      "holder": null,
+      "description": "A claustrophobic tangle of wires and cables that looks more like a techno-ritual than actual wiring. In the back wall the main breaker can be found with a 'No liquids Allowed' sign beside it is covered in passive-aggressive sticky notes, one of which reads, 'If you disobey, I WILL FIND YOU.'",
+      "NSEW": ["offices", null, "networking_room", null]
+    },
+    "networking_room": {
+      "type": "room",
+      "holder": null,
+      "description": "Racks of humming machinery are packed in tight, like robot soldiers awaiting orders. Occasionally, a monitor flickers with obscure error codes that no ones bothered to fix since 2001. In the corner, there is a simple desk and computer where our sole IT employee Steve slaves away. ",
+      "NSEW": [null, null, null, "electrical_room"]
+    },
+    
+
+    //ITEMS
+    "breaker": {
+      "type": "item",
+      "holder": "electrical_room",
+      "description": "Make it or break it, its what connects the power to the building.",
+      "attributes": ["heavy"]
+    },
+    "fuse": {
+      "type": "item",
+      "holder": "storage_room",
+      "description": "A spare fuse that can be used to fix the breaker. It is a bit rusty but it should work.",
+      "attributes": []
+    },
+    "book_shelf": {
+      "type": "item",
+      "holder": "boss_office",
+      "description": "Just a plain normal book self.",
+      "attributes": ["container","heavy"]
+    },
+    "washroom_shelf": {
+      "type": "item",
+      "holder": "washroom",
+      "description": "A shelf that holds a variety of suspicious supplies.",
+      "attributes": ["container","heavy"]
+    },
+    "cabinet": {
+      "type": "item",
+      "holder": "boss_office",
+      "description": "An old and frail cabinet that looks completely out of place. Its worn-out surface and creaky hinges suggest it has seen better days, and it seems like it could fall apart at any moment.",
+      "attributes": ["heavy"]
+    },
+    "broken_cabinet": {
+      "type": "item",
+      "holder": null,
+      "description": "A cabinet that has been broken into, the door hangs off its hinges and the contents are scattered across the floor.",
+      "attributes": ["heavy"]
+    },
+    "workstation_1": {
+      "type": "item",
+      "holder": "offices",
+      "description": "Your desk is cluttered with sticky notes, an empty coffee cup, and a paused game of Snake on your phone. The computer screen is locked with a reminder to vet and foward important emails to the boss.",
+      "attributes": ["container","heavy"],
+      "holding": ["coffee"]
+    
+    },
+    "workstation_2": {
+      "type": "item",
+      "holder": "offices",
+      "description": "Philip's desk is messy with doodles, sticky notes, and a cold coffee cup labeled 'Creative Fuel.' His phone shows a low Snake score, and the computer is locked with a short password.",
+      "attributes": ["container","heavy"],
+      "holding": ["coffee"]
+    },
+    "workstation_3": {
+      "type": "item",
+      "holder": "offices",
+      "description": "Serah's desk is spotless and organized, with neatly stacked papers. Her phone shows a perfect Snake score, and the computer is locked with a long password.",
+      "attributes": ["container","heavy"]
+    },
+    "flashlight": {
+      "type": "item",
+      "holder": "storage_room",
+      "description": "A handy light for dark times. Don't cause this dark times ;)",
+      "attributes": ["emits_light"]
+    },
+    "coffee": {
+      "type": "item",
+      "holder": "player",
+      "description": "The rich aroma and warm, comforting glow of the cup offer a brief respite from the challenges of the virtual world. The item increases player's energy and focus.",
+      "attributes": ["energize", "likability"]
+    },
+    "laxative": {
+      "type": "item",
+      "holder": "washroom_shelf",
+      "description": "A substance that promotes bowel movements, often used to relieve constipation. Do not misuse!",
+      "attributes": ["poison"]
+    },
+    "poisoned_coffee": {
+      //coffee gets replaced with this when put laxative
+      "type": "item",
+      "holder": null,
+      "description": "A dangerous drink that appears normal but has been secretly laced with a harmful substance. Consuming it can cause severe effects on the health.",
+      "attributes": ["poison"]
+    },
+    "usb_hacking_script": {
+      "type": "item",
+      "holder": null,
+      "description": "A tiny flash drive loaded with some suspicious software. Use it to infiltrate systems, plant evidence, or delete incriminating files just do not get caught with it.",
+      "attributes": []
+    },
+    "key_card": {
+      "type": "item",
+      "holder": null,
+      "description": "A raggedy white unassuming keycard with the old company logo. Perhaps someone misplaced their keycard or perhaps it holds some secrets?",
+      "attributes": []
+    },
+    "medicine": {
+      "type": "item",
+      "holder": "washroom_shelf",
+      "description": "Bottle that can be used to heal after getting hit or injured",
+      "attributes": []
+    },
+    "anti_virus_software": {
+      "type": "item",
+      "holder": null,
+      "description": "Created by Bill Gates, the most powerful code on the planet, can obliterate your USB hacking script",
+      "attributes": []
+    },
+    "blue_flower": {
+      "type": "item",
+      "holder": "meeting_room",
+      "description": "Frosted blue rose, that gives off alluring arouma",
+      "attributes": []
+    },
+    "yellow_flower": {
+      "type": "item",
+      "holder": "offices",
+      "description": "Yellow peonies, they appear to be wilting but may hold on for a few more days",
+      "attributes": []
+    },
+    "old_intern_notes": {
+      "type": "item",
+      "holder": "storage_room",
+      "description": "Old intern notes, some of them are written in a language you can't understand, others are just doodles of cats. maybe a genius can translate them?",
+      "attributes": []
+    },
+    "intern_coin": {
+      "type": "item",
+      "holder": "NPC_1",
+      "description": "Worth 1 cent now, but Krypto King says it's going the Moon!",
+      "attributes": []
+    },
+    "empty_wrapper": {
+      "type": "item",
+      "holder": "cafeteria",
+      "description": "Why did you pick this up?",
+      "attributes": []
+    },
+    "stress_ball": {
+      "type": "item",
+      "holder": "networking_room",
+      "description": "For stress relief, if given to a co-worker can improve likability!",
+      "attributes": []
+    },
+    "fake_resume": {
+      "type": "item",
+      "holder": "secretary_office",
+      "description": "A masterfully crafted fake resume made to show disloyalty. Useful for annihilating your competition!",
+      "attributes": []
+    },
+    "safe": {
+      "type": "item",
+      "holder": "boss_office",
+      "description": "A heavy jet black steel safe, built to withstand both curiosity and questionable actions of interns. The keypad blinks ominously, waiting for a numeric 4 letter code to open the secerts its hiding.",
+      "attributes": ["heavy"]
+    },
+    "strawberry_cake": {
+      "type": "item",
+      "holder": null,
+      "description": "A delightful strawberry cake with layers of fluffy sponge and fresh strawberries on top. Its sweet aroma is irresistible, making it a perfect treat for any occasion.",
+      "attributes": []
+    },
+    "chocolate_cake": {
+      "type": "item",
+      "holder": null,
+      "description": "A rich and decadent chocolate cake with a glossy ganache finish. The layers are moist and filled with creamy chocolate frosting, a dream come true for chocolate lovers.",
+      "attributes": []
+    },
+    "vanilla_cake": {
+      "type": "item",
+      "holder": null,
+      "description": "A classic vanilla cake with a smooth buttercream frosting. Its light and airy texture makes it a timeless favorite for celebrations and gatherings.",
+      "attributes": []
+    },
+    "suspicious_document": {
+      "type": "item",
+      "holder": "secret_room",
+      "description": "A confidential report titled 'Offerings to the Stock Market Gods.' Lists ritual sacrifices like '50 percent of last quarter's revenue' and 'All remaining bonuses' alongside donations to 'To The Moon Spirits Fund'",
+      "attributes": []
+    },
+
+    //CHARACTERS
+    "status_effects": ["healthy", "poisoned", "caffinated", "Hacked"],
+    "player": {
+      "type": "character",
+      "holder": "main_lobby",
+      "description": "Forge your path ye tarnished and find yourself within the chaos of this workplace. Rise ye tarnished, define whom you'll become and achieve.",
+      "name": null,
+      "status": ["healthy"],
+      "likability": 20,
+      "friendliness": null, //no behaviour check
+      "turn_speed": 100, //100 is default, 120 is energized, 70 is poisoned
+      "skip_turn": 0, //skips turn due to some event e.g. spilled coffee
+      "skip_cause": null,
+      "uses_parser": true
+    },
+    "NPC_1": {
+      "type": "character",
+      "holder": "offices",
+      "description": "Philip is the type of person who's both easygoing and thoughtful. He's a bit of a dreamer, always coming up with creative ideas and plans, but he's grounded enough to make sure things get done. He's the kind of friend and colleague who'll always check in, even if it's just to share a funny meme or make sure you're doing okay.",
+      "name": "Philip",
+      "status": ["hacked"],
+      "dialogue": [
+        "Hey! You ever just stare at the ceiling and wonder if corporate life is secretly some kind of social experiment",
+        "I tried to use my charm to get out of extra tasks. Turns out charm does not work when your charisma stat is negative",
+        "I will imbue you with some wisdom if someone catches you napping at your desk, just say you are meditating. Boom! Instant productivity points.",
+        "If I get fired, I am starting a podcast where I just complain about office life. Working title 'Imprisoned Intern.'"
+      ],
+      "likability": 70,
+      "friendliness": 10, //neutral to the player
+      "turn_speed": 100,
+      "skip_turn": 0,
+      "skip_cause": null,
+      "uses_parser": false,
+      "holding": ["laxative"] //yeahhh lets try it out
+    },
+    "NPC_2": {
+      "type": "character",
+      "holder": "offices", //"washroom",
+      "description": "Serah is independent, self-reliant, and values her personal space. She's not one to seek constant company but enjoys solitude and introspection, which allows her to think deeply and work efficiently. Serah has a quiet confidence and doesn't feel the need to seek validation from others. She's content to move at her own pace and follow her own path.",
+      "name": "Serah",
+      "status": ["caffinated"],
+      "dialogue": [
+        "If you are here to waste my time, at least bring coffee next time.",
+        "If I had a dollar for every time you all asked me a stupid question, I would buy this company just to fire everyone.",
+        "Someone in the break room just tried to motivate me. I almost threw my coffee at them. Almost .........",
+        "Why do I have to put my coffee away every time I visit IT? It is not like I will spill my coffee in the electrical room. But even if I did it would be the architect's fault for designing such a bad floor plan. "
+      ],
+      "likability": 50,
+      "friendliness": 3, //aggressive to the player
+      "turn_speed": 120,
+      "skip_turn": 0,
+      "skip_cause": null,
+      "uses_parser": false,
+      "holding": ["coffee","intern_coin"]
+    },
+    "secretary": {
+      "type": "static_character",
+      "holder": "secretary_office",
+      "description": "Morgana's is the company's secretary and she got a keen eye for detail and a knack for staying in the loop whether she owns up to it or not. She is the queen of gossip wrapped in a package of 'concerned professionalism' always carrying herself with a calm, composed demeanour. If something is going down in the office you can bet she knows about it. She expertly handles the Boss's mood swings like some kind of art form. Her sense of humour's sharp but she never misses the chance to toss out a sly, well timed jab when the moment's right.",
+      "name": "Morgana",
+      "status": [""],
+      "dialogue": [
+        "You agree with me, right? That old cabinet in the Boss's office looks so out of place. It is so flimsy I would not be surprised if it broke with a simple touch.",
+        "How is the Boss? Busy as always. Though he seems a bit on edge lately. Maybe it is the quarterly report... or maybe it is that ridiculous motivational speaker he agreed to last week. Either way, best not to disturb him unless you have got something worth his time",
+        "Spring would have to be my favourite season for all the blooming roses.  I guess I have always liked them. They just... have a way of brightening up the room. Not that anyone ever brings them around here",
+        "Oh, just splendid. You know, managing everyone's crises while still keeping the boss from losing his mind. It is an art form at this point"
+      ],
+      "friendliness": 0
+    },
+    "networking_teamlead": {
+      "type": "static_character",
+      "holder": "networking_room",
+      "description": "no character description yet",
+      "name": "Steve Jobs",
+      "status": [""],
+      "dialogue": [
+        "Oh great, another intern. You here to ask me to fix your WiFi again? Or maybe you just need help turning your computer on? Let me guess you forgot your password. Typical",
+        "Want to know a secert? I found a way directly into bathroom through the vents. I know i know its a little weird but I had to 'they' will not let me leave this room.",
+        "Whoa, whoa, whoa. Just because I am a network genius does not mean I am gonna help you take down the entire company. Besides, I have got my own little network of favours going. Maybe if you sweeten the deal... I might accidentally make a script to bypass security protocols on someone's laptop.",
+        "Help they have kept me in this room since 2011, I have not seen the outside world in so long"
+      ],
+      "friendliness": 0
+    },
+    "boss": {
+      "type": "static_character", // does not move.. unless you talk to him
+      "holder": "boss_office",
+      "description": "A ruthless, egomaniacal leader who runs the company like a totalitarian regime. Obsessed with control, efficiency, and absolute obedience, they demand loyalty and crush dissent with passive-aggressive memos and surprise audits. Charismatic yet terrifying, they believe fear is the best motivator—and HR is just a tool for surveillance.",
+      "name": "Mr.Boss",
+      "status": [""],
+      "dialogue": [""],
+      "friendliness": 0
+    },
+
+    "other_valid_obj_name": {
+
+      //actual_obj: [synonym1, synonym2]
+      "networking_teamlead": ["Steve"],
+      "usb_hacking_script": ["usb", "script"],
+      "key_card": ["keycard", "card"],
+      "book_shelf": ["bookshelf", "book"],
+      "washroom_shelf": ["shelf"],
+      "old_intern_notes": ["notes"],
+      "chocolate_cake": ["chocolate"],
+      "vanilla_cake": ["vanilla"],
+      "strawberry_cake": ["strawberry"],
+      "blue_flower": ["blue"],
+      "yellow_flower": ["yellow"],
+      
+      // only checks for one word, parser cannot map split words
+      // coin, ball, wrapper, resume, document still works though
+      "workstation_1": ["workstation 1", "1"],
+      "workstation_2": ["workstation 2", "2"],
+      "workstation_3": ["workstation 3", "3"],
+      "intern_coin": ["intern coin", "coin"],
+      "empty_wrapper": ["empty wrapper", "wrapper"],
+      "stress_ball": ["stress ball", "ball"],
+      "fake_resume": ["fake resume", "resume"],
+      "suspicious_document": ["suspicious document", "document"],
+
+      // No need, names can be mapped just by map_to_actual_obj() function
+      // "NPC_1": ["Philip"],
+      // "NPC_2": ["Serah"],
+
+      //these two are are mapped to the local variable of map_to_actual_obj()
+      "room": ["room", "around"],
+      "character": ["self", "yourself", "myself"],
+
+      // these won't be mapped to an object unlike the rest above
+      // so need manual check for these
+      "manual check": [
+        "inventory", // inventory is a list and is not object
+        "cake" // for cake there are three kinds
+      ]
+
+    }
+  },
+
+  "Commands": {
+    
+    "help": "Command List for Text Adventure Game with formatting:\nverb [object] <optional>\n\nMovement Commands\nN, north, NORTH, S, south, SOUTH, E, east, EAST, W, west, WEST: Move in the specified direction between rooms.\n\nInventory and Item Commands\nI, inventory, inv: View current inventory.\ngrab, get, take, pick up [item] <from [container]>: Add an item to your inventory.\ndrop, leave [item]: Remove an item from your inventory.\n\nExamination and Observation Commands\nlook, look around: Scan the current room for items or characters.\nexamine, inspect, check [item/character/room]: View details about a room, item, or character.\nfind, where is, look for [item/character/room]: Find the whereabouts of an object.\n\nInteraction Commands\ntalk to [character]: Initiate a conversation with a character.\ngive [item] to [character]: Offer an item to a character.\nput, place [item] on [location]: Set an item down at into a certain object.\nwork: Perform a task or job-related action.\nfix breaker: Attempt to fix the breaker\n\nSabotage and Combat Commands\nhack, sabotage [workstation_X]: Disrupt or damage a workstation.\npunch, kick, karate, beat, hit [item/character]: Physically attack anything in your surrounding.\nthrow, chuck, fling [item] at [character]: Throw an item at a character.\n\nCoffee and Food Commands\nconsume, eat, drink [item]: Consume item from inventory.\ncombine [item1] and [item2]: Merge two items to create something new.\n\nOther Commands\nhelp: Get help or information about commands.\nwait: Pause and pass the time.\nskip day: Skips the day\nQ: Quit the game.\n",
+
+    //parse string by removing these
+    "articles": ["of", "a", "an", "the"],
+
+    "verbs": {
+      //movement direction i.e. in the BG change "player/NPC" holder
+      // "> go north" or "> move north" the move and go is implicit
+      "0": ["N", "north", "NORTH"],
+      "1": ["S", "south", "SOUTH"],
+      "2": ["E", "east", "EAST"],
+      "3": ["W", "west", "WEST"],
+      //change holder of an "item" to "player/NPC"
+      //includes "pick up" the up is implicit
+      "4": ["grab", "get", "take", "pick"],
+      //change holder of an "item" to "room/item"
+      //~~not sure how to implement "put down"~~
+      "5": ["drop", "leave"],
+      //read description of an "item/room/character"
+      "6": ["examine", "inspect", "check"],
+      //check inventory of "player/NPC"
+      // also shows inventry when doing "> check yourself"
+      "7": ["I", "inventory", "inv"],
+      //consume an "item" i.e. in the BG change "item" holder to null and change "player/NPC" attribute
+      "8": ["consume", "eat", "drink"],
+      "9": ["throw", "chuck", "fling"], // throw Obj at Y
+      "10": ["punch", "kick", "karate", "beat", "hit", "attack"], //includes "beat up X"
+      "11": ["sabotage","hack"],
+      "12": ["look"], //look at X, look around
+      "13": ["give"], //give X to Y
+      "19": ["put","place"], //put x on Y  //put laxative on coffee
+      "20": ["wait"],
+      "21": ["combine"], //combine coffee and laxative
+      "22": ["work"], // email
+      "23": ["talk"],
+      "25": ["help"],
+      "26": ["fix"],
+      "27": ["find", "where"],
+
+      //************************ NOT IMPLEMETED ************************//
+
+      //interact and change "player/NPC" attribute NEGATIVE
+       //pick from random negative subroutine with requirements met or NOT
+      //interact and change "player/NPC attribute" POSITIVE
+      "14": ["hug"],
+      "15": ["play"], //play with X
+      //players hint
+      "16": ["hint"], //I don't think this is needed
+      "17": ["use"], //use coffee machine
+      "18": ["force"], //force X on Y
+      "24": ["earn"]
+    },
+
+    "prepositions": //["in", "above", "under", 
+        ["and", "on", "to", "with", "from", "at", "for"],
+
+    "lookup_table": [
+      //[verb, direct_obj, preposition, indirect_obj, subroutine_key]
+      [0, null, null, null, "go_direction"],
+      [1, null, null, null, "go_direction"],
+      [2, null, null, null, "go_direction"],
+      [3, null, null, null, "go_direction"],
+      [4, "*", null, null, "take_obj"],
+      [5, "*", null, null, "drop_obj"],
+      [4, "*", "on", "*", "take_from_container"],
+      [4, "*", "from", "*", "take_from_container"],
+
+      [27, "*", null, null, "find_obj"],
+      [12, null, "for", "*", "find_obj"],
+      [12, null, null, null, "show_room"],
+      [12, "around", null, null, "show_room"], //see different commands corresponds to same action
+      [6, "room", null, null, "show_room"], //`> examine room` same as `> look around`
+      [6, "*", null, null, "read_obj_description"], //`> examine X` same as `look at X`
+      [12,null,"at","*","read_obj_description"], // the "at" is explicit
+      // [12, "*", null, null, "read_obj_description"],      
+
+      [7, null, null, null, "show_inventory"], // just "> inv" or "> I"
+      [6, "inventory", null, null, "show_inventory"], // or "> check inventory"
+
+      // anything other than coffee, poisoned coffee, medicine, and cake
+      // is inedible SO add more function for other food
+      [8, "coffee", null, null, "consume_coffee"],
+      // [8,"laxative",null,null,"consume_poison"],  // disabled now laxative can't be consumed by anyone
+      [8, "poisoned_coffee", null, null, "consume_poison"],
+      [8, "medicine", null, null, "drink_medicine"],
+      [8, "cake", null, null, "consume_cake"],
+      [8, "strawberry_cake", null, null, "consume_cake"],
+      [8, "chocolate_cake", null, null, "consume_cake"],
+      [8, "vanilla_cake", null, null, "consume_cake"],
+      [8, "*", null, null, "consume_inedible"], 
+
+      [21, "laxative", "and", "coffee", "make_poisoned_coffee"],
+      [21, "coffee", "and", "laxative", "make_poisoned_coffee"],
+      [19, "laxative", "on", "coffee", "make_poisoned_coffee"],
+
+      [19, "*", "on","workstation_1","place_obj"],
+      [19, "*", "on","workstation_2","place_obj"],
+      [19, "*", "on","workstation_3","place_obj"],
+      [19, "*", "on","*","place_obj"],
+
+      [9, "*", "at", "*", "thrown_obj_at_x"],
+      [10, "*", null, null, "karateyd"],
+
+      [11, "workstation_1", null, null,"hack_computer"],
+      [11,  "workstation_2", null, null,"hack_computer"],
+      [11,  "workstation_3", null, null,"hack_computer"],
+      [11,  "player", null, null,"hack_computer"],
+      [11,  "NPC_1", null, null,"hack_computer"],
+      [11,  "NPC_2", null, null,"hack_computer"],
+      [11,  "*", null, null,"hack_computer"],
+
+      //has chance of detecting poison if you give poisoned coffee
+      [13, "coffee", "to", "*", "give_coffee_or_poison"], 
+
+      [13, "cake", "to", "*", "give_cake"],
+      [13, "strawberry_cake", "to", "*", "give_cake"],
+      [13, "chocolate_cake", "to", "*", "give_cake"],
+      [13, "vanilla_cake", "to", "*", "give_cake"],
+      [13, "*", "to", "*", "give_obj"],
+
+      [23, null, "to", "*", "talk_to"],
+      [22, null, null, null, "email_work"],
+      [26, "breaker", null, null, "fix_breaker"],
+      [19, "fuse", "on", "breaker", "fix_breaker"],
+
+      [20, null, null, null, "wait_time"],
+      [25, null, null, null, "help_command"],
+
+      // more chances for npc action (implement differently later)
+      [4, "*", null, null, "take_obj"],
+      [4, "*", null, null, "take_obj"],
+      [13, "*", "to", "*", "give_obj"],
+      // more of certain actions here too
+      [4, "coffee", null, null, "take_obj"],
+      [4, "flashlight", null, null, "take_obj"],
+      [4, "fuse", null, null, "take_obj"],
+      [4, "medicine", "from", "washroom_shelf", "take_from_container"],
+      [8, "medicine", null, null, "drink_medicine"],
+      // more chances to antagonize or be nice player here
+      [9, "coffee", "at", "player", "thrown_obj_at_x"],
+      [9, "*", "at", "player", "thrown_obj_at_x"],
+      [10, "player", null, null, "karateyd"],
+      [13, "coffee", "to", "player", "give_coffee_or_poison"]
+
+    ]
+  },
+
+  "Events": {
+    "variables": {
+      "MAX_INVENTORY": 8,
+      "is_lights_out": false,
+      "remaining_lights_out": 0,
+      "is_boss_anniversary": false,
+      "is_a_secret_endings": {"become_boss": false, "marry_daughter": false}
+    },
+
+    "email_minigame": {
+      
+
+      "Subject: Invest Now for Big Profits! \nFrom: CryptoKing@internet.ca\nTo: You\n \n    Congratulations! You have been chosen to invest in the next big crypto coin: IntershipCoin. \n    Get in now for early gains and secure your financial future. Just send $1000 to the wallet address 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa to 100x your investment! \n    Do not miss out!\n    Crypto King" : -5,
+      "Subject: Weekly Marketing Metrics \nFrom: Marketing@corporate.ca\nTo: AllStaff@corporate.ca\n \n    Good morning,\n    Here is the weekly marketing metrics summary. Social media engagement is up by 5 percent, but email open rates have dropped by 3 percent. \n    If you have any suggestions on improving outreach, let us know.\n    Thanks,\n    Marketing Team" : -3,
+      "Subject: Annual Corporate Mixer - RSVP Required \nFrom: Events@corporate.ca\nTo: Intern@corporate.ca\n \n    Good news! The annual corporate mixer is happening this Friday at 7 PM in the main conference hall. \n    There will be food, drinks, and a chance to meet executives. \n    Please RSVP by Thursday. Attendance is optional, but networking is encouraged!\n    Events Team" : 4,
+      "Subject: Reception Aquarium Leak \nFrom: Facilities@corporate.ca\nTo: AllStaff@corporate.ca\n \n    Dear Staff,\n    The reception aquarium has suffered a catastrophic leak, and most of the fish have been relocated to temporary bowls. \n    Unfortunately, some are still unaccounted for. If you see a fish flopping around or in an unusual place, please rescue it.\n    Facilities Team" : 3,
+      "Subject: Unattended Birthday Cake in Break Room \nFrom: OfficeAdmin@corporate.ca\nTo: AllStaff@corporate.ca\n \n    Hello Team,\n    There's an unclaimed birthday cake in the break room. No one has taken responsibility for it, and it is just sitting there, untouched. \n    If you left it, please let us know.\n    Office Admin" : 2,
+
+
+      "Subject: Can Someone Check the Air Conditioning? \nFrom: Maintenance@corporate.ca\nTo: AllStaff@corporate.ca\n \n    Hey everyone,\n    We have been getting complaints about strange noises coming from the vents. \n    If anyone notices anything unusual, please let us know. Might just be a raccoon again.\n    Maintenance Team": -4,
+      "Subject: Questionable Expense Report \nFrom: Accounting@corporate.ca\nTo: Intern@corporate.ca\n \n    Hey,\n    I was reviewing the latest expense reports, and something weird stood out—someone billed the company for an expensive dinner last Friday, but no one remembers attending any corporate event. \n    Do you know anything about this?\n    I am trying to figure out if this was an error or something shady. Let me know.\n    Thanks,\n    Megan - Accounting" : -3,
+      "Subject: Unscheduled Meeting in the Basement \nFrom: Anonymous@leakmail.ca\nTo: Intern@corporate.ca\n \n    There is going to be a secret meeting in the basement at midnight tonight. \n    Apparently, it is about the upcoming promotion decisions. \n    Be there if you want insider info.\n    Anonymous" : 2,
+      "Subject: Vote on Office Mascot Name \nFrom: HR@corporate.ca\nTo: AllStaff@corporate.ca\n \n    Hi Team,\n    We are officially voting on a name for the new office mascot (a cheerful stuffed penguin). \n    Current top contenders are: Waddles, Mr. Beakerson, and Sir Fluffington. \n    Please cast your vote by Friday.\n    HR Department" : 2,
+
+      "Subject: Furry Creature Near Break Room \nFrom: Security@corporate.ca\nTo: AllStaff@corporate.ca\n \n    Hey Everyone,\n    A small, furry creature (possibly a raccoon? or an unusually aggressive ferret?) has been spotted near the break room. \n    Please do not attempt to pet or capture it. Animal control is on the way.\n    Security Team" : 4,
+
+
+      "Subject: I Think I Like You... \nFrom: Secretary@corporate.ca\nTo: Intern@corporate.ca\n \n    I know this might sound weird, but I have been meaning to tell you that I think you are really cool. \n    Maybe we could grab a coffee sometime?\n    Just do not tell the boss. He will lose it.\n \n    Secretary": -5,
+      "Subject: Scheduled Server Maintenance \nFrom: IT@corporate.ca\nTo: AllStaff@corporate.ca\n \n    Dear Staff,\n    We will be performing routine server maintenance on Friday from 3 PM to 5 PM. \n    During this time, access to the internal network will be limited. Please save your work and log off before 3 PM. \n    Let us know if you experience issues outside of the maintenance window.\n    IT Team": 4,
+      "Subject: Upcoming Investor Meeting \nFrom: ChiefFinancialOfficer@corporate.ca\nTo: Intern@corporate.ca\n \n    Just a heads-up Boss, the Investor meeting has been rescheduled for next Wednesday at 12 PM at Maple Dragon Golf Club. \n    This is a big opportunity as Microsoft says they want to invest $1,000,000 into our new product. \n    Also, let me know if you want any specific data pulled for the meeting.\n    Alex": 4,
+      "Subject: Dress Code Reminder \nFrom: HR@corporate.ca\nTo: AllStaff@corporate.ca\n \n    Hi Team,\n    We have noticed some employees are not adhering to the business casual dress code. \n    Please ensure that your attire remains professional at all times. \n    Let us keep the office looking sharp!\n    HR Team": -2,
+      "Subject: Someone Keeps Stealing Pens! \nFrom: OfficeAdmin@corporate.ca\nTo: AllStaff@corporate.ca\n      Dear All,\n    We have noticed that office supplies, especially pens and notepads, are disappearing faster than usual. \n    Please be mindful and take only what you need. If you see anyone hoarding supplies, kindly remind them to be considerate.\n    Office Admin": -1,
+      "Subject: Surpise Free Pizza Day - Friday! \nFrom: HR@corporate.ca\nTo: AllStaff@corporate.ca\n \n    Good news, everyone!\n    Next Friday, we at HR have decided to celebrate Employee Appreciation Day with free pizza in the cafeteria from 12 PM to 2 PM. \n    Stop by and grab a slice on us!\n    Lets show our hardworking employees some love!\n    HR Team": 3,
+      "Subject: Rumor About the Boss \nFrom: Anonymous@leakmail.ca\nTo: Intern@corporate.ca\n \n    Just thought you should know, there is a rumor going around that the boss has been siphoning company funds for personal use. \n    Not saying it is true, but it might explain why the budget's been tight lately. \n    Do with this information what you will." : -5,
+
+      "Subject: Suspicious Attachment Detected \nFrom: IT@corporate.ca\nTo: Intern@corporate.ca\n \n    Hi,\n    We detected a suspicious file attachment in your inbox titled 'PerformanceReview.docx.' \n    It appears to be from an external email address. Please avoid opening it and report any suspicious activity immediately.\n    IT Department": -4,
+      "Subject: Weird Expenses from Last Quarter \nFrom: Finance@corporate.ca\nTo: Intern@corporate.ca\n \n    Hey,\n    I was reviewing the expense reports from Q4, and I noticed a few weird entries. \n    Someone charged $500 for 'client entertainment' at a karaoke bar three times in one week. \n    Also, there is an invoice for 'motivational posters' that never arrived. \n    Should we be worried about misuse of company funds? Let me know if you think this is worth escalating.\n    Kevin (Finance)": 5,
+      "Subject: Strange Smell from the Cafeteria \nFrom: CafeteriaManager@corporate.ca\nTo: AllStaff@corporate.ca\n \n    Hello,\n    We have been getting reports of a strange odor coming from the cafeteria. Maintenance is investigating, but if anyone knows what might be causing it, let us know. \n    It kind of smells like burned rubber mixed with spoiled milk.\n    Cafeteria Manager" : -2,
+
+      "Subject: Noise Complaint - Floor 5 \nFrom: BuildingMaintenance@corporate.ca\nTo: AllStaff@corporate.ca\n \n    Good morning,\n    We have received several reports of loud banging noises coming from Floor 5 after hours. \n    We suspect it could be construction, but there should not be any scheduled work. \n    Let us know if you hear anything unusual.\n    Building Maintenance": -3,
+      "Subject: Weird Legal Query \nFrom: Legal@corporate.ca\nTo: AllStaff@corporate.ca\n \n    Hi everyone,\n    We have received a notice about a potential trademark infringement concerning one of our recent marketing campaigns. \n    Please let us know if anyone has used unlicensed images or copyrighted phrases. \n    This could escalate, so please be honest and transparent.\n    Corporate Legal Team": 4,
+      "Subject: Re: Frustration with Management \nFrom: Anonymous@leakmail.ca\nTo: Intern@leakmail.ca\n \n    Just between us, I am getting really tired of how the boss micromanages every little thing. \n    A lot of people in the office feel the same way but are too scared to say anything. \n    Someone should really address this before morale tanks completely.\n    Do not mention my name.\n    Concerned Employee": -5
+    },
+
+    "event_dialogues": {
+      "greet_at_game_start": "Hey there, welcome to the team!\nWe're excited to have you on board for your internship.\nIt's a great opportunity to learn and grow,\nand we're looking forward to seeing the amazing contributions you'll make.\n",
+      "throw_coffee_at_intern": "WTF man!!! whats wrong with you, now I have to go to the washroom...",
+      "ending_1": "You married the boss's daughter, now you get to inherit the company."
+    }
+  }
+}

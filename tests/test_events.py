@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import MagicMock, patch
-from all_actions import Actions as Events
+from subroutines import Subroutines as Events
 
 
 class TestEvents(unittest.TestCase):
@@ -159,7 +159,7 @@ class TestEvents(unittest.TestCase):
         result = self.events.drop_obj(obj, character, do_print=True)
 
         self.assertFalse(result)
-        mock_print.assert_called_with("no obj found is not in the game dictionary")
+        mock_print.assert_called_with(f"{obj} is not in the game dictionary")
 
 
 if __name__ == "__main__":

@@ -1,5 +1,4 @@
-# from events import Events
-from all_actions import Actions as Events
+from subroutines import Subroutines as Events
 from obj_dict import ObjDict
 from parser import Parser
 from utils import remove_comments
@@ -19,20 +18,10 @@ RETURN OFFER RUSH GAME
 
 ## INITIALIZE ##
 
-
-# LOAD DATA FILE AS YOUR DATABASE TO USE
-# parsed_data_file = remove_comments(open("data.txt").read())
+# LOAD DATA FILE AS THE DATABASE TO USE
 parsed_data_file = remove_comments(open("data.txt").read())
 All_Data = json.loads(parsed_data_file)
-
 O = ObjDict(All_Data["Objects"])
-# adds to Objects data while game is running
-# O["snacks"] = {
-#     "type": "item",
-#     "holder": "cafeteria",
-#     "description": "Something to temporary fill the hunger.",
-#     "attributes": ["energize"],
-# }
 O.initiate_holdings()
 E = Events()
 E.load_object_dictionary(O)
@@ -75,7 +64,7 @@ def do_action(
         case "show_inventory":
             return E.show_inventory(character, do_print)
         case "read_obj_description":
-            return E.read_obj_description(cmd[1], character, do_print)
+            return E.read_obj_description(cmd[3] if cmd[1] is None else cmd[1], character, do_print)
         case "karateyd":
             return E.karateyd(verb_str, cmd[1], character, do_print)
         case "consume_coffee":
@@ -83,7 +72,7 @@ def do_action(
         case "consume_poison":
             return E.consume_poison(cmd[1], character, do_print)
         case "wait_time":
-            return E.wait_time(character, False)
+            return E.wait_time(character, do_print)
         case "make_poisoned_coffee":
             return E.make_poisoned_coffee(character, do_print)
         case "consume_inedible":
@@ -95,7 +84,7 @@ def do_action(
         case "email_work":
             return E.email_work(character, do_print)
         case "talk_to":
-            return E.talk_to(cmd[1], character, do_print)
+            return E.talk_to(cmd[3] if cmd[1] is None else cmd[1], character, do_print)
         case "drink_medicine":
             return E.drink_medicine(cmd[1], character, do_print)
         case "help_command":
@@ -112,9 +101,12 @@ def do_action(
             return E.take_from_container(cmd[1], cmd[3], character, do_print)
         case "thrown_obj_at_x":
             return E.thrown_obj_at_x(cmd[1], cmd[3], character, do_print)
+        case "fix_breaker":
+            return E.fix_breaker(character, do_print)
+        case "find_obj":
+            return E.find_obj(cmd[3] if cmd[1] is None else cmd[1], character, do_print)
         case _:
             return False
-
 
 def player_action(character: objUID, P: Parser, E: Events):
     global unparsed_cmd
@@ -126,7 +118,11 @@ def player_action(character: objUID, P: Parser, E: Events):
     valid_action = False
     while not valid_action:
         unparsed_cmd = input("> ")
-        if unparsed_cmd in ["Q", "q", "quit", "skip day"]:
+        if unparsed_cmd in QUIT_COMMANDS:
+            confirmation = input("Do you really want to quit? (q/y or n)\n")
+            if confirmation in ["y", "yes", "Y", "Q", "quit", "q"]:
+                break
+        if unparsed_cmd == "skip day":
             break
 
         cmd = P.parse_input(unparsed_cmd)
@@ -146,19 +142,38 @@ def player_action(character: objUID, P: Parser, E: Events):
         )
         valid_action = do_action(subroutine_key, cmd, character, P, E, verb_str, True)
 
-
 def random_action(npc_character: objUID, P: Parser, E: Events):
+    character_friendliness = E.O.get_character_data("friendliness", npc_character)
     valid_action = False
     while not valid_action:
         rand_action = rnd.choice(list(P["lookup_table"]))
-        cmd = rand_action[:4]
         subroutine_key = rand_action[4]
-        rand_obj1 = rnd.choice(list(P["game_dictionary"]))
-        rand_obj2 = rnd.choice(list(P["game_dictionary"]))
+        cmd = rand_action[:4]
+        
+        rand_obj1 = rnd.choice(list(P["objects_dictionary"]))
+        rand_obj2 = rnd.choice(list(P["objects_dictionary"]))
         if cmd[1] == "*":
             cmd[1] = rand_obj1
         if cmd[3] == "*":
-            cmd[3] == rand_obj2
+            cmd[3] = rand_obj2
+
+        # give chance for all the other options
+        while ( 
+            # stop antagonizing after above enemy threshold
+            character_friendliness > ENEMY and subroutine_key in ["karateyd", "thrown_obj_at_x"] and "player" in [cmd[1], cmd[3]] or
+            # the most common action go to a direction only has 10% chance
+            subroutine_key == "go_direction" and rnd.randint(1, 100) > 10
+        ):
+            rand_action = rnd.choice(list(P["lookup_table"]))
+            subroutine_key = rand_action[4]
+            cmd = rand_action[:4]
+        
+            rand_obj1 = rnd.choice(list(P["objects_dictionary"]))
+            rand_obj2 = rnd.choice(list(P["objects_dictionary"]))
+            if cmd[1] == "*":
+                cmd[1] = rand_obj1
+            if cmd[3] == "*":
+                cmd[3] = rand_obj2
 
         # DEBUG #
         # print(f"cmd: {cmd}")
@@ -166,10 +181,23 @@ def random_action(npc_character: objUID, P: Parser, E: Events):
 
         valid_action = do_action(subroutine_key, cmd, npc_character, P, E)
 
+        # try again with different objects if the action is not valid
+        if (cmd[1] == "*" or cmd[3] == "*") and not valid_action:
+            for _ in range(50):
+                rand_obj1 = rnd.choice(list(P["objects_dictionary"]))
+                rand_obj2 = rnd.choice(list(P["objects_dictionary"]))
+                if cmd[1] == "*":
+                    cmd[1] = rand_obj1
+                if cmd[3] == "*":
+                    cmd[3] = rand_obj2
+                
+                valid_action = do_action(subroutine_key, cmd, npc_character, P, E)
+                if valid_action:
+                    break
+
     print(
         f"I do: {list(P["verbs"][str(cmd[0])])[0]} {cmd[1] if cmd[1] is not None else ""} {cmd[2] if cmd[2] is not None else ""} {cmd[3] if cmd[3] is not None else ""}"
     )
-
 
 def character_action(character: objUID, P: Parser, E: Events):
     if E.O.get_character_data("uses_parser", character):
@@ -183,7 +211,7 @@ def job_offer_with_coworker(pitcher):
     msvcrt.getch()
     print("EVEN THOUGHT SOME OF YOU DID'T GET THE BOSS'S")
     msvcrt.getch()
-    print(f"FAVOUR, {pitcher.upper()} PITCHED IN FOR Y'ALL!")
+    print(f"FAVOUR, <<{pitcher.upper()}>> PITCHED IN FOR Y'ALL!")
     msvcrt.getch()
 
 def exclusive_job_offer(highest_likability):
@@ -195,7 +223,7 @@ def exclusive_job_offer(highest_likability):
     msvcrt.getch()
     print("BUT ONE, ONLY ONE STOOD ON TOP! THAT IS")
     msvcrt.getch()
-    print(f"{highest_likability.upper()} BEAT EVERYONE IN CAPABILITIES")
+    print(f"<<{highest_likability.upper()}>> BEAT EVERYONE IN CAPABILITIES")
     msvcrt.getch()
 
 def no_one_gets_rehired():
@@ -296,10 +324,12 @@ def ending_result():
                 "likability", highest_likability
             ):
                 highest_likability = characterS[i]
+        if pitcher != "player":
+            pitcher = highest_likability
 
     # ending 4
-    if "intern_coin" == E.O.get_holding("player"):
-        return 
+    if "intern_coin" in E.O.get_holding("player"):
+        return become_a_millionaire()
     # ending 1
     if friendliness_reached and any(likability_reached):
         return job_offer_with_coworker(E.O.get_character_data("name", pitcher))
@@ -310,92 +340,48 @@ def ending_result():
     if not any(likability_reached):
         return no_one_gets_rehired()
 
-def check_secret_ending() -> bool:
-    for k,v in E["variables"]["is_a_secret_endings"].items():
-        if v:
-            print_ending_frame()
-            if k == "become_boss":
-                become_boss()
-            if k == "marry_daughter":
-                marry_daughter()
+def check_secret_ending(E: Events, do_print=True) -> bool:
+    for ending,is_true in E["variables"]["is_a_secret_endings"].items():
+        if is_true:
+            if do_print:
+                print_ending_frame()
+                if ending == "become_boss":
+                    become_boss()
+                if ending == "marry_daughter":
+                    marry_daughter()
             return True
-    return False           
+    return False
 
-# INSIDE Events aka E.power_down()
-# can be called from spill_coffee
-def power_down(turns=10):
-    E["variables"]["is_lights_out"] = True
-    E["variables"]["remaining_lights_out"] = turns
-    for obj, attr in O.items():
-        if O.is_valid_obj(obj):
-            room = O.get_holder(obj)
-            if O.get_obj_type(obj) == "character":
-                O.change_holder(obj, room, "electrical_room")
-
-def electric_shutdown():
-    print("###########")
-    print("#  EVENT  #")
-    print("###########")
-    print()
-    msvcrt.getch()
-    print("******** ELECTRIC SHUTDOWN ********")
-    print()
-    msvcrt.getch()
-    print("THE LIGHTS SUDDENLY WENT DOWN")
-    msvcrt.getch()
-    print('BOSS: "GO FIX THE BREAKER YOU USELESS INTERNS!!!"')
-    msvcrt.getch()
-    print()
-    print("Everyone hurried to the electric room")
-    msvcrt.getch()
-    print("as per the boss's orders. Fix the lights")
-    msvcrt.getch()
-    print("or take opportunity of the situation...")
-    msvcrt.getch()
-    print()
-    print("**********************************************")
-    print()
-    power_down(POWER_DOWN_DURATION)
-    msvcrt.getch()
-    pass
-
-def check_power():
-    if E["variables"]["remaining_lights_out"] > 0:
-        E["variables"]["remaining_lights_out"] = (
-            E["variables"]["remaining_lights_out"] - 1
-        )
-        if E["variables"]["remaining_lights_out"] == 0:  # <= 0
-            print("THE LIGHTS ARE BACK ON!")
-            print()
-            E["variables"]["is_lights_out"] = False
 
 E.greet_at_game_start("player")
 
-t = 0.1
+QUIT_COMMANDS = ["Q", "q", "quit"]
 GAME_DAYS = 5
 TURNS_IN_A_DAY = 30
 ANNIVERSARY_DAY = 5
 ELECTRIC_SHUTDOWN_DAY = 3
 INSPECTION_DAY = 2
-POWER_DOWN_DURATION = 25 #30
 LIKABILITY_GOAL = 80
 FRIENDLINESS_GOAL = 20
-
+ALLY = 14
+ENEMY = 9
+unparsed_cmd = ""
 characterS = []
 for obj in O.keys():
     if E.O.get_obj_type(obj) == "character":
         characterS.append(obj)
 
-unparsed_cmd = None  # input("> ")  # e.g. `> put A LaXaTiVe in the coffee`
-# while GAME_DAYS > 0 and unparsed_cmd not in ["Q", "quit"]: #while not ending():
-for day in range(1, GAME_DAYS + 1):
+for day in range(1, GAME_DAYS + 1):  #while not ending():
     skip_day = False
     print("#########")
     print(f"# DAY {day} #")
-    print("#####################################################################")
+    print("#####################################################################\n")
+    if day != 1: # only change item placement and refills after first day
+        E.everything_back_in_place()
     for turn in range(TURNS_IN_A_DAY):
+        print(f"-> TURN {turn + 1} OF {TURNS_IN_A_DAY} <-\n")
         if day == ELECTRIC_SHUTDOWN_DAY and turn == 2: #10:
-            electric_shutdown()
+            E.electric_shutdown()
         if day == ANNIVERSARY_DAY and turn == 5: #20:
             E.boss_anniversary()
         if day == INSPECTION_DAY and turn == 8:
@@ -418,55 +404,70 @@ for day in range(1, GAME_DAYS + 1):
             if skip_turn > 0:
                 print("skipping turn...")
                 print(f"because {E.O.get_character_data("skip_cause", character)}")
-                # if character == "player":
-                #     print("skipping turn...")
-                #     print(f"because {E.O.get_character_data("skip_cause", character)}")
                 skip_turn -= 1
                 E.O.set_character_data(character, "skip_turn", skip_turn)
             else:
-                if rnd.randint(1, 100) <= turn_speed:
-                    character_action(character, P, E)
-                else:
-                    print("You are unwell and lost the turn")  # DEBUG
-                if turn_speed > 100 and rnd.randint(1, 100) <= turn_speed - 100:
-                    print("(extra turn granted caffinated or sugar rush in effect)")
-                    # if character == "player":
-                    #     print("(extra turn granted) caffinated in effect...")
-                    character_action(character, P, E)  # see extra action
+                once = True
+                turn_done = False
+                while True:
+                    chance = rnd.randint(1, 100) <= turn_speed
+                    if once and not chance:
+                        print("You are unwell and lost the turn")
+                    if chance:
+                        if not once:
+                            print("(extra turn granted caffinated or sugar rush in effect)")
+                            print("------------------------------")
+                        character_action(character, P, E)
+
+                        if unparsed_cmd in QUIT_COMMANDS: break
+                        if unparsed_cmd == "skip day":
+                            skip_day = True
+                            break
+                        if check_secret_ending(E, False): break
+
+                    once = False
+                    turn_speed -= 100
+                    if turn_speed <= 0:
+                        turn_done = True
+                        break
+                    
+                # OLD NON LOOP CODE
+                # if rnd.randint(1, 100) <= turn_speed:
+                #     character_action(character, P, E)
+                # else:
+                #     print("You are unwell and lost the turn")  # DEBUG
+                # if turn_speed > 100 and rnd.randint(1, 100) <= turn_speed - 100:
+                #     print("(extra turn granted caffinated or sugar rush in effect)\n")
+                #     character_action(character, P, E)  # see extra action
+
             print("*************************************\n")
             
             if character == "player":
                 msvcrt.getch()
 
-            # sleep(t)
+            if turn_done:
+                continue
+            break
 
-            if check_secret_ending(): break
-
-            if unparsed_cmd in ["Q", "q", "quit"]:
-                break
-            if unparsed_cmd == "skip day":
-                skip_day = True
-                break
         else:  # aka is nobreak
-            check_power()
+            E.check_power()
             continue
         break
     else:  # aka is nobreak
-        # go_home()  # prints go home OR even another function just being home doing things at home for some turns
-        print("ITS TIME TO GO HOME")
-        print("say bye to everyone")
-        input("> ")
-        print()
+        # not going home on the last day, instead show ending
+        if day != GAME_DAYS:
+            E.go_home()
         continue
     if skip_day:
         skip_day = False
-        print("You skipped the day! now what?\n")
+        print("You skipped the day!\n")
         continue
     break
 
-if unparsed_cmd in ["Q", "q", "quit"]:
-    os.abort()
-if E.is_secret_ending() == "no secret endings met":
+if unparsed_cmd in QUIT_COMMANDS:
+    print("Quitting the game...\n")
+    os.abort()  # don't show ending if quit
+if not check_secret_ending(E):
     print_ending_frame()
     ending_result()  # show the result based on all stats
 print()
@@ -490,3 +491,4 @@ print(
 ⠀⠘⣆⠀⠀⠈⠣⣔⠁⢸⠒⣑⠠⠐⠉⠉⠉⠀⠀⠀⠀⠀⠀⡠⠚⡘⠀⠀⠀
 """
 )
+msvcrt.getch()

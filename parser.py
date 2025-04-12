@@ -1,19 +1,18 @@
 from obj_dict import ObjDict
 import random as rnd
-
 type subroutineID = str
 
 
 class Parser(dict):
     """Parser for IO with user input and game output"""
 
-    # adds the dot (.) syntax for dictionary
-    # e.g. Class.holder works as Class["holder"]
     def __getattr__(self, attr):
         return self[attr]
 
     def __setattr__(self, attr, value):
         self[attr] = value
+        # adds the dot (.) syntax for dictionary
+        # e.g. Class.holder works as Class["holder"]
 
     def fix_json_import(self) -> None:
         "fix data stuct lists into sets for better lookup"
@@ -25,10 +24,13 @@ class Parser(dict):
     def load_game_dictionary(self, O: ObjDict) -> None:
         "makes a set of all the objects in game for object lookup"
 
+        self.objects_dictionary = O.copy()
         obj_nameS = set()
         for k in O.keys():
             if O.is_valid_obj(k):
                 obj_nameS.add(k)
+            else:
+                self.objects_dictionary.pop(k)
             if "name" in O[k]:
                 nam = O[k]["name"]
                 if nam != None:
@@ -50,9 +52,9 @@ class Parser(dict):
         unprocessed_list = user_input.split()
         v_idx = None
         o1_idx = None
+        p_idx = None
         o2_idx = None
-        processed1_list = []
-        processed2_list = []
+        list_after_verb = []
 
         for a in self["articles"]:
             for _ in range(len(unprocessed_list)):
@@ -66,7 +68,7 @@ class Parser(dict):
                 try:
                     v_idx = unprocessed_list.index(s)
                     try:
-                        processed1_list = unprocessed_list[v_idx + 1 :]
+                        list_after_verb = unprocessed_list[v_idx + 1 :]
                     except:
                         pass
                     verb = int(v)
@@ -79,7 +81,7 @@ class Parser(dict):
         # obj1 eaten
         for valid_obj in self["game_dictionary"]:
             try:
-                o1_idx = processed1_list.index(valid_obj)
+                o1_idx = list_after_verb.index(valid_obj)
                 break
             except:
                 continue
@@ -87,7 +89,7 @@ class Parser(dict):
         # obj2 eaten
         for valid_obj in self["game_dictionary"]:
             try:
-                next_obj_idx = processed1_list.index(valid_obj)
+                next_obj_idx = list_after_verb.index(valid_obj)
                 if next_obj_idx != o1_idx:
                     o2_idx = next_obj_idx
                     break
@@ -98,28 +100,23 @@ class Parser(dict):
         if o2_idx is not None and o1_idx is not None:
             if o1_idx > o2_idx:
                 o1_idx, o2_idx = o2_idx, o1_idx
-        obj1 = processed1_list[o1_idx] if o1_idx is not None else None
-        obj2 = processed1_list[o2_idx] if o2_idx is not None else None
+        obj1 = list_after_verb[o1_idx] if o1_idx is not None else None
+        obj2 = list_after_verb[o2_idx] if o2_idx is not None else None
 
-        # obj1 will never be None before obj2
-        processed2_list = (
-            []
-            if o2_idx is None and o1_idx is None
-            else (
-                processed1_list[o1_idx:]
-                if o2_idx is None
-                else processed1_list[o1_idx : o2_idx + 1]
-            )
-        )
-
-        # preposition eaten
-        for w in processed2_list:
+        for i,w in enumerate(list_after_verb):
             if w in self["prepositions"]:
+                p_idx = i
                 prep = w
-        if prep not in processed2_list:
-            prep = None
+                break
 
-        return [verb, obj1, prep, obj2]
+        return (
+            [verb, None, None, None] if o1_idx is None or obj1 is None 
+            else [verb, obj1, None, None] if p_idx is None or 
+                prep is None or (o1_idx < p_idx and obj2 is None)
+            # obj1 will never be None before obj2 thus below
+            else [verb, None, prep, obj1] if o1_idx > p_idx 
+            else [verb, obj1, prep, obj2]
+        )
 
     def find_subroutine_call(self, cmd: list[int | str | None]) -> subroutineID:
         """maps user input to subroutine_key (aka eventID), optimally using trie"""
@@ -166,26 +163,7 @@ class Parser(dict):
         if do_print:
             print("COMMANDS [WORDS] <OPTIONAL>")
             print("----------------------------")
-            # # printing from lookup_table
-            # for cmd in self["lookup_table"]:
-            #     verb, obj1, prep, obj2, _ = cmd
-            #     verb = list(self["verbs"][str(cmd[0])])[0]
-            #     obj1 = (
-            #         "[room/item/character]"
-            #         if obj1 == "*"
-            #         else "" if obj1 == None else cmd[1]
-            #     )
-            #     prep = (
-            #         str(self["prepositions"]).split("/")
-            #         if prep == "*"
-            #         else "" if prep == None else cmd[2]
-            #     )
-            #     obj2 = (
-            #         "[room/item/character]"
-            #         if obj2 == "*"
-            #         else "" if obj2 == None else cmd[3]
-            #     )
-            #     print(f"{verb} {obj1} {prep} {obj2}")
             print(self["help"])
 
-        return True
+        # you can always use the help command without losing turns
+        return False

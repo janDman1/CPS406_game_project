@@ -8,11 +8,9 @@
     },
     "washroom": {
       "type": "room",
-      // "items": ["laxative", "medicine", 'towel'],
       "holder": null,
       "description": "A surprisingly fancy washroom for a place that only pays interns in coffee and stress.  A long mirror spans the wall above a row of sinks, each with a dispenser of antibacterial soap. The mirrors shine so cleanly that they would make a germaphobe cry out of happiness. A small shelf behind the mirror holds an assortment of suspicious supplies perhaps they have some use.",
-      "NSEW": [null, null, "cafeteria", null],
-      "holding": []
+      "NSEW": [null, null, "cafeteria", null]
     },
     "cafeteria": {
       "type": "room",
@@ -25,92 +23,96 @@
       "type": "room",
       "holder": null,
       "description": "The grand lobby, designed to welcome visitors and employees. Fine decor hangs around the room, creating a professional and inviting atmosphere.",
-      "NSEW": ["secretary_office", null, "offices", "cafeteria"],
-      "holding": []
+      "NSEW": ["secretary_office", null, "offices", "cafeteria"]
     },
     "secretary_office": {
       "type": "room",
       "holder": null,
       "description": "A meticulously organized office where the scent of fresh coffee lingers. A large desk sits at the centre, covered with neatly stacked papers, crumbs of chocolate cake, and a phone that seems to ring endlessly. The faint sound of typing echoes from a nearby computer, as if someone was just here moments ago.",
-      "NSEW": ["boss_office", "main_lobby", "meeting_room", null],
-      "holding": []
+      "NSEW": ["boss_office", "main_lobby", "meeting_room", null]
     },
     "boss_office": {
       "type": "room",
       "holder": null,
       "description": "A grand yet oddly intimidating office with a massive mahogany desk dominating the space. Framed awards and motivational quotes line the walls, but the overflowing trash bin suggests chaos beneath the surface. A tall bookshelf leans slightly under the weight of legal tomes and unread business journals, while a old suspicious cabinet hints at secrets best left undiscovered.",
-      "NSEW": [null, "secretary_office", null, "secret_room"],
-      "holding": ["book_shelf"] //optional, the game will create for you by looking at objects "holder"
-      //need for some use cases where room has duplicate items like "shelf"
+      "NSEW": [null, "secretary_office", null, "secret_room"]
     },
     "secret_room": {
       "type": "room",
       "holder": null,
       "description": "Dust lingers in the air, while the only illumination comes from a single flickering bulb. Old documents labelled 'Totally Legal Stuff' are scattered haphazardly across the floor and in the corner a makeshift sacrificial altar to the stock market gods.  It is pretty obvious this room was never meant to see the light of day, a hidden stash for abandoned files and questionable choices than anything else..",
-      "NSEW": [null, null, "boss_office", null],
-      "holding": []
+      "NSEW": [null, null, "boss_office", null]
     },
     "offices": {
       "type": "room",
       "holder": null,
       "description": "A maze of cubicles, each filled with half-drunk coffee cups, stacks of sticky notes, and the faint hum of computers left on standby. The air is thick with the smell of printer toner and desperation, as if the walls themselves are absorbing the stress of endless deadlines. A single yellow flower sits on one desk, a lone spark of life in an otherwise mechanical space.",
-      "NSEW": ["meeting_room", "electrical_room", null, "main_lobby"],
-      "holding": []
+      "NSEW": ["meeting_room", "electrical_room", null, "main_lobby"]
     },
     "meeting_room": {
       "type": "room",
       "holder": null,
       "description": "A room where optimism comes to get murdered by PowerPoint. The long table is surrounded by chairs that are inexplicably uncomfortable despite looking ergonomic. A whiteboard is covered in half-erased ideas that probably made sense to someone at 2 a.m. There is a stack of snacks in the corner that have been untouched since the last anniversary party.",
-      "NSEW": [null, "offices", "storage_room", "secretary_office"],
-      "holding": []
+      "NSEW": [null, "offices", "storage_room", "secretary_office"]
     },
     "storage_room": {
       "type": "room",
       "holder": null,
       "description": "A dark, musty room where broken office equipment and forgotten projects go to die. Shelves are piled with random and mysterious unlabeled boxes. Occasionally something useful can be found here.",
       "NSEW": [null, null, null, "meeting_room"],
-      "holding": ["flashlight","empty_wrapper"]
+      "holding": ["empty_wrapper"] //optional, the game will create for you by looking at objects "holder"
+      //need for some use cases where room has duplicate items like "shelf"
     },
     "electrical_room": {
       "type": "room",
       "holder": null,
       "description": "A claustrophobic tangle of wires and cables that looks more like a techno-ritual than actual wiring. In the back wall the main breaker can be found with a 'No liquids Allowed' sign beside it is covered in passive-aggressive sticky notes, one of which reads, 'If you disobey, I WILL FIND YOU.'",
-      "NSEW": ["offices", null, "networking_room", null],
-      "holding": ["breaker"]
+      "NSEW": ["offices", null, "networking_room", null]
     },
     "networking_room": {
       "type": "room",
       "holder": null,
       "description": "Racks of humming machinery are packed in tight, like robot soldiers awaiting orders. Occasionally, a monitor flickers with obscure error codes that no ones bothered to fix since 2001. In the corner, there is a simple desk and computer where our sole IT employee Steve slaves away. ",
-      "NSEW": [null, null, null, "electrical_room"],
-      "holding": ["stress_ball"]
+      "NSEW": [null, null, null, "electrical_room"]
     },
     
 
     //ITEMS
     "breaker": {
       "type": "item",
-      "holder": null,
+      "holder": "electrical_room",
       "description": "Make it or break it, its what connects the power to the building.",
       "attributes": ["heavy"]
     },
+    "fuse": {
+      "type": "item",
+      "holder": "storage_room",
+      "description": "A spare fuse that can be used to fix the breaker. It is a bit rusty but it should work.",
+      "attributes": []
+    },
     "book_shelf": {
       "type": "item",
-      "holder": null,
+      "holder": "boss_office",
       "description": "Just a plain normal book self.",
+      "attributes": ["container","heavy"]
+    },
+    "washroom_shelf": {
+      "type": "item",
+      "holder": "washroom",
+      "description": "A shelf that holds a variety of suspicious supplies.",
       "attributes": ["container","heavy"]
     },
     "cabinet": {
       "type": "item",
       "holder": "boss_office",
       "description": "An old and frail cabinet that looks completely out of place. Its worn-out surface and creaky hinges suggest it has seen better days, and it seems like it could fall apart at any moment.",
-      "attributes": ["container","heavy"]
+      "attributes": ["heavy"]
     },
     "broken_cabinet": {
       "type": "item",
       "holder": null,
       "description": "A cabinet that has been broken into, the door hangs off its hinges and the contents are scattered across the floor.",
-      "attributes": ["container","heavy"]
+      "attributes": ["heavy"]
     },
     "workstation_1": {
       "type": "item",
@@ -135,7 +137,7 @@
     },
     "flashlight": {
       "type": "item",
-      "holder": "player",
+      "holder": "storage_room",
       "description": "A handy light for dark times. Don't cause this dark times ;)",
       "attributes": ["emits_light"]
     },
@@ -147,7 +149,7 @@
     },
     "laxative": {
       "type": "item",
-      "holder": "washroom",
+      "holder": "washroom_shelf",
       "description": "A substance that promotes bowel movements, often used to relieve constipation. Do not misuse!",
       "attributes": ["poison"]
     },
@@ -172,7 +174,7 @@
     },
     "medicine": {
       "type": "item",
-      "holder": "washroom",
+      "holder": "washroom_shelf",
       "description": "Bottle that can be used to heal after getting hit or injured",
       "attributes": []
     },
@@ -214,7 +216,7 @@
     },
     "stress_ball": {
       "type": "item",
-      "holder": null,
+      "holder": "networking_room",
       "description": "For stress relief, if given to a co-worker can improve likability!",
       "attributes": []
     },
@@ -282,7 +284,7 @@
         "I will imbue you with some wisdom if someone catches you napping at your desk, just say you are meditating. Boom! Instant productivity points.",
         "If I get fired, I am starting a podcast where I just complain about office life. Working title 'Imprisoned Intern.'"
       ],
-      "likability": 80,
+      "likability": 70,
       "friendliness": 10, //neutral to the player
       "turn_speed": 100,
       "skip_turn": 0,
@@ -303,7 +305,7 @@
         "Why do I have to put my coffee away every time I visit IT? It is not like I will spill my coffee in the electrical room. But even if I did it would be the architect's fault for designing such a bad floor plan. "
       ],
       "likability": 50,
-      "friendliness": 5, //aggressive to the player
+      "friendliness": 3, //aggressive to the player
       "turn_speed": 120,
       "skip_turn": 0,
       "skip_cause": null,
@@ -341,34 +343,22 @@
     "boss": {
       "type": "static_character", // does not move.. unless you talk to him
       "holder": "boss_office",
-      "description": "",
+      "description": "A ruthless, egomaniacal leader who runs the company like a totalitarian regime. Obsessed with control, efficiency, and absolute obedience, they demand loyalty and crush dissent with passive-aggressive memos and surprise audits. Charismatic yet terrifying, they believe fear is the best motivator—and HR is just a tool for surveillance.",
       "name": "Mr.Boss",
       "status": [""],
       "dialogue": [""],
       "friendliness": 0
     },
 
-    // if obj not defined and still works with subroutine put here
-    // e.g. "> examine room" which calls show_character_view(character)
-    // you can further map them to actual game object (see map_to_actual_obj())
-    // OR add your own behaviour using these obj name itself BUT you need to
-    // implement on your functions, see karateyd() on how I did it
-    // "other_valid_obj_name":
-    // [
-    //     "room", //you can use "room" as is or map it to say "cafeteria" using map_to_actual_obj("room","player")
-    //     //*** ehh who cares, so long as you check them on your functions *** valid because you need only to know the player/npc playing, i.e. you can see who holds them and deduce the room its in thus "room" refers to object's holder
-    //     "around", //same here, "around" refers to the object's holder, especially what the room is holding
-    //     "self",  //refers to the character itself, just add a behaviour for processing
-    //     "yourself",  //"self" or "yourself" in your function, see karateyd() on how I did it
-    //     "myself",
-    //     "Philip",  //maps to actual obj NPC_1
-    //     "Serah"  //and NPC_2
-    // ],
     "other_valid_obj_name": {
 
       //actual_obj: [synonym1, synonym2]
       "networking_teamlead": ["Steve"],
       "usb_hacking_script": ["usb", "script"],
+      "key_card": ["keycard", "card"],
+      "book_shelf": ["bookshelf", "book"],
+      "washroom_shelf": ["shelf"],
+      "old_intern_notes": ["notes"],
       "chocolate_cake": ["chocolate"],
       "vanilla_cake": ["vanilla"],
       "strawberry_cake": ["strawberry"],
@@ -376,9 +366,10 @@
       "yellow_flower": ["yellow"],
       
       // only checks for one word, parser cannot map split words
-      "workstation_1": ["workstation 1", "desk 1"],
-      "workstation_2": ["workstation 2", "desk 2"],
-      "workstation_3": ["workstation 3", "desk 3"],
+      // coin, ball, wrapper, resume, document still works though
+      "workstation_1": ["workstation 1", "1"],
+      "workstation_2": ["workstation 2", "2"],
+      "workstation_3": ["workstation 3", "3"],
       "intern_coin": ["intern coin", "coin"],
       "empty_wrapper": ["empty wrapper", "wrapper"],
       "stress_ball": ["stress ball", "ball"],
@@ -405,7 +396,7 @@
 
   "Commands": {
     
-    "help": "Command List for Text Adventure Game with formatting:\nverb [object] <optional>\n\nMovement Commands\nN, north, NORTH, S, south, SOUTH, E, east, EAST, W, west, WEST: Move in the specified direction between rooms.\n\nInventory and Item Commands\nI, inventory, inv: View current inventory.\ngrab, get, take, pick up [item] <from [container]>: Add an item to your inventory.\ndrop, leave [item]: Remove an item from your inventory.\nExamination and Observation Commands\nlook, look around: Scan the current room for items or characters.\nexamine, inspect, check [item/character/room]: View details about a room, item, or character.\n\nInteraction Commands\ntalk to [character]: Initiate a conversation with a character.\ngive [item] to [character]: Offer an item to a character.\nput, place [item] on [location]: Set an item down at into a certain object.\nwork: Perform a task or job-related action.\nhelp: Get help or information about commands.\n\nSabotage and Combat Commands\nsabotage, hack: Disrupt or damage a workstation.\npunch, kick, karate, beat, hit [item/character]: Physically attack anything in your surrounding.\nfling [item] at [character]: Throw an item at a character.\n\nCoffee and Food Commands\nconsume, eat, drink [item]: Consume item from inventory.\ncombine [item1] and [item2]: Merge two items to create something new.\n\nOther Commands\nwait: Pause and pass the time.\nSkip day: Skips the day\nQ: Quit the game.\n",
+    "help": "Command List for Text Adventure Game with formatting:\nverb [object] <optional>\n\nMovement Commands\nN, north, NORTH, S, south, SOUTH, E, east, EAST, W, west, WEST: Move in the specified direction between rooms.\n\nInventory and Item Commands\nI, inventory, inv: View current inventory.\ngrab, get, take, pick up [item] <from [container]>: Add an item to your inventory.\ndrop, leave [item]: Remove an item from your inventory.\n\nExamination and Observation Commands\nlook, look around: Scan the current room for items or characters.\nexamine, inspect, check [item/character/room]: View details about a room, item, or character.\nfind, where is, look for [item/character/room]: Find the whereabouts of an object.\n\nInteraction Commands\ntalk to [character]: Initiate a conversation with a character.\ngive [item] to [character]: Offer an item to a character.\nput, place [item] on [location]: Set an item down at into a certain object.\nwork: Perform a task or job-related action.\nfix breaker: Attempt to fix the breaker\n\nSabotage and Combat Commands\nhack, sabotage [workstation_X]: Disrupt or damage a workstation.\npunch, kick, karate, beat, hit [item/character]: Physically attack anything in your surrounding.\nthrow, chuck, fling [item] at [character]: Throw an item at a character.\n\nCoffee and Food Commands\nconsume, eat, drink [item]: Consume item from inventory.\ncombine [item1] and [item2]: Merge two items to create something new.\n\nOther Commands\nhelp: Get help or information about commands.\nwait: Pause and pass the time.\nskip day: Skips the day\nQ: Quit the game.\n",
 
     //parse string by removing these
     "articles": ["of", "a", "an", "the"],
@@ -430,6 +421,7 @@
       "7": ["I", "inventory", "inv"],
       //consume an "item" i.e. in the BG change "item" holder to null and change "player/NPC" attribute
       "8": ["consume", "eat", "drink"],
+      "9": ["throw", "chuck", "fling"], // throw Obj at Y
       "10": ["punch", "kick", "karate", "beat", "hit", "attack"], //includes "beat up X"
       "11": ["sabotage","hack"],
       "12": ["look"], //look at X, look around
@@ -440,11 +432,12 @@
       "22": ["work"], // email
       "23": ["talk"],
       "25": ["help"],
+      "26": ["fix"],
+      "27": ["find", "where"],
 
       //************************ NOT IMPLEMETED ************************//
 
       //interact and change "player/NPC" attribute NEGATIVE
-      "9": ["throw", "chuck", "fling"], // throw coffee at Y
        //pick from random negative subroutine with requirements met or NOT
       //interact and change "player/NPC attribute" POSITIVE
       "14": ["hug"],
@@ -457,7 +450,7 @@
     },
 
     "prepositions": //["in", "above", "under", 
-        ["and", "on", "to", "with", "from", "at"],
+        ["and", "on", "to", "with", "from", "at", "for"],
 
     "lookup_table": [
       //[verb, direct_obj, preposition, indirect_obj, subroutine_key]
@@ -467,63 +460,86 @@
       [3, null, null, null, "go_direction"],
       [4, "*", null, null, "take_obj"],
       [5, "*", null, null, "drop_obj"],
+      [4, "*", "on", "*", "take_from_container"],
+      [4, "*", "from", "*", "take_from_container"],
+
+      [27, "*", null, null, "find_obj"],
+      [12, null, "for", "*", "find_obj"],
       [12, null, null, null, "show_room"],
       [12, "around", null, null, "show_room"], //see different commands corresponds to same action
       [6, "room", null, null, "show_room"], //`> examine room` same as `> look around`
       [6, "*", null, null, "read_obj_description"], //`> examine X` same as `look at X`
-      [12, "*", null, null, "read_obj_description"], // the "at" is implicit
-      // [12,null,"at","*","read_obj_description"],
+      [12,null,"at","*","read_obj_description"], // the "at" is explicit
+      // [12, "*", null, null, "read_obj_description"],      
+
       [7, null, null, null, "show_inventory"], // just "> inv" or "> I"
       [6, "inventory", null, null, "show_inventory"], // or "> check inventory"
-      [10, "*", null, null, "karateyd"],
+
+      // anything other than coffee, poisoned coffee, medicine, and cake
+      // is inedible SO add more function for other food
       [8, "coffee", null, null, "consume_coffee"],
       // [8,"laxative",null,null,"consume_poison"],  // disabled now laxative can't be consumed by anyone
       [8, "poisoned_coffee", null, null, "consume_poison"],
-      [8, "*", null, null, "consume_inedible"], // anything other than coffee, laxative, and poisoned coffee is inedible SO add more function for other food
-      [20, null, null, null, "wait_time"],
+      [8, "medicine", null, null, "drink_medicine"],
+      [8, "cake", null, null, "consume_cake"],
+      [8, "strawberry_cake", null, null, "consume_cake"],
+      [8, "chocolate_cake", null, null, "consume_cake"],
+      [8, "vanilla_cake", null, null, "consume_cake"],
+      [8, "*", null, null, "consume_inedible"], 
+
       [21, "laxative", "and", "coffee", "make_poisoned_coffee"],
       [21, "coffee", "and", "laxative", "make_poisoned_coffee"],
       [19, "laxative", "on", "coffee", "make_poisoned_coffee"],
+
       [19, "*", "on","workstation_1","place_obj"],
       [19, "*", "on","workstation_2","place_obj"],
       [19, "*", "on","workstation_3","place_obj"],
+      [19, "*", "on","*","place_obj"],
+
+      [9, "*", "at", "*", "thrown_obj_at_x"],
+      [10, "*", null, null, "karateyd"],
 
       [11, "workstation_1", null, null,"hack_computer"],
       [11,  "workstation_2", null, null,"hack_computer"],
       [11,  "workstation_3", null, null,"hack_computer"],
+      [11,  "player", null, null,"hack_computer"],
+      [11,  "NPC_1", null, null,"hack_computer"],
+      [11,  "NPC_2", null, null,"hack_computer"],
+      [11,  "*", null, null,"hack_computer"],
 
-      [13, "coffee", "to", "*", "give_coffee_or_poison"], //has chance of detecting poison if you give poisoned coffee
-      [8, "cake", null, null, "consume_cake"],
-      [13, "strawberry", null, "cake", "consume_cake"],
-      [13, "chocolate", null, "cake", "consume_cake"],
-      [13, "vanilla", null, "cake", "consume_cake"],
-      [13, "strawberry_cake", null, null, "consume_cake"],
-      [13, "chocolate_cake", null, null, "consume_cake"],
-      [13, "vanilla_cake", null, null, "consume_cake"],
-      [4, "*", "on", "*", "take_from_container"],
-      [4, "*", "from", "*", "take_from_container"],
+      //has chance of detecting poison if you give poisoned coffee
+      [13, "coffee", "to", "*", "give_coffee_or_poison"], 
 
-      // this shouldn't be possible
-      // [4, "strawberry", null, "cake", "take_obj"],
-      // [4, "chocolate", null, "cake", "take_obj"],
-      // [4, "vanilla", null, "cake", "take_obj"],
-      [13, "strawberry", "to", "*", "give_cake"],
-      [13, "chocolate", "to", "*", "give_cake"],
-      [13, "vanilla", "to", "*", "give_cake"],
       [13, "cake", "to", "*", "give_cake"],
       [13, "strawberry_cake", "to", "*", "give_cake"],
       [13, "chocolate_cake", "to", "*", "give_cake"],
       [13, "vanilla_cake", "to", "*", "give_cake"],
       [13, "*", "to", "*", "give_obj"],
+
+      [23, null, "to", "*", "talk_to"],
       [22, null, null, null, "email_work"],
-      [23, "*", null, null, "talk_to"],
-      [23, "*", null, "*", "talk_to"], // because reads [talk,Steve,null,Jobs]
-      [8, "medicine", null, null, "drink_medicine"],
+      [26, "breaker", null, null, "fix_breaker"],
+      [19, "fuse", "on", "breaker", "fix_breaker"],
+
+      [20, null, null, null, "wait_time"],
       [25, null, null, null, "help_command"],
 
-      // [24, null, null, null, "earn_money_command"],
-      // [9, "coffee", "at", "*", "thrown_coffee_at_x"],
-      [9, "*", "at", "*", "thrown_obj_at_x"]
+      // more chances for npc action (implement differently later)
+      [4, "*", null, null, "take_obj"],
+      [4, "*", null, null, "take_obj"],
+      [13, "*", "to", "*", "give_obj"],
+      // more of certain actions here too
+      [4, "coffee", null, null, "take_obj"],
+      [4, "flashlight", null, null, "take_obj"],
+      [4, "fuse", null, null, "take_obj"],
+      [4, "medicine", "from", "washroom_shelf", "take_from_container"],
+      [8, "medicine", null, null, "drink_medicine"],
+      // more chances to antagonize or be nice player here
+      [9, "coffee", "at", "player", "thrown_obj_at_x"],
+      [9, "*", "at", "player", "thrown_obj_at_x"],
+      [10, "player", null, null, "karateyd"],
+      [13, "coffee", "to", "player", "give_coffee_or_poison"]
+
     ]
   },
 

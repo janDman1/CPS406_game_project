@@ -1,9 +1,6 @@
 from pprint import pprint
-
-
 type objUID = str
 type room_objUID = str
-
 
 class ObjDict(dict):
     """
@@ -66,9 +63,7 @@ class ObjDict(dict):
     def get_holding(self, obj: objUID) -> list[objUID]:
         return self[obj]["holding"].copy() if "holding" in self[obj] else []
 
-    def add_holding(
-        self, obj: None | objUID, src_obj: objUID, holder_update=True
-    ) -> None:
+    def add_holding(self, obj: None | objUID, src_obj: objUID, holder_update=True) -> None:
         if self.is_valid_obj(src_obj):  # only works if source object exists/valid
             if obj is None:
                 if "holding" not in self[src_obj]:
